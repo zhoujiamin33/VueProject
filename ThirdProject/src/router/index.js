@@ -30,10 +30,12 @@ import schoolterm from '../components/basicData/SchoolTerm.vue'
 import yearmangement from '../components/basicData/YearManagement.vue'
 import usersetting from '../components/basicData/UserSettings.vue'
 
+
 //招生管理
-import consultaion from '../components/enroll/Consultation.vue'
+import consultaionregistration from '../components/enroll/ConsultationRegistration.vue'
 import workhandover from '../components/enroll/WorkHandover.vue'
-import FAQ from '../components/enroll/FAQinterlocution.vue'
+import faq from '../components/enroll/FAQinterlocution.vue'
+import channelmaintenance from '../components/enroll/ChannelMaintenance.vue'
 
 // 学员管理
 import student from '../components/Student/student.vue'
@@ -43,12 +45,13 @@ import shift from '../components/Student/Shift.vue'
 import dropout from '../components/Student/DropOut.vue'
 
 // 系统管理
-import enterprise from '../components/sysmanage/Enterprise.vue'
+import enterprise from '../components/Sysmanage/Enterprise.vue'
 import dept from '../components/Sysmanage/Dept.vue'
 import position from '../components/Sysmanage/Position.vue'
 import userpwd from '../components/Sysmanage/UserMaintenance.vue'
 import loginlog from '../components/Sysmanage/LoginJournal.vue'
-import module from '../components/Sysmanage/ModuleManagement%20.vue'
+// import module from '../components/Sysmanage/ModuleManagement.vue'
+import mmm from '../components/Sysmanage/ModuleManagement%20.vue'
 import addRestrictions from '../components/Sysmanage/LoginRestrictions.vue'
 
 // 行政管理
@@ -67,7 +70,7 @@ const routes=[
 	{path:'/bookreturn',component:bookreturn},
 	{path:'/notice',component:notice},
 	{path:'/addRestrictions',component:addRestrictions},
-	{path:'/module',component:module},
+	{path:'/mmm',component:mmm},
 	{path:'/loginlog',component:loginlog},
 	{path:'/userpwd',component:userpwd},
 	{path:'/position',component:position},
@@ -86,9 +89,10 @@ const routes=[
 	{path:'/returnmoney',component:returnmoney},
 	{path:'/classtype',component:classtype},
 	{path:'/course',component:course},
-	{path:'/consultaion',component:consultaion},
+	{path:'/consultaionregistration',component:consultaionregistration},
 	{path:'/workhandover',component:workhandover},
-	{path:'/faq',component:FAQ},
+	{path:'/faq',component:faq},
+	{path:'/channelmaintenance',component:channelmaintenance},
 	{path:'/student',component:student},
 	{path:'/suspende',component:suspende},
 	{path:'/rakeareport',component:rakeareport},

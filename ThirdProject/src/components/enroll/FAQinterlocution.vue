@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="mianboby">
-			<div class="mianwbk" style="margin-left: 200px;">
+			<div class="mianwbk" >
 				<b>快速索引：</b>
 				<el-select v-model="value" filterable placeholder="问题">
 					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
@@ -16,110 +16,187 @@
 				<el-button type="" @click="dialogFormVisible = true">新增</el-button>
 				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible">
 					<el-form :model="form">
-						<el-form-item prop="theoryCenterId" :required="true" label="FAQ问题:"
-							:label-width="formLabelWidth">
-							<el-input v-model="form.faqwt" autocomplete="off"></el-input>
+						<el-form-item label="FAQ问题:" :label-width="formLabelWidth">
+							<el-input v-model="form.problem" autocomplete="off"></el-input>
 						</el-form-item>
-						<el-input
-						  type="textarea"
-						  :rows="2"
-						  placeholder="请输入内容"
-						  v-model="textarea">
-						</el-input>
+
+						<el-form-item label="问题答案:" :label-width="formLabelWidth">
+							<el-input v-model="form.answer" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="修改人:" :label-width="formLabelWidth">
+							<el-input v-model="form.addname" autocomplete="off"></el-input>
+						</el-form-item>
+
+						<el-form-item label="点击次数:" :label-width="formLabelWidth">
+							<el-input v-model="form.clickcount" autocomplete="off"></el-input>
+						</el-form-item>
 					</el-form>
 					<template #footer>
 						<span class="dialog-footer">
-							<el-button type="primary" @click="dialogFormVisible = false">新建并保存</el-button>
+							<el-button type="primary" @click="addFaqQuestions">新建并保存</el-button>
 							<el-button @click="dialogFormVisible = false">取 消</el-button>
 						</span>
 					</template>
 				</el-dialog>
-			
-				<el-popconfirm
-				  title="这是一段内容确定删除吗？"
-				>
-				<template #reference>
-				  <el-button style="margin-left: 10px;">删除</el-button>
-				  </template>
+
+				<el-popconfirm title="这是一段内容确定删除吗？">
+					<template #reference>
+						<el-button style="margin-left: 10px;">删除</el-button>
+					</template>
 				</el-popconfirm>
-				
+
 			</div>
 		</div>
 		<div>
-	
-			<el-collapse v-model="activeNames" @change="handleChange" style="margin-left: 200px;">
-			  <el-collapse-item title="一致性 Consistency" name="1">
-			    <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-			    <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-			  </el-collapse-item>
-			  <el-collapse-item title="反馈 Feedback" name="2">
-			    <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-			    <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-			  </el-collapse-item>
-			  <el-collapse-item title="效率 Efficiency" name="3">
-			    <div>简化流程：设计简洁直观的操作流程；</div>
-			    <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-			    <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-			  </el-collapse-item>
-			  <el-collapse-item title="可控 Controllability" name="4">
-			    <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-			    <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
-			  </el-collapse-item>
+			<el-collapse :data="FaqQuestionsDate" 
+				style="" v-for="item in FaqQuestionsDate">
+				<!-- <el-checkbox v-model="checked"></el-checkbox> -->
+				<el-collapse-item name="1" :title="item.problem">
+					<div class="answertext">{{item.answer}}</div>
+				</el-collapse-item>
 			</el-collapse>
-		</div>
 
+		</div>
+		<div>
+			<div>
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+					:current-page="pageInfo.currentPage" :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize"
+					layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+				</el-pagination>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
-
-	import { defineComponent, ref } from 'vue'
+	import qs from 'qs'
+	import {
+		defineComponent,
+		ref
+	} from 'vue'
 	export default {
 		setup() {
 			return {
 				input: ref(''),
-				 textarea: ref('')
+				textarea: ref('')
 			}
 		},
 		data() {
 			return {
+				pageInfo: {
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				kssy: [{
 					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '双皮奶'
-				}, {
-					value: '选项3',
-					label: '蚵仔煎'
-				}, {
-					value: '选项4',
-					label: '龙须面'
-				}, {
-					value: '选项5',
-					label: '北京烤鸭'
-				}],	
+					label: '问题'
+				}],
+				FaqQuestionsDate: [],
+				dialogFormVisible2: false,
+				dialogFormVisible: false,
+				formLabelWidth: '100px',
+				form: {
+					faqId: "",
+					problem: "",
+					answer: "",
+					addname: "",
+					clickcount: ""
+				},
+				formLabelWidth: '120px',
 				value: '',
-				activeNames: ['1'],
-				 dialogFormVisible: false,
-				 form: {
-				           faqwt: ''
-				         },
-				         formLabelWidth: '120px'
+				activeName: '1',
+
+				// form: {
+				// 	faqwt: ''
+				// },
+				// formLabelWidth: '120px'
 			};
 		},
+
+		created() {
+			const _this = this
+			// this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+			// 	.then(function(response) {
+			// 		_this.FaqQuestionsDate = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
+			this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.FaqQuestionsDate = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+		},
 		methods: {
-			handleChange(val) {
-				console.log(val);
+			
+			handleClick(row) {
+				console.log(row);
+			},
+			addFaqQuestions() {
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/FaqQuestions", this.form)
+					.then(function(response) {
+						console.log(response)
+						var faq_questions = response.data
+						_this.FaqQuestionsDate.push(faq_questions)
+						_this.dialogFormVisible = false
+						for (var key in _this.form) {
+							delete _this.form[key];
+							console.log("111")
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.FaqQuestionsDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.FaqQuestionsDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			}
+
 		}
 	}
 </script>
 
 <style>
-	.mianboby {
+/* 	.mianboby {
 		display: flex;
 		justify-content: space-between;
-
 	}
+
+	.answertext {
+		text-align: left;
+	} */
 </style>

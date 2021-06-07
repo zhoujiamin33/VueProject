@@ -21,22 +21,22 @@
 			</div>
 		</div>
 		<div class="mianbiao">
-			<el-table :data="tableData" border style="width: 100%">
-				<el-table-column fixed prop="id" label="" width="120px">
+			<el-table :data="tableData" border >
+				<el-table-column fixed prop="id" label="" width="50">
 				</el-table-column>
-				<el-table-column fixed prop="usernumber" label="用户编号" width="120px">
+				<el-table-column prop="usernumber" label="用户编码" width="">
 				</el-table-column>
-				<el-table-column prop="name" label="姓名" width="230px">
+				<el-table-column prop="name" label="姓名" width="">
 				</el-table-column>
-				<el-table-column prop="six" label="性别" width="485px">
+				<el-table-column prop="six" label="性别" width="100">
 				</el-table-column>
-				<el-table-column prop="department" label="部门" width="484px">
+				<el-table-column prop="department" label="部门" width="">
 				</el-table-column>
-				<el-table-column prop="position" label="职位" width="484px">
+				<el-table-column prop="position" label="职位" width="">
 				</el-table-column>
-				<el-table-column prop="state" label="状态" width="484px">
+				<el-table-column prop="state" label="状态" width="">
 				</el-table-column>
-				<el-table-column prop="company" label="所属公司" width="484px">
+				<el-table-column prop="company" label="所属公司" width="300">
 				</el-table-column>
 
 			</el-table>
@@ -69,6 +69,12 @@
 				}, {
 					value: '选项3',
 					label: '技术部'
+				}, {
+					value: '选项4',
+					label: '行政部'
+				}, {
+					value: '选项5',
+					label: '招生部'
 				}],
 				kssy: [{
 					value: '选项1',
