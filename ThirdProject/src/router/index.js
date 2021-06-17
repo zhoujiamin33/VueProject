@@ -32,7 +32,7 @@ import usersetting from '../components/basicData/UserSettings.vue'
 
 
 //招生管理
-import consultaionregistration from '../components/enroll/ConsultationRegistration.vue'
+import consultaion from '../components/enroll/Consultation.vue'
 import workhandover from '../components/enroll/WorkHandover.vue'
 import faq from '../components/enroll/FAQinterlocution.vue'
 import channelmaintenance from '../components/enroll/ChannelMaintenance.vue'
@@ -89,7 +89,7 @@ const routes=[
 	{path:'/returnmoney',component:returnmoney},
 	{path:'/classtype',component:classtype},
 	{path:'/course',component:course},
-	{path:'/consultaionregistration',component:consultaionregistration},
+	{path:'/consultaion',component:consultaion},
 	{path:'/workhandover',component:workhandover},
 	{path:'/faq',component:faq},
 	{path:'/channelmaintenance',component:channelmaintenance},

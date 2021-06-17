@@ -4,22 +4,18 @@
 			<div class="mianwbk" style="">
 				<b>快速索引：</b>
 				<el-select v-model="value" filterable placeholder="请选择">
-									<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
+					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
+					</el-option>
+				</el-select>
 				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
 				</el-input>
-				<span class="demonstration">&nbsp;<b>咨询时间:</b>&nbsp;</span>
-				<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期"
-					end-placeholder="结束日期">
-				</el-date-picker>
+
 			</div>
 
 			<div style="">
 				<el-button>查询</el-button>
+				<el-button @click="delWork">审批</el-button>
 
-				<el-button type="" @click="dialogFormVisible = true">新增</el-button>
-				<el-button>删除</el-button>
 				<div>
 					<el-dialog prop="theoryCenterId" :required="true" title="新增交接信息" v-model="dialogFormVisible">
 
@@ -46,27 +42,27 @@
 			</div>
 		</div>
 		<div>
-			<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style=""
-							@selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55">
+			<el-table ref="multipleTable" :data="WorkDate" tooltip-effect="dark" style=""
+				@selection-change="handleSelectionChange">
+				<el-table-column type="selection" width="55" 交接编号>
 				</el-table-column>
-				<el-table-column label="" width="50">
-					<template #default="scope">{{ scope.row.id }}</template>
+				<el-table-column prop="memorandumattachmentId" label="交接编号" width="100">
 				</el-table-column>
-				<el-table-column prop="handovermatters" label="交接事项" width="300">
+				<el-table-column prop="registerId" label="咨询登记编号" width="150">
 				</el-table-column>
 
-
-				<el-table-column prop="handoverperson" label="交接人" show-overflow-tooltip width="110px">
+				<el-table-column prop="zsexaminetime" label="招生审核时间" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="handovertime" label="交接时间" show-overflow-tooltip>
+				<el-table-column prop="jwisexamine" label="招生审核状态">
+					<template v-slot="scope">
+						<p v-if="scope.row.jwisexamine==0">未审核</p>
+						<p v-if="scope.row.jwisexamine==1">已审核</p>
+					</template>
 				</el-table-column>
-				<el-table-column prop="numberofreplies" label="回复次数" show-overflow-tooltip>
-				</el-table-column>
-				<el-table-column prop="state" label="状态" show-overflow-tooltip>
+				<el-table-column prop="zsexaminename" label="招生审核人员" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" width="100">
-					<el-button type="text" @click="reply = true">回复</el-button>
+					<el-button type="text" @click="reply = true">招生审批</el-button>
 				</el-table-column>
 			</el-table>
 
@@ -225,59 +221,13 @@
 					label: '北京烤鸭'
 				}],
 				value: '',
-				shortcuts: [{
-					text: '最近一周',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近一个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近三个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-						return [start, end]
-					})(),
-				}],
+
 				value1: '',
 				value2: '',
 				dialogTableVisible: false,
 				dialogFormVisible: false,
-				form: {
-					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: ''
-				},
-				formLabelWidth: '120px',
-				dialogTableVisible: false,
-				reply: false,
-				form: {
-					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: ''
-				},
-				returnvisit: false,
+				multipleSelection: [],
+				WorkDate: [],
 				form: {
 					name: '',
 					region: '',
@@ -289,45 +239,6 @@
 					desc: ''
 				},
 
-
-
-
-				tableData: [{
-					id: '1',
-					handovermatters: '2020-01-05',
-					handoverperson: '阿萨大',
-					handovertime: '男',
-					numberofreplies: '2',
-					state: '正常'
-				}, {
-					id: '2',
-					handovermatters: '2020-01-05',
-					handoverperson: '阿萨大',
-					handovertime: '男',
-					numberofreplies: '2',
-					state: '正常'
-				}, {
-					id: '3',
-					handovermatters: '2020-01-05',
-					handoverperson: '阿萨大',
-					handovertime: '男',
-					numberofreplies: '2',
-					state: '正常'
-				}, {
-					id: '4',
-					handovermatters: '2020-01-05',
-					handoverperson: '阿萨大',
-					handovertime: '男',
-					numberofreplies: '2',
-					state: '正常'
-				}, {
-					id: '5',
-					handovermatters: '2020-01-05',
-					handoverperson: '阿萨大',
-					handovertime: '男',
-					numberofreplies: '2',
-					state: '正常'
-				}],
 				ruleForm: {
 					jjsx: '',
 					jjr: '',
@@ -384,7 +295,66 @@
 					hfjmname: '王小虎'
 				}]
 			}
+		},
+		methods: {
+			handleSelectionChange(val) {
+				this.multipleSelection = [];
+				this.multipleSelection = val;
+				console.log(val + "--------------")
+			},
+			//招生审批
+			delWork() {
+				const _this = this
+				this.$confirm('确定要审核该学员吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.multipleSelection.forEach(item => {
+						console.log(item)
+						this.axios.put("http://localhost:8089/threeproject//Spzszt/" + item
+								.memorandumattachmentId)
+							.then(function(response) {
+								_this.axios.get(
+										"http://localhost:8089/threeproject/findAllMemorandumattachment"
+										)
+									.then(function(response) {
+										_this.WorkDate = response.data
+										console.log(response)
+									}).catch(function(error) {
+										console.log(error)
+									})
+								var Work = response.data
+								console.log("response内容:")
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '已取消审批'
+					});
+				});
+			},
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
+				.then(function(response) {
+					_this.WorkDate = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
 		}
+
+
+
+
+
+
 
 	};
 </script>

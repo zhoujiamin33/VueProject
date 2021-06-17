@@ -52,7 +52,7 @@
 					<template #default="scope">
 						<!-- #default="scope"  作用域插槽 -->
 						<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
-						<el-button type="text" size="small" @click="delDept(scope.row)">删除</el-button>
+						<!-- <el-button type="text" size="small" @click="delDept(scope.row)">删除</el-button> -->
 					</template>
 				</el-table-column>
 			</el-table>

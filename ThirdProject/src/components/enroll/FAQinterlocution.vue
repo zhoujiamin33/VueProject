@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="mianboby">
-			<div class="mianwbk" >
+			<div class="mianwbk">
 				<b>快速索引：</b>
 				<el-select v-model="value" filterable placeholder="问题">
 					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
@@ -12,9 +12,51 @@
 
 			</div>
 			<div>
-				<el-button>查询</el-button>
-				<el-button type="" @click="dialogFormVisible = true">新增</el-button>
-				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible">
+				<el-button @click="dialogFormVisible= true">管理</el-button>
+				<el-dialog title="FAQ问答管理" :data="FaqQuestionsDate" v-model="dialogFormVisible">
+					<el-form :inline="true" :model="form" class="demo-ruleForm">
+				<el-button type="" @click="dialogFormVisible2 = true">新增</el-button>
+
+						<el-button @click="delReturnvisit" style="margin-left: 600px;">删除</el-button>
+						<div>
+							<el-form :inline="true" :model="form" class="demo-ruleForm">
+								<el-table :data="FaqQuestionsDate" stripe style="width: 100%"
+									@selection-change="handleSelectionChange2" @filter-change="filterChange">
+									<el-table-column type="" width="45">
+									</el-table-column>
+									<el-table-column prop="" label="ID" width="80px">
+									</el-table-column>
+									<el-table-column prop="form.problem" label="问题" width="160px">
+									</el-table-column>
+									<el-table-column prop="form.answer" label="回答">
+									</el-table-column>
+
+								</el-table>
+							</el-form>
+
+						</div>
+
+						<div style="display: flex; justify-content: space-between; margin-top: 40px;">
+							<el-form-item label="新增问题 :" prop="">
+								<el-input v-model="" style="width: 200px;"></el-input>
+							</el-form-item>
+							<el-form-item label="新增回答 :" prop="">
+								<el-input v-model="" style="width: 200px;"></el-input>
+							</el-form-item>
+						</div>
+
+					</el-form>
+
+					<template #footer>
+						<span class="dialog-footer">
+							<el-button type="primary" @click="addReturnvisit">保存</el-button>
+							<el-button @click="modify = false">取 消</el-button>
+						</span>
+					</template>
+				</el-dialog>
+
+
+				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible2">
 					<el-form :model="form">
 						<el-form-item label="FAQ问题:" :label-width="formLabelWidth">
 							<el-input v-model="form.problem" autocomplete="off"></el-input>
@@ -38,18 +80,17 @@
 						</span>
 					</template>
 				</el-dialog>
-
+				<!-- 
 				<el-popconfirm title="这是一段内容确定删除吗？">
 					<template #reference>
 						<el-button style="margin-left: 10px;">删除</el-button>
 					</template>
-				</el-popconfirm>
+				</el-popconfirm> -->
 
 			</div>
 		</div>
 		<div>
-			<el-collapse :data="FaqQuestionsDate" 
-				style="" v-for="item in FaqQuestionsDate">
+			<el-collapse :data="FaqQuestionsDate" style="" v-for="item in FaqQuestionsDate">
 				<!-- <el-checkbox v-model="checked"></el-checkbox> -->
 				<el-collapse-item name="1" :title="item.problem">
 					<div class="answertext">{{item.answer}}</div>
@@ -116,13 +157,13 @@
 
 		created() {
 			const _this = this
-			// this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
-			// 	.then(function(response) {
-			// 		_this.FaqQuestionsDate = response.data
-			// 		console.log(response)
-			// 	}).catch(function(error) {
-			// 		console.log(error)
-			// 	})
+			this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+				.then(function(response) {
+					_this.FaqQuestionsDate = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
 			this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
 					params: this.pageInfo
 				})
@@ -136,9 +177,28 @@
 
 		},
 		methods: {
-			
+
 			handleClick(row) {
 				console.log(row);
+			},
+			showEdit(row) {
+				console.log(row);
+				this.form.planreturnvisit = row.planreturnvisit;
+				this.form.courseName = row.courseName;
+				this.form.registerId = row.registerId;
+				this.form.courseId = row.courseId;
+				this.form.consultant = row.consultant;
+				this.form.sex = row.sex;
+				this.form.sourceId = row.sourceId;
+				this.form.attentstate = row.attentstate;
+				this.form.consultationmode = row.consultationmode
+				this.form.timeliness = row.timeliness
+				this.form.addname = row.addname
+				this.form.consultcontent = row.consultcontent
+				this.form.phone = row.phone
+				this.form.paystate = row.paystate
+
+				this.dialogFormVisible2 = true
 			},
 			addFaqQuestions() {
 				const _this = this
@@ -147,7 +207,7 @@
 						console.log(response)
 						var faq_questions = response.data
 						_this.FaqQuestionsDate.push(faq_questions)
-						_this.dialogFormVisible = false
+						_this.dialogFormVisible2 = false
 						for (var key in _this.form) {
 							delete _this.form[key];
 							console.log("111")
@@ -168,7 +228,8 @@
 						_this.FaqQuestionsDate = response.data.list
 					}).catch(function(error) {
 						console.log(error)
-					})
+					})
+
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
@@ -191,7 +252,7 @@
 </script>
 
 <style>
-/* 	.mianboby {
+	/* 	.mianboby {
 		display: flex;
 		justify-content: space-between;
 	}
