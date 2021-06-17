@@ -1,144 +1,234 @@
 <template>
-	<!-- 职位 -->
-		<div class="mian">
-				<div class="mainbody" style="width: 100%;">
-					<span style="margin-top: 10px;width: 90px;">快速检索：</span>
-						<el-select v-model="select">
-							<el-option label="职位名称" value="1" ></el-option>
-							<el-option label="职位描述" value="2"></el-option>
-						</el-select>
-			
-						<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
-							@clear="serchVal">
-						
-						</el-input>
-						<el-button><i class="el-icon-search"></i></el-button>
-				</div>
-				<div style="margin-bottom: 30px;">
-					<el-button @click="dialogFormVisible=true">新增</el-button>
-				</div>
-				
-			
-				<el-table :data="tableData" border>
-					<el-table-column prop="deptId" label="Id">
-					</el-table-column>
-					<el-table-column prop="deptName" label="职位名称">
-					</el-table-column>
-					<el-table-column prop="ms" label="职位描述">
-					</el-table-column>
-				</el-table>
-			
-				<div class="block">
-					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-						:current-page="pageInfo.currentPage" :page-sizes="[2, 3, 6, 10]" :page-size="pageInfo.pagesize"
-						layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
-					</el-pagination>
-				</div>
-			</div>
-			<el-dialog title="新增学员" v-model="dialogFormVisible">
-				<el-form :model="addForm" :inline="true" :rules="rules" ref="addForm">
-					<el-form-item label="职位名称:" prop="studentName" label-width="90px" required>
-						<el-input v-model="addForm.deptName"></el-input>
-					</el-form-item>
-					<el-form-item label="职位描述:" prop="sex" label-width="90px">
-						<el-input v-model="addForm.describe"></el-input>
-					</el-form-item>
-					<el-form-item label="职位职责:" prop="sex" label-width="90px">
-						<el-input v-model="addForm.duty"></el-input>
-					</el-form-item>
-				</el-form>
-				<template #footer>
-					<span class="dialog-footer">
-						<el-button @click="dialogFormVisible = false">取 消</el-button>
-						<el-button type="primary" @click="Addstudent">确 定</el-button>
-					</span>
-				</template>
-			</el-dialog>
-		</template>
-		
-		<script>
-			export default {
-				data() {
-					return {
-						select: "",
-						//用户列表
-						// {id:1,schoolName:"大河东",AddTime:"2020-02-03",StudentName:"小红",address:"地点",phone:"18985748576",State:"是"}
-						tableData: [],
-						//请求用户列表的参数
-						pageInfo: {
-							query: '',
-							currentPage: 1,
-							pagesize: 3,
-							total: 0
-						},
-						addForm:{
-							deptName:'',
-							describe:'',
-							duty:''
-						},
-						 dialogFormVisible: false,
-						 dialogFormupdate:false,
-						      
-					}
-				},
-				methods: {
-					getstudentList() {
-		
-					},
-					 open() {
-					        this.$confirm('确定要对选择办理退卡吗?', '提示', {
-					          confirmButtonText: '确定',
-					          cancelButtonText: '取消',
-					          type: 'warning'
-					        }).then(() => {
-					          this.$message({
-					            type: 'success',
-					            message: '办理成功!'
-					          });
-					        }).catch(() => {
-					          this.$message({
-					            type: 'info',
-					            message: '已取消办理'
-					          });
-					        });
-					      }
-				},
-				created() {
-					const _this = this;
-					this.axios.get("http://localhost:8089/student/findstudent")
-						.then(function(response) {
-							_this.tableData = response.data
-							console.log(response)
-						}).catch(function(error) {
-							console.log(error)
-						})
-				}
-			}
-		</script>
-		
-		<style>
-			.mian {
-				margin: 0px;
-				padding: 0px;
-			}
-		
-			.mainbody {
-				font-size: 20px;
-				padding: 10px 0;
-				/* margin-right: 320px; */
-		
-			}
-		
-			.block {
-				/* position: relative; */
-				align-items: center;
-				margin-left: 30%;
-			}
-			span{
-				font-size: 12px;
-				font-weight: 400;
-			}
-		</style>
-		
+	<div style="float: left;width: 25%;height: 100%;">
+		<span>部门</span>
+
+		<el-tree :data="Data1" :props="defaultProps" @node-click="handleNodeClick"   show-checkbox></el-tree>
 	
 
+	</div>
+	<div style="float:right;width: 74%;height: 100%;">
+		<div style="margin-bottom: 30px;">
+			
+			<el-button @click="AddDept" v-show="!form.show">保存</el-button>
+			<div v-show="form.show">
+			 <el-button @click="show()">新增</el-button>
+			<el-button @click="updatedept">保存</el-button>
+			 <el-button @click="delDept(Data1)">删除</el-button>
+			</div>
+			
+		</div>
+			
+			
+				<el-form ref="form" :model="form" label-width="90px" :inline="true" style="width: 100%;text-align: center;margin-top: 50px;">
+				  <el-form-item label="编码:"  style="display: none;">
+				    <el-input v-model="form.deptId" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  <el-form-item label="部门编码:" required >
+				    <el-input v-model="form.deptSortnumber" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  <el-form-item label="部门名称:" required style="margin-left: 20px;">
+				    <el-input v-model="form.deptName" style="width: 220px;" ></el-input>
+				  </el-form-item>
+				  <el-form-item label="上级部门:" required>
+				    <el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
+				    	<el-option label="总经理" value="1"></el-option>
+				    	<el-option label="销售部门" value="2"></el-option>
+				    	<el-option label="常规部门" value="3"></el-option>
+				    </el-select>
+				  </el-form-item>
+				  <el-form-item label="部门负责人:" style="margin-left: 20px;">
+				    <el-input v-model="form.positionfzr" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  <el-form-item label="部门电话:" >
+				    <el-input v-model="form.positionphone" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  <el-form-item label="部门传真:" style="margin-left: 20px;" >
+				    <el-input v-model="form.positioncz" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  <el-form-item label="部门类型:" >
+				    <el-select v-model="form.positiontype" placeholder="请选择" style="width: 220px;">
+				    	<el-option label="客服部门" value="1"></el-option>
+				    	<el-option label="销售部门" value="2"></el-option>
+						<el-option label="常规部门" value="3"></el-option>
+				    </el-select>
+				  </el-form-item>
+				  <el-form-item label="备注:" style="margin-left: 20px;">
+				    <el-input v-model="form.beizhu" style="width: 220px;"></el-input>
+				  </el-form-item>
+				  </el-form>
+				  </div>
+				  
+				 
+</template>
+
+<script>
+	export default{
+		data(){
+			return{
+				form:{
+					deptId:'',
+					deptSortnumber:'',
+					deptName:'',
+					superiorsDeptId:'',
+					positionfzr:'',
+					positionphone:'',
+					positioncz:'',
+					positiontype:'',
+					beizhu:'',
+					show:false
+				},
+				Data1: [],
+				
+        defaultProps: {
+          children: 'children',
+          label: 'deptName'
+        }
+			}
+		},
+		 methods: {
+			  // 点击进入显示该内容
+		      handleNodeClick(Data1) {
+		        this.form.deptSortnumber=Data1.deptSortnumber
+		        this.form.deptName=Data1.deptName
+		        this.form.superiorsDeptId=Data1.superiorsDeptId
+		        this.form.positionfzr=Data1.positionfzr
+		        this.form.positionphone=Data1.positionphone
+		        this.form.positioncz=Data1.positioncz
+		        this.form.positiontype=Data1.positiontype
+		        this.form.beizhu=Data1.beizhu
+				this.form.deptId=Data1.deptId
+				 this.form.show=true
+		      },
+			  show(){
+				 this.form={
+				 	deptId:'',
+				 	deptSortnumber:'',
+				 	deptName:'',
+				 	superiorsDeptId:'',
+				 	positionfzr:'',
+				 	positionphone:'',
+				 	positioncz:'',
+				 	positiontype:'',
+				 	beizhu:'',
+				 	show:false
+				 }
+				
+			  },
+			  AddDept(){
+				  const _this = this
+				 
+				  this.axios.post("http://localhost:8089/threeproject/dept", this.form)
+				  .then(function(response) {
+				  	console.log(response)
+				  	var dept=response.data
+				  	_this.Data1.push(dept)
+				_this.form={
+					deptSortnumber:'',
+					deptName:'',
+					superiorsDeptId:'',
+					positionfzr:'',
+					positionphone:'',
+					positioncz:'',
+					positiontype:'',
+					beizhu:''
+				}
+				  }).catch(function(error) {
+				  	console.log(error)
+				  })
+			  },
+			 
+			  updatedept(){
+				  const _this = this
+				    this.axios.put("http://localhost:8089/threeproject/dept", this.form)
+				    .then(function(response) {
+				    	console.log(response)
+				    	var dept=response.data
+				    	var row=_this.Data1.filter(d=>d.deptSortnumber==dept.deptSortnumber)[0]
+				    	row.deptSortnumber=dept.deptSortnumber
+				    	row.deptName=dept.deptName
+				    	row.superiorsDeptId=dept.superiorsDeptId
+				    	row.positionfzr=dept.positionfzr
+				    	row.positionphone=dept.positionphone
+				    	row.positioncz=dept.positioncz
+				    	row.positiontype=dept.positiontype
+				    	row.beizhu=dept.beizhu
+						row.deptId=dept.deptId
+				  _this.form={
+					  
+				  	deptSortnumber:'',
+				  	deptName:'',
+				  	superiorsDeptId:'',
+				  	positionfzr:'',
+				  	positionphone:'',
+				  	positioncz:'',
+				  	positiontype:'',
+				  	beizhu:''
+				  }
+				    }).catch(function(error) {
+				    	console.log(error)
+				    })
+
+			  },
+			  delDept(Data1) {
+			  				const _this = this
+			  				var flag=true
+			  				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+			  				          confirmButtonText: '确定',
+			  				          cancelButtonText: '取消',
+			  				          type: 'warning'
+			  				        }).then(() => {
+			  							_this.axios.put("http://localhost:8089/threeproject/dept/"+_this.form.deptId)
+			  								.then(function(response) {
+			  									var dept = response.data
+			  									var rows = _this.Data1
+			  										.filter(d => d.deptId != dept.deptId)
+			  									console.log("del rows:%o",rows)
+			  									_this.Data1=rows
+												_this.form={
+																	  
+													deptSortnumber:'',
+													deptName:'',
+													superiorsDeptId:'',
+													positionfzr:'',
+													positionphone:'',
+													positioncz:'',
+													positiontype:'',
+													beizhu:''
+												}
+											_this.axios.get("http://localhost:8089/threeproject/findalldept")
+												.then(function(response) {
+													_this.Data1 = response.data
+													console.log(response)
+												}).catch(function(error) {
+													console.log(error)
+												})
+			  								}).catch(function(error) {
+												
+			  									console.log(error)
+			  								})
+			  				        }).catch(() => {
+			  							this.$message({
+			  							  type: 'error',
+			  							  message: '取消删除!'
+			  							});
+			  				        });	
+			  			}
+		    },
+			created() {
+				const _this = this;
+			this.axios.get("http://localhost:8089/threeproject/findalldept")
+				.then(function(response) {
+					_this.Data1 = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			}
+			
+		
+	}
+</script>
+
+<style>
+
+</style>

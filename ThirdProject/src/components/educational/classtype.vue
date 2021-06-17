@@ -231,10 +231,19 @@ export default{
 			  const _this=this
 			  this.axios.post("http://localhost:8089/threeproject/addcoursetype",this.form)
 			  .then(function(response){
-				  console.log(response)
-				  var classtype=response.data
-				  _this.tableData.push(classtype)
+				  _this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo})
+				  .then(function(response) {
+				  	console.log(response)
+				  	_this.tableData=response.data.list
+				  	_this.pageInfo.total = response.data.total
+				  }).catch(function(error) {
+				  	console.log(error)
+				  })
+				  // console.log(response)
+				  // var classtype=response.data
+				  // _this.tableData.push(classtype)
 				 _this.dialogFormVisible=false
+				 _this.form=[]
 				 ElMessage.success({
 				    message: '新增成功',
 				    type: 'success'

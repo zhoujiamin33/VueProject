@@ -197,9 +197,6 @@
 		defineComponent,
 		ref
 	} from 'vue'
-
-
-
 	export default {
 		setup() {
 			return {
@@ -288,10 +285,6 @@
 					resource: '',
 					desc: ''
 				},
-
-
-
-
 				tableData: [{
 					id: '1',
 					handovermatters: '2020-01-05',
@@ -333,7 +326,6 @@
 					jjr: '',
 					delivery: false,
 					type: [],
-
 				},
 				rules: {
 					jjsx: [{
@@ -358,15 +350,12 @@
 						message: '长度在 3 到 5 个字符',
 						trigger: 'blur'
 					}]
-
-
 				},
 				hfjmtableData: [{
 					hfjmid: '1',
 					hfjmdate: '2016-05-02',
 					hfnr: '阿巴斯u弟弟撒v',
 					hfjmname: '王小虎'
-
 				}, {
 					hfjmid: '2',
 					hfjmdate: '2016-05-02',
@@ -385,7 +374,6 @@
 				}]
 			}
 		}
-
 	};
 </script>
 

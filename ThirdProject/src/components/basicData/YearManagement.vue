@@ -126,7 +126,6 @@
 						console.log("-----------3")
 						row.addname = session.addname
 						_this.dialogFormVisible2 = false
-
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -166,9 +165,7 @@
 						console.log(error)
 					})
 			}
-
 		},
-
 		created() {
 			const _this = this
 			// this.axios.get("http://localhost:8089/threeproject/findSessions")
@@ -188,7 +185,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
 		}
 	}
 </script>
@@ -199,7 +195,6 @@
 		justify-content: flex-end;
 		/* align-content: center; */
 	}
-
 	/* .el-table th>.cell {
 	    display: inline-block;
 	    box-sizing: border-box;

@@ -285,9 +285,9 @@
 		width: 100%;
 	}
 
-	.el-main {
+	/* .el-main {
 		color: #333;
-	}
+	} */
 
 	.is-vertical {}
 

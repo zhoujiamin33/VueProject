@@ -106,14 +106,12 @@
 				formLabelWidth: '120px',
 				value: '',
 				activeName: '1',
-
 				// form: {
 				// 	faqwt: ''
 				// },
 				// formLabelWidth: '120px'
 			};
 		},
-
 		created() {
 			const _this = this
 			// this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
@@ -133,7 +131,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
 		},
 		methods: {
 			
@@ -168,7 +165,7 @@
 						_this.FaqQuestionsDate = response.data.list
 					}).catch(function(error) {
 						console.log(error)
-					})
+					})
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
@@ -185,7 +182,6 @@
 						console.log(error)
 					})
 			}
-
 		}
 	}
 </script>
@@ -195,7 +191,6 @@
 		display: flex;
 		justify-content: space-between;
 	}
-
 	.answertext {
 		text-align: left;
 	} */

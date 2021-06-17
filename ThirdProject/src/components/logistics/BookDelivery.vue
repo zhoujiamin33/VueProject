@@ -1,175 +1,424 @@
 <template>
 	<div>
-		<div class="a" style="margin-left: -320px;">
-			<b class="b" style="font-size: 15px;">快速检索：</b>
-			<el-select style="" v-model="value" placeholder="请选择">
+		<div class="a">
+			<b class="b" style="font-size: 15px;margin-left: -582px;">快速检索：</b>
+			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			</el-select>
 			<el-input style="width: 180px;" v-model="input" placeholder="请输入内容" clearable></el-input>
 			<el-button style="float:right;margin-left: 10px;">删除</el-button>
-			<el-button style="float:right">销售开单</el-button>
+			<el-button style="float:right" @click="xskd=true">销售开单</el-button>
 			<el-button style="float:right">查询</el-button>
+
+			<!-- 新增 -->
+			<el-dialog title="销售开单" v-model="xskd">
+				<el-form :model="form" label-width="80px" size="mini">
+					<el-button @click="a()" style="margin-left: 590px;margin-bottom: 5px;" size="small">添加教材</el-button>
+					<el-form-item>
+						<el-table :data="tableData1" border style="width: 100%;margin-left: -40px;" max-height="600">
+							<el-table-column prop="course.bookname" label="出售教材" align="center">
+							</el-table-column>
+							<el-table-column prop="course.booksprice" label="教材售价" align="center">
+					 		</el-table-column>
+							<el-table-column prop="course.deliverycount" label="出售数量" align="center">
+							</el-table-column>
+							<el-table-column prop="course.receivablemoney" label="应收金额" align="center">
+							</el-table-column>
+							<el-table-column fixed="right" label="操作" width="150" align="center">
+								<template #default="scope">
+									<el-button @click="delCourserecorddetails(scope.row)" type="text" size="small">删除</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+
+					</el-form-item>
+					<el-form-item>
+						<b style="margin-left: -80px;">购选教材结算信息</b>
+					</el-form-item>
+					<el-form-item label="销售单号: ">
+						<el-input style="width: 260px;margin-left: -60px;" v-model="form.salenumber" clearable></el-input>
+						<b style="font-weight: 400;margin-left: 20px;">合计金额：</b>
+						<el-input style="width: 260px;" disabled v-model="price" clearable></el-input>
+					</el-form-item>
+					<el-form-item label="经办人: ">
+						<el-input style="width: 260px;margin-left: -60px;" v-model="form.empName" clearable></el-input>
+						<b style="font-weight: 400;margin-left: 36px;">购买者：</b>
+						<el-input style="width: 260px;" v-model="form.studentName" clearable></el-input>
+					</el-form-item>
+				</el-form>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button style="margin-left: -100px;" type="primary" @click="addDeliveryddetails">保 存</el-button>
+						<el-button @click="xskd=false">关 闭</el-button>
+					</span>
+				</template>
+			</el-dialog>
+
+
+			<el-dialog title="选择教材" width="47%" v-model="xskd1">
+				<el-form :model="form1" label-width="80px" size="mini">
+					<el-form-item label="出售教材 :">
+						<el-select style="margin-left: -442px;" v-model="form1.book.bookId" placeholder="请选择" autocomplete="off" @change="selectbooksprice()">
+							<el-option v-for="item in bookdata" :key="item.bookId" :label="item.bookname" :value="item.bookId" />
+						</el-select>
+					</el-form-item>
+					<el-form-item label="教材售价 :">
+						<el-input style="width: 193px;margin-left: -442px;" disabled v-model="bookdata.booksprice" clearable></el-input>
+					</el-form-item>
+					<el-form-item label="出售数量 :">
+						<el-input style="width: 193px;margin-left: -442px;" v-model="form1.course.deliverycount" clearable></el-input>
+					</el-form-item>
+
+				</el-form>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button style="margin-left: -100px;" type="primary" @click="showEdit">保 存</el-button>
+						<el-button @click="xskd1=false">关 闭</el-button>
+					</span>
+				</template>
+			</el-dialog>
+
+
 		</div>
-		<div style="width: 81%; margin-left: 230px;margin-top: 50px;">
-			<el-table :data="tableData"  stripe border style="width: 100%">
-				<el-table-column type="index" width="50" align="center"> </el-table-column>
-				<el-table-column type="selection"  width="50" align="center"> </el-table-column>
-				<el-table-column prop="xsbh"  label="销售编号" width="180" align="center"></el-table-column>
-				<el-table-column prop="date" label="销售日期" width="540" align="center"> </el-table-column>
-				<el-table-column prop="jcmc" label="教材名称" align="center"> </el-table-column>
-				<el-table-column prop="sl" label="数量" align="center"> </el-table-column>
-				<el-table-column prop="sj" label="售价"  align="center"> </el-table-column>
-				<el-table-column prop="zk" label="折扣" align="center"> </el-table-column>
-				<el-table-column prop="hj" label="合计" align="center"> </el-table-column>
-				<el-table-column prop="xq"  label="校区" align="center" width="100"> </el-table-column>
-				<el-table-column  prop="gmz" label="购买者" align="center" width="100"> </el-table-column>
-			    <el-table-column  prop="kcgw" label="课程顾问" align="center" width="100"> </el-table-column>
-				<el-table-column prop="lrr" label="录入人" align="center" width="100"> </el-table-column>
+		<div>
+			<el-table :data="tableData" stripe border style="width: 100%">
+				<el-table-column prop="bookdelivery.bookdeliveryId" width="50" align="center">
+				</el-table-column>
+				<el-table-column type="selection" width="50" align="center">
+				</el-table-column>
+				<el-table-column prop="bookdelivery.salenumber" label="销售编号" align="center" width="80px">
+				</el-table-column>
+				<el-table-column prop="bookdelivery.deliverytime" label="销售日期" align="center" width="170px">
+				</el-table-column>
+				<el-table-column prop="book.bookname" label="教材名称" align="center">
+				</el-table-column>
+				<el-table-column prop="deliverycount" label="数量" align="center">
+				</el-table-column>
+				<el-table-column prop="book.booksprice" label="售价" align="center">
+				</el-table-column>
+				<el-table-column prop="bookdelivery.tota" label="合计" align="center">
+				</el-table-column>
+				<el-table-column prop="student.studentName" label="购买者" align="center">
+				</el-table-column>
+				<el-table-column prop="emp.empName" label="录入人" align="center">
+				</el-table-column>
+				<el-table-column fixed="right" label="操作" width="150" align="center">
+					<template #default="scope">
+						<el-button type="text" size="small" @click="deldeliveryDdetails(scope.row)">删除</el-button>
+					</template>
+				</el-table-column>
 			</el-table>
+			<div>
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
+				 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+				</el-pagination>
+			</div>
 		</div>
-		<div style="font-size: 15px;">
-			<b>当日销售收入：</b>
-			<span></span>
-			<b>元</b>
-			<span>|</span>
-			<b>当日销售：</b>
-			<span></span>
-			<b>本</b>
-			<span>|</span>
-			<b>共销售：</b>
-			<span></span>
-			<b>本</b>
-		</div>
+
 	</div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-export default{
-	name:"BookDelivery",
-	setup() {
-		return {
-		input: ref('')
-		}
-	},
-	data() {
-		return {
-		    options: [{
-		    value: '选项1',
-		    label: '校区'
-		}, {
-		    value: '选项2',
-		    label: '教材名'
-		}, {
-		    value: '选项3',
-		    label: '课程顾问'
-		}, {
-		    value: '选项4',
-		    label: '购买者'
-		}],
-		value: '',
-		tableData: [{
-			xsbh: '北大分校区',
-			date: '丹朱围棋教学习题册',
-			jcmc: '0.01',
-			sl: '45.25',
-			sj: '123',
-			zk: '1231',
-			hj: '123',
-			xq: '青岛出版社',
-			gmz: 'TSM管理员',
-			kcgw: 'adda',
-			lrr: 'ddsd'	         
-			},{
-			xsbh: '北大分校区',
-			date: '丹朱围棋教学习题册',
-			jcmc: '0.01',
-			sl: '45.25',
-			sj: '123',
-			zk: '1231',
-			hj: '123',
-			xq: '青岛出版社',
-			gmz: 'TSM管理员',
-			kcgw: 'adda',
-			lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			},{
-			  xsbh: '北大分校区',
-			  date: '丹朱围棋教学习题册',
-			  jcmc: '0.01',
-			  sl: '45.25',
-			  sj: '123',
-			  zk: '1231',
-			  hj: '123',
-			  xq: '青岛出版社',
-			  gmz: 'TSM管理员',
-			  kcgw: 'adda',
-			  lrr: 'ddsd'
-			}],	       
-		        
-		}
+	import qs from "qs"
+	import {
+		defineComponent,
+		ref
+	} from 'vue'
+	export default {
+		name: "BookDelivery",
+		setup() {
+			return {
+				input: ref(''),
+				input1: ref('')
+			}
+		},
+		data() {
+			return {
+				pageInfo: {
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
+				options: [{
+					value: '选项1',
+					label: '教材名'
+				}, {
+					value: '选项2',
+					label: '课程顾问'
+				}, {
+					value: '选项3',
+					label: '购买者'
+				}],
+				value: '',
+				receipts: 0,
+				tableData: [],
+
+				xskd: false,
+
+				bookdata: [],
+
+				tableData1: [],
+				form1: {
+					book: {},
+					course: {}
+				},
+				form: {
+					bookdeliveryId: "",
+					studentId: "",
+					studentName: "",
+					bookId: "",
+					bookname: "",
+					empId: "",
+					empName: "",
+					tota: "",
+					salenumber: "",
+					deliverytime: "",
+					
+					deliverycount: "",
+					receivablemoney: "",
+					booksprice: ""
+				},
+
+				xskd1: false,
+			}
+		},
+		methods: {
+			// deleteRow(index, rows) {
+			// 	rows.splice(index, 1);
+			// },
+			// delCourserecorddetails(row) {
+			// 	this.CourserecorddetailsData.splice(this.CourserecorddetailsData.indexOf(row), 1)
+			// },
+			a() {
+				this.xskd1 = true;
+				this.selectAllBooks();
+			},
+			selectbooksprice() {
+				var _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectbooksprice/" + this.form1.book.bookId)
+					.then(function(response) {
+						console.log(response)
+						_this.bookdata = response.data
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			showEdit() {
+				var courserecorddetails = {
+					course: {
+						bookname: "",
+						booksprice: 0,
+						deliverycount: "",
+						receivablemoney: 0,
+					},
+				};
+				courserecorddetails.course.bookname = this.bookdata.bookname
+				courserecorddetails.course.booksprice = this.bookdata.booksprice
+				courserecorddetails.course.deliverycount = this.form1.course.deliverycount
+				courserecorddetails.course.receivablemoney = this.bookdata.booksprice * this.form1.course.deliverycount
+				this.tableData1.push(courserecorddetails);
+				this.xskd1 = false
+			},
+
+
+			//增加
+			addDeliveryddetails() {
+				const _this = this
+				this.form.tota = this.receipts
+				this.form.bookId = this.form1.book.bookId
+				this.form.deliverycount = this.form1.course.deliverycount
+				this.form.receivablemoney = this.bookdata.booksprice * this.form1.course.deliverycount
+				this.axios.post("http://localhost:8089/threeproject/addDeliveryddetails", this.form,this.form2)
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/findPage4", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.add(_this.form)
+						_this.xskd = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+
+
+			},
+
+			// add() {
+			// 	const _this = this
+			// 	this.form.bookId = this.form1.book.bookId
+			// 	this.form.deliverycount = this.form1.course.deliverycount
+			// 	this.form.receivablemoney = this.bookdata.booksprice * this.form1.course.deliverycount
+			// 	console.log(this.receipts + "----------")
+			// 	this.axios.post("http://localhost:8089/threeproject/addDeliveryddetails", this.form)
+			// 		.then(function(response) {
+			// 			_this.axios.get("http://localhost:8089/threeproject/findPage4", {
+			// 					params: _this.pageInfo
+			// 				})
+			// 				.then(function(response) {
+			// 					_this.tableData = response.data.list
+			// 					_this.pageInfo.total = response.data.total
+			// 				}).catch(function(error) {
+			// 					console.log(error)
+			// 				})
+			// 			for (var key in _this.form) {
+			// 				delete _this.form[key]
+			// 			}
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
+
+
+
+			// addDeliveryddetails() {
+			// 	const _this = this
+			// 	this.axios.post("http://localhost:8089/threeproject/addBookdelivery", this.form)
+			// 		.then(function(response) { // eslint-disable-line no-unused-vars
+			// 			var c = response.data.data
+			// 			_this.bookdeliveryId = c.bookdeliveryId
+			// 			console.log(c.bookdeliveryId)
+
+			// 			_this.tableData1.forEach((item) => {
+			// 				//遍历courserecordId这个字段，并累加
+			// 				console.log(_this.bookdeliveryId);
+			// 				item.bookdeliveryId = _this.bookdeliveryId
+			// 			})
+
+			// 			_this.axios.post("http://localhost:8089/threeproject/addDeliveryddetails", _this
+			// 					.tableData1)
+			// 				.then(function(response) { // eslint-disable-line no-unused-vars
+			// 					_this.xskd = false
+			// 				}).catch(function(error) {
+			// 					console.log(error)
+			// 				})
+
+
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+
+
+			// },
+
+
+
+
+			//删除
+			deldeliveryDdetails(row) {
+				const _this = this
+				var flag = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.delete("http://localhost:8089/threeproject/deldeliveryDdetails/" + row.deliveryddetailsId)
+						.then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/findPage4", {
+									params: _this.pageInfo
+								})
+								.then(function(response) {
+									_this.tableData = response.data.list
+									_this.pageInfo.total = response.data.total
+								}).catch(function(error) {
+									console.log(error)
+								})
+							var deliveryDdetails = response.data
+							var rows = _this.tableData
+								.filter(t => t.deliveryddetailsId != row.deliveryddetailsId)
+							_this.tableData = rows
+							for (var key in _this.form) {
+								delete _this.form[key]
+							}
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
+			},
+
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPage4", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPage4", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			selectAllBooks() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectAllBook")
+					.then(function(response) {
+						console.log(response)
+						_this.bookdata = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}
+		},
+		computed: {
+			// 计算属性的 getter
+			price: { // eslint-disable-line no-unused-vars
+				get: function() {
+					let sum = 0;
+					this.tableData1.forEach((item) => {
+						//遍历prodAllPrice这个字段，并累加
+						sum += item.course.receivablemoney;
+					})
+					return sum
+				},
+				set: function(value) {
+					this.receipts = value; //最后修改了msg    
+				}
+			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findPage4", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+
 	}
-}
 </script>
 
 <style>
+
 </style>

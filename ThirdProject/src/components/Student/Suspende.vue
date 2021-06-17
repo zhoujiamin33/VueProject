@@ -21,24 +21,28 @@
 				</div>
 			</div>
 		
-			<el-table :data="tableData" border>
-				<el-table-column prop="studentId" label="Id">
+			<el-table :data="SuspendeData" border @selection-change="handleSelectionChange">
+				<el-table-column prop="suspendeId" label="Id">
 				</el-table-column>
 				<el-table-column type="selection">
 				</el-table-column>
-				<el-table-column prop="studytime" label="停课日期">
+				<el-table-column prop="suspendeTime" label="停课日期">
 				</el-table-column>
-				<el-table-column prop="studentName" label="学号">
+				<el-table-column prop="student.studentNumber" label="学号">
 				</el-table-column>
-				<el-table-column prop="address" label="姓名">
+				<el-table-column prop="student.studentName" label="姓名">
 				</el-table-column>
-				<el-table-column prop="studentPhone" label="班级名称">
+				<el-table-column prop="classes.classesName" label="班级名称">
 				</el-table-column>
-				<el-table-column prop="studentState" label="理由">
+				<el-table-column prop="suspendeReason" label="理由">
 				</el-table-column>
-				<el-table-column prop="studentState" label="经办人">
+				<el-table-column prop="suspendeHandler" label="经办人">
 				</el-table-column>
-				<el-table-column prop="studentState" label="状态">
+				<el-table-column prop="suspendeApproval" label="状态">
+					<template v-slot="scope">
+						<p v-if="scope.row.suspendeApproval==0">未审核</p>
+						<p v-if="scope.row.suspendeApproval==1">已审核</p>
+					</template>
 				</el-table-column>
 			</el-table>
 		
@@ -56,9 +60,7 @@
 			data() {
 				return {
 					select: "",
-					//用户列表
-					// {id:1,schoolName:"大河东",AddTime:"2020-02-03",StudentName:"小红",address:"地点",phone:"18985748576",State:"是"}
-					tableData: [],
+					SuspendeData: [],
 					//请求用户列表的参数
 					pageInfo: {
 						query: '',
@@ -66,32 +68,37 @@
 						pagesize: 3,
 						total: 0
 					},
-					addForm:{
-						name:'',
-						Student_Phone:'',
-						ParentName:'',
-						Entrance:'',
-						address:'',
-					},
-					 dialogFormVisible: false,
-					 dialogFormupdate:false,
+					chektable:[]//保存选择的选项
 					      
 				}
 			},
 			methods: {
-				getstudentList() {
-	
+				// 被复选框选中获取到的值
+				handleSelectionChange(row) {
+					console.log(row)
+					this.chektable = row;
 				},
 				tgsp() {
+					const _this=this
 					this.$confirm('确定要审批通过吗?', '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						this.$message({
-							type: 'success',
-							message: '审批通过!'
-						});
+						if (_this.chektable.length == 0) {
+							_this.$message({
+								showClose: true,
+								message: '请选择审批的学员!',
+								type: 'error'
+							});
+						} else {
+							var ids=_this.chektable.map(item =>item.suspendeId).join()
+								_this.updateapproval(ids)
+							_this.$message({
+								type: 'success',
+								message: '审批成功!'
+							});
+						}
 					}).catch(() => {
 						this.$message({
 							type: 'info',
@@ -100,29 +107,72 @@
 					});
 				},
 				del() {
+					const _this=this
 					this.$confirm('确定要删除该学员吗?', '提示', {
 						confirmButtonText: '确定',
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						this.$message({
-							type: 'success',
-							message: '删除成功!'
-						});
+						if (_this.chektable.length == 0) {
+							_this.$message({
+								showClose: true,
+								message: '请选择删除内容!',
+								type: 'error'
+							});
+						} else {
+							var ids=_this.chektable.map(item =>item.suspendeId).join()
+								_this.delsuspend(ids)
+							_this.$message({
+								type: 'success',
+								message: '删除成功!'
+							});
+						}
+						
 					}).catch(() => {
 						this.$message({
 							type: 'info',
 							message: '已取消删除'
 						});
 					});
+				},
+				//审批
+				updateapproval(suspendeId){
+					const _this = this;
+					this.axios.put("http://localhost:8089/threeproject/updateapproval/"+suspendeId)
+						.then(function(response) {
+							_this.showsupende()
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				},
+				//删除
+				delsuspend(suspendeId){
+					const _this = this;
+					this.axios.put("http://localhost:8089/threeproject/delsuspend/"+suspendeId)
+						.then(function(response) {
+							_this.showsupende()
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				},
+				showsupende(){
+					const _this = this;
+					this.axios.get("http://localhost:8089/threeproject/findAllsuspende")
+						.then(function(response) {
+							_this.SuspendeData= response.data
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
 				}
-				
 			},
 			created() {
 				const _this = this;
-				this.axios.get("http://localhost:8089/student/findstudent")
+				this.axios.get("http://localhost:8089/threeproject/findAllsuspende")
 					.then(function(response) {
-						_this.tableData = response.data
+						_this.SuspendeData= response.data
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
