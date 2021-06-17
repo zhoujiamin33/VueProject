@@ -42,13 +42,13 @@
 			    <el-table-column fixed="right" label="操作"  align="center">
 			      <template #default="scope">
 					<p v-if="scope.row.approvalstate==0">
-						 <el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateapproval(scope.row)"></el-button>
-						 <el-button type="danger" size="mini" circle icon="el-icon-minus" @click="deleteEntryfees(scope.row)"></el-button>
+						<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateapproval(scope.row)"></el-button>
+						<el-button type="danger" size="mini" circle icon="el-icon-minus" @click="deleteEntryfees(scope.row)"></el-button>
 					</p>
-			       <p v-if="scope.row.approvalstate==1">
+			        <p v-if="scope.row.approvalstate==1">
 					  <el-button type="success" icon="el-icon-check" circle size="mini" @click="updateRevokeapproval(scope.row)"></el-button>
 					  <el-button type="danger" size="mini" circle icon="el-icon-minus" @click="deleteEntryfees(scope.row)"></el-button>
-			       </p>
+			        </p>
 			      </template>
 			    </el-table-column>
 			</el-table>
