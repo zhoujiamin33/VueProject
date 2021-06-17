@@ -169,14 +169,7 @@
 				}
 			},
 			created() {
-				const _this = this;
-				this.axios.get("http://localhost:8089/threeproject/findAllsuspende")
-					.then(function(response) {
-						_this.SuspendeData= response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
+				this.showsupende()
 			}
 		}
 	</script>

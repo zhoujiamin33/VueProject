@@ -51,7 +51,7 @@ import dept from '../components/Sysmanage/Dept.vue'
 import position from '../components/Sysmanage/Position.vue'
 import userpwd from '../components/Sysmanage/UserMaintenance.vue'
 import loginlog from '../components/Sysmanage/LoginJournal.vue'
-import module from '../components/Sysmanage/ModuleManagement%20.vue'
+import module from '../components/Sysmanage/ModuleManagement.vue'
 import addRestrictions from '../components/Sysmanage/LoginRestrictions.vue'
 
 // 行政管理

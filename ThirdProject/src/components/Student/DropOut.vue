@@ -4,43 +4,51 @@
 				<div class="mainbody">
 					<div style="margin-right: 320px;display: flex;">
 						<span style="margin-top: 10px;width: 90px;">快速检索：</span>
-						<el-select v-model="select" placeholder="请选择">
-							<el-option label="班级" value="1"></el-option>
-							<el-option label="姓名" value="2"></el-option>
-							<el-option label="学号" value="3"></el-option>
+						<el-select v-model="pageInfo.index" placeholder="请选择">
+							<el-option label="班级" value="班级"></el-option>
+							<el-option label="姓名" value="姓名"></el-option>
+							<el-option label="学号" value="学号"></el-option>
 						</el-select>
 			
-						<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
+						<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable
 							@clear="serchVal">
 						</el-input>
 					</div>
 					<div style="display: flex;">
-						<el-button @click="getstudentList">查询</el-button>
+						<el-button @click="selectName">查询</el-button>
 						<el-button @click="tgsp">通过审批</el-button>
 						<el-button @click="del">删除</el-button>
 					</div>
 				</div>
 			
-				<el-table :data="tableData" border>
-					<el-table-column prop="studentId" label="Id">
+				<el-table :data="tableData" border @selection-change="handleSelectionChange">
+					<el-table-column prop="dropId" label="Id">
 					</el-table-column>
 					<el-table-column type="selection">
 					</el-table-column>
-					<el-table-column prop="studytime" label="退学日期">
+					<el-table-column prop="dropTime" label="退学日期">
 					</el-table-column>
-					<el-table-column prop="studentName" label="学号">
+					<el-table-column prop="student.studentNumber" label="学号">
 					</el-table-column>
-					<el-table-column prop="address" label="姓名">
+					<el-table-column prop="student.studentName" label="姓名">
 					</el-table-column>
-					<el-table-column prop="studentPhone" label="退班班级">
+					<el-table-column prop="classes.classesName" label="退班班级">
 					</el-table-column>
-					<el-table-column prop="price" label="退回金额">
+					<el-table-column prop="ispay" label="退费状态">
+						<template v-slot="scope">
+							<p v-if="scope.row.ispay==0">未退费</p>
+							<p v-if="scope.row.ispay==1">已退费</p>
+						</template>
 					</el-table-column>
-					<el-table-column prop="studentState" label="退回理由">
+					<el-table-column prop="dropReason" label="退回理由">
 					</el-table-column>
-					<el-table-column prop="studentState" label="经办人">
+					<el-table-column prop="dropHandler" label="经办人">
 					</el-table-column>
-					<el-table-column prop="studentState" label="状态">
+					<el-table-column prop="jwApproval" label="状态">
+						<template v-slot="scope">
+							<p v-if="scope.row.jwApproval==0">未审核</p>
+							<p v-if="scope.row.jwApproval==1">已审核</p>
+						</template>
 					</el-table-column>
 				</el-table>
 			
@@ -59,41 +67,48 @@
 					return {
 						select: "",
 						//用户列表
-						// {id:1,schoolName:"大河东",AddTime:"2020-02-03",StudentName:"小红",address:"地点",phone:"18985748576",State:"是"}
 						tableData: [],
 						//请求用户列表的参数
 						pageInfo: {
-							query: '',
+							index: '',
+							value:'',
 							currentPage: 1,
 							pagesize: 3,
 							total: 0
 						},
-						addForm:{
-							name:'',
-							Student_Phone:'',
-							ParentName:'',
-							Entrance:'',
-							address:'',
-						},
 						 dialogFormVisible: false,
 						 dialogFormupdate:false,
-						      
+						     chektable:[] 
 					}
 				},
 				methods: {
-					getstudentList() {
-		
+					// 被复选框选中获取到的值
+					handleSelectionChange(row) {
+						console.log(row)
+						this.chektable = row
 					},
 					tgsp() {
+						const _this=this
 						this.$confirm('确定要审批通过吗?', '提示', {
 							confirmButtonText: '确定',
 							cancelButtonText: '取消',
 							type: 'warning'
 						}).then(() => {
-							this.$message({
-								type: 'success',
-								message: '审批通过!'
-							});
+							if (_this.chektable.length == 0) {
+								_this.$message({
+									showClose: true,
+									message: '请选择审批的学员!',
+									type: 'error'
+								});
+							} else {
+								var ids=_this.chektable.map(item =>item.dropId).join()
+									_this.updatedropoutstate(ids)
+								_this.$message({
+									type: 'success',
+									message: '审批成功!'
+								});
+							}
+							
 						}).catch(() => {
 							this.$message({
 								type: 'info',
@@ -102,33 +117,86 @@
 						});
 					},
 					del() {
+							const _this=this
 						this.$confirm('确定要删除该学员吗?', '提示', {
 							confirmButtonText: '确定',
 							cancelButtonText: '取消',
 							type: 'warning'
 						}).then(() => {
-							this.$message({
-								type: 'success',
-								message: '删除成功!'
-							});
+							if (_this.chektable.length == 0) {
+								_this.$message({
+									showClose: true,
+									message: '请选择删除内容!',
+									type: 'error'
+								});
+							} else {
+								var ids=_this.chektable.map(item =>item.dropId).join()
+									_this.deldropoutId(ids)
+								_this.$message({
+									type: 'success',
+									message: '删除成功!'
+								});
+							}
+							
 						}).catch(() => {
 							this.$message({
 								type: 'info',
 								message: '已取消删除'
 							});
 						});
+					},
+					// 模糊查询findcls_stuNameAndxuehao
+					selectName() {
+						const _this = this
+						this.axios.get("http://localhost:8089/threeproject/findcls_stuNameAndxuehao", {
+								params: this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					},
+					// 审核
+					updatedropoutstate(dropId){
+						const _this = this;
+						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate/"+dropId)
+							.then(function(response) {
+								_this.showDropout()
+								console.log("fff"+response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					},
+					//删除
+					deldropoutId(dropId){
+						const _this = this;
+						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness/"+dropId)
+							.then(function(response) {
+								_this.showDropout()
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					},
+					showDropout(){
+						const _this = this
+						this.axios.get("http://localhost:8089/threeproject/finddropout",{params:this.pageInfo})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
 					}
 					
 				},
 				created() {
-					const _this = this;
-					this.axios.get("http://localhost:8089/student/findstudent")
-						.then(function(response) {
-							_this.tableData = response.data
-							console.log(response)
-						}).catch(function(error) {
-							console.log(error)
-						})
+					
+					this.showDropout()
 				}
 			}
 		</script>

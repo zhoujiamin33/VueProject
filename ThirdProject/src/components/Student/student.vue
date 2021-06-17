@@ -28,11 +28,11 @@
 			</el-table-column>
 			<el-table-column prop="studytime" label="报名时间">
 			</el-table-column>
-			<el-table-column prop="register.consultant" label="姓名">
+			<el-table-column prop="studentName" label="姓名">
 			</el-table-column>
 			<el-table-column prop="address" label="联系地址">
 			</el-table-column>
-			<el-table-column prop="register.phone" label="联系电话">
+			<el-table-column prop="studentPhone" label="联系电话">
 			</el-table-column>
 			<el-table-column prop="studentState" label="状态">
 				<template v-slot="scope">
@@ -42,8 +42,7 @@
 			</el-table-column>
 			<el-table-column prop="source.sourceName" label="生源渠道">
 			</el-table-column>
-			<!-- <el-table-column prop="register.consultant" label="咨询编号">
-			</el-table-column> -->
+
 			<el-table-column prop="index" label="操作">
 				<template #default="scope">
 					<el-button type="text" @click="bubao(scope.row)">补报</el-button>
@@ -60,7 +59,7 @@
 				layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 			</el-pagination>
 		</div>
-		
+
 		<!-- 修改 -->
 		<el-dialog title="修改学员" v-model="dialogFormVisible2">
 			<el-form :model="addForm" :inline="true" :rules="rules" ref="addForm">
@@ -106,12 +105,34 @@
 			</template>
 		</el-dialog>
 		<!--  补报-->
-		<el-dialog title="课程预报" v-model="dialogFormVisible4">
-			<div>
-				单号：XS2021060421144&nbsp;学号：2 &nbsp; 姓名：貂蝉 &nbsp; 添加日期：2021/6/4
-			</div>
-			<p>预报课程</p>
-			<el-table border>
+		<el-dialog title="课程预报" v-model="dialogFormVisible4" width="60%">
+			<el-descriptions :column="4">
+				<el-descriptions-item>
+					<template #label>
+						单号：
+					</template>
+					XS{{this.addForm.studytime}}{{this.addForm.studentNumber}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						学号：
+					</template>
+					{{this.addForm.studentNumber}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						姓名：
+					</template>
+					{{this.addForm.studentName}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						添加日期：
+					</template>
+					{{this.addForm.studytime}}
+				</el-descriptions-item>
+			</el-descriptions>
+			<el-table border title="预报课程">
 				<el-table-column label="课程名称" prop=""></el-table-column>
 				<el-table-column label="课时数" prop=""></el-table-column>
 				<el-table-column label="课程费用" prop=""></el-table-column>
@@ -123,18 +144,21 @@
 				</el-table-column>
 			</el-table>
 			<el-descriptions :model="addForm" class="margin-top" title="预报信息" :column="2" :size="size" border>
-				<el-descriptions-item >
+				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-user"></i>
 						课程选择:
 					</template>
-					<div style="display: flex;width: 150px;"> 
-					<el-select  v-model="addForm.sourceId" placeholder="请选择课类" style="width: 178px;">
-						<el-option :label="item.sourceName" :value="item.sourceId" v-for="item in Source"></el-option>
-					</el-select>
-					<el-select v-model="addForm.sourceId" placeholder="请选择课程" style="width: 178px;">
-						<el-option :label="item.sourceName" :value="item.sourceId" v-for="item in Source"></el-option>
-					</el-select>
+					<div style="display: flex;width: 150px;">
+						<el-select v-model="addForm.classtypeId" placeholder="请选择课类" style="width: 178px;"
+							@change="findclasstypeId(addForm.classtypeId)">
+							<el-option :label="item.classtypeName" :value="item.classtypeId" v-for="item in classType">
+							</el-option>
+						</el-select>
+						<el-select v-model="addForm.courseId" placeholder="请选择课程" style="width: 178px;">
+							<el-option :label="item.courseName" :value="item.courseId" v-for="item in Course">
+							</el-option>
+						</el-select>
 					</div>
 				</el-descriptions-item>
 				<el-descriptions-item>
@@ -176,7 +200,7 @@
 					<el-button>添加预报</el-button>
 				</el-descriptions-item>
 			</el-descriptions>
-			<el-descriptions :model="addForm" class="margin-top"  :column="2" :size="size" border>
+			<el-descriptions :model="addForm" class="margin-top" :column="2" :size="size" border>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
@@ -190,8 +214,8 @@
 						缴费方式:
 					</template>
 					<el-select v-model="addForm.sourceId" placeholder="请选择缴费方式" style="width: 178px;">
-						<el-option label="item.sourceName" value="item.sourceId">全额缴费</el-option>
-						<el-option label="item.sourceName" value="item.sourceId">预缴费</el-option>
+						<el-option label="sourceName" value="sourceId">全额缴费</el-option>
+						<el-option label="sourceName" value="sourceId">预缴费</el-option>
 					</el-select>
 				</el-descriptions-item>
 				<el-descriptions-item>
@@ -288,14 +312,31 @@
 			</el-descriptions>
 			<p>学员报班记录</p>
 			<el-table :data="StudentStatus" border style="width: 100%">
-				<el-table-column prop="studentstatusId" label="Id">
+				<el-table-column label="Id">
+					{{id+1}}
 				</el-table-column>
-				
+				<el-table-column prop="classes.classesId" label="班级编号">
+					<template v-slot="scope">
+						<p v-if="scope.row.classes.classesId==null">
+							<el-button type="text" @click="showclasses(scope.row)">请选择班级</el-button>
+						</p>
+						<p v-if="scope.row.classes.classesId!=null">
+							{{scope.row.classes.classesId}}
+						</p>
+					</template>
+				</el-table-column>
 				<el-table-column prop="classes.classesName" label="班级名称">
-				<template v-slot="scope">
-					<p v-if="scope.row.status==0">请选择班级</p>
-					<!-- <p v-if="scope.row.status==1"></p> -->
-				</template>
+					<template v-slot="scope">
+						<p v-if="scope.row.classes.classesId==null">
+
+						</p>
+						<p v-if="scope.row.classes.classesId!=null">
+							{{this.addForm.classesName}}
+						</p>
+
+					</template>
+
+
 				</el-table-column>
 				<el-table-column prop="signuptime" label="报班时间">
 				</el-table-column>
@@ -309,6 +350,10 @@
 						<p v-if="scope.row.status==1">已分班</p>
 						<p v-if="scope.row.status==2">已退学</p>
 						<p v-if="scope.row.status==3">已停课</p>
+						<!-- 按停课按钮修改学员状态表状态并新增停课表中的一条记录；停课表中按审核通过按钮把未审核改为已审核并审核时间为当前时间、
+						审核人当前的登录人 -->
+						<!-- <p v-if="scope.row.status==4">停课审核中</p>
+						<p v-if="scope.row.status==5">退学审核中</p> -->
 					</template>
 				</el-table-column>
 				<el-table-column prop="beizhu" label="备注">
@@ -321,15 +366,19 @@
 						<p v-if="scope.row.status!=3">
 							<el-button type="text" @click="showsupend(scope.row)">停课</el-button>
 						</p>
-						
+
 					</template>
-					
+
 				</el-table-column>
 				<el-table-column prop="zb" label="转班">
 					<el-button type="text">转班</el-button>
 				</el-table-column>
 				<el-table-column prop="zb" label="退学">
-					<el-button type="text" @click="dialogFormVisible6=true">退学</el-button>
+					<template v-slot="scope">
+
+						<el-button type="text" @click="showtuixue(scope.row)">退学</el-button>
+					</template>
+
 				</el-table-column>
 				<el-table-column prop="cz" label="修改">
 					<el-button type="text"><i class="el-icon-edit"></i></el-button>
@@ -341,10 +390,10 @@
 		<el-dialog v-model="dialogVisible">
 			<img width="100%" :src="dialogImageUrl" alt="">
 		</el-dialog>
-		
+
 		<!-- 停课 -->
 		<el-dialog v-model="dialogFormVisible5">
-			<el-descriptions :model="addForm" class="margin-top" title="学员停课" :column="1" :size="size" border >
+			<el-descriptions :model="addForm" class="margin-top" title="学员停课" :column="1" :size="size" border>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-user"></i>
@@ -393,85 +442,173 @@
 				</el-descriptions-item>
 			</el-descriptions>
 		</el-dialog>
-	<!-- 退学 -->	
-	<el-dialog title="查看学员退学信息" v-model="dialogFormVisible6">
-		<el-descriptions :model="addForm" class="margin-top" title="查看学员退学信息" :column="1" :size="size" border >
-			<el-descriptions-item >
-				<template #label>
-					<i class="el-icon-user"></i>
-					学号:
-				</template>
-				<el-input v-model="register.consultant"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-mobile-phone"></i>
-					退学学员:
-				</template>
-				<el-input v-model="register.consultant"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-location-outline"></i>
-					班级编号:
-				</template>
-				<el-input v-model="register.phone"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-location-outline"></i>
-					班级名称:
-				</template>
-				<el-input v-model="register.phone"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-tickets"></i>
-					培训时间:
-				</template>
-				<el-input v-model="addForm.parentname"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-tickets"></i>
-					实收学费:
-				</template>
-				<el-input v-model="addForm.parentname"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-office-building"></i>
-					报班备注:
-				</template>
-				<el-input v-model="addForm.parentphone"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<template #label>
-					<i class="el-icon-office-building"></i>
-					退学理由:
-				</template>
-				<el-input v-model="addForm.parentphone"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
+		<!-- 退学 -->
+		<el-dialog title="查看学员退学信息" v-model="dialogFormVisible6">
+			<el-descriptions :model="addForm" class="margin-top" title="查看学员退学信息" :column="1" :size="size" border>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-user"></i>
+						学号:
+					</template>
+					<el-input v-model="addForm.studentNumber"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-mobile-phone"></i>
+						退学学员:
+					</template>
+					<el-input v-model="addForm.studentName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级编号:
+					</template>
+					<el-input v-model="addForm.classesId"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级名称:
+					</template>
+					<el-input v-model="Classes.classesName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						培训时间:
+					</template>
+					<el-input v-model="addForm.parentname"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						实收学费:
+					</template>
+					<el-input v-model="addForm.courseMoney"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						报班备注:
+					</template>
+					<el-input v-model="addForm.parentphone"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						退学理由:
+					</template>
+					<el-input v-model="addForm.dropReason"></el-input>
+				</el-descriptions-item>
+				<!-- <el-descriptions-item>
 				<template #label>
 					<i class="el-icon-tickets"></i>
 					退还金额:
 				</template>
-				<el-input v-model="addForm.parentname"></el-input>元
-			</el-descriptions-item>
-			<el-descriptions-item>
+				<el-input v-model="addForm.dropReason"></el-input>元
+			</el-descriptions-item> -->
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						经办人:
+					</template>
+					<el-input v-model="addForm.dropHandler"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<el-button @click="tuixue()">确认退学</el-button>
+					<el-button @click="dialogFormVisible6=false">返回</el-button>
+				</el-descriptions-item>
+			</el-descriptions>
+		</el-dialog>
+
+		<!-- 选择班级 -->
+		<el-dialog title="为学生选择班级" v-model="dialogFormVisible7">
+			<el-descriptions :model="addForm" class="margin-top" title="为学生选择班级" :column="2" :size="size" border>
+				<!-- <el-descriptions-item >
 				<template #label>
-					<i class="el-icon-tickets"></i>
-					经办人:
+					<i class="el-icon-user"></i>
+					编号:
 				</template>
-				<el-input v-model="addForm.parentname"></el-input>
-			</el-descriptions-item>
-			<el-descriptions-item>
-				<el-button>确认退学</el-button>
-				<el-button @click="dialogFormVisible6=false">返回</el-button>
-			</el-descriptions-item>
-		</el-descriptions>
-	</el-dialog>
+				<el-input v-model="addForm.studentId"></el-input>
+			</el-descriptions-item> -->
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-user"></i>
+						课程类别:
+					</template>
+					{{this.addForm.courseName}}
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-mobile-phone"></i>
+						班级名称:
+					</template>
+					{{this.addForm.classesName}}
+					<!-- <el-select v-model="addForm.classesId" > -->
+					<!-- <el-option v-for="i in Classes"  :label="i.classesName" :value="i.classesId" 
+						></el-option> -->
+					<!-- @click.native ="findClassId(i.classesId)" -->
+					<!-- </el-select> -->
+
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级编号:
+					</template>
+					{{this.addForm.classesId}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级名称:
+					</template>
+					{{this.addForm.classesName}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						所报人数:
+					</template>
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						教师:
+					</template>
+					<el-input v-model="addForm.empName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						开始时间:
+					</template>
+					<el-input v-model="addForm.starteddate"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						结束时间:
+					</template>
+					<el-input v-model="addForm.enddate"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						备注:
+					</template>
+					<el-input v-model="addForm.dropReason"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<el-button @click="AddclassesId">保存</el-button>
+					<el-button @click="dialogFormVisible7=false">关闭</el-button>
+				</el-descriptions-item>
+			</el-descriptions>
+		</el-dialog>
 	</div>
 
 </template>
@@ -483,19 +620,20 @@
 			return {
 				// 学员状态表
 				StudentStatus: [],
+				id: 0,
 				//请求用户列表的参数
 				pageInfo: {
-					index:'',//下拉框选项
-					value: '',//值
+					index: '', //下拉框选项
+					value: '', //值
 					currentPage: 1,
 					pagesize: 3,
 					total: 0
 				},
 				addForm: {
 					studentId: '',
-					sourceId: '', //课程编号
-					studentName: '', 
-					studentNumber: '',// 学号
+					sourceId: '', //生源渠道编号
+					studentName: '',
+					studentNumber: '', // 学号
 					sex: '',
 					studentPhone: '',
 					parentname: '',
@@ -507,17 +645,28 @@
 					studytime: '',
 					deletename: '',
 					classesId: '',
-					classesName:'',
+					classesName: '', //班级名称
 					registerId: '', //咨询编号
-					suspendeReason:'',//停课理由
-					courseId:''//课程
+					suspendeReason: '', //停课理由
+					courseId: '', //课程编号
+					courseName: '', //课程名称
+					dropReason: '', //退学理由
+					dropHandler: '', //退学办理人
+					courseMoney: '', //应收费用
+					starteddate: '', //开始时间
+					enddate: '', //结束时间
+					classtypeName: '', //课程名称
+					classtypeId: '', //课程编号
+					teacherId: '', //教师
+					status: '' //学员状态表的状态
 				},
-
+				Course: [], //课程
 
 				dialogFormVisible: false, //新增
 				dialogFormVisible2: false, //修改
 				dialogFormVisible3: false, //查看详情
 				dialogFormVisible4: false, //补报
+				dialogFormVisible7: false, //选择班级
 				rules: {
 					studentName: [{
 							required: true,
@@ -550,17 +699,34 @@
 				// 文件上次
 				dialogImageUrl: '',
 				dialogVisible: false,
-				dialogFormVisible5:false,//停课
-				dialogFormVisible6:false,//退学
+				dialogFormVisible5: false, //停课
+				dialogFormVisible6: false, //退学
 				// 被复选框选中的值
 				chektable: [],
 				Classes: [], //班级表信息
-				Stujiaojie: [],//学员交接
-				Supende:[],//停课表
-				Stutable:[]
+				Stustate: [], //修改学员交接并新增学员状态表
+				Supende: [], //停课表
+				Droport: [], //退学表
+				Stutable: [], //学员表
+				classType: [] //课类表
+
 			}
 		},
 		methods: {
+			// 获取课类的编号
+			findclasstypeId(classtypeId) {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findclasstypeId/" + classtypeId)
+					.then(function(response) {
+						_this.classType = response.data
+						_this.addForm.courseId = _this.classType.courseId
+						_this.addForm.courseName = _this.classType.courseName
+						// _this.addForm.
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			// 模糊查询
 			selectName() {
 				const _this = this
@@ -575,8 +741,6 @@
 						console.log(error)
 					})
 			},
-
-
 			// 被复选框选中获取到的值
 			handleSelectionChange(row) {
 				console.log(row)
@@ -639,10 +803,10 @@
 							type: 'error'
 						});
 					} else {
-						var ids=_this.chektable.map(item =>item.studentId).join()
+						var ids = _this.chektable.map(item => item.studentId).join()
 						// _this.chektable.forEach(item => {
 						// 	console.log(item.studentId)
-							_this.delstudent(ids, "cc")
+						_this.delstudent(ids, "cc")
 						// });
 						_this.$message({
 							type: 'success',
@@ -660,11 +824,11 @@
 
 			// 新增学员
 			Addstudent() {
-				
+
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/student", this.addForm)
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
+						_this.axios.get("http://localhost:8089/threeproject/findstudent", {
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -685,7 +849,7 @@
 			},
 			//修改学员
 			editstu(row) {
-				console.log("修改学员："+row)
+				console.log("修改学员：" + row)
 				this.addForm.sourceName = row.sourceName
 				this.addForm.studentName = row.studentName
 				this.addForm.sex = row.sex
@@ -698,7 +862,7 @@
 				this.addForm.empName2 = row.empName2
 				this.addForm.sourceId = row.sourceId
 				this.addForm.studentId = row.studentId
-				this.addForm.registerId=row.registerId
+				this.addForm.registerId = row.registerId
 				this.dialogFormVisible2 = true
 			},
 			Updatestu() {
@@ -716,7 +880,7 @@
 								console.log(error)
 							})
 						console.log(response.data)
-						
+
 						_this.dialogFormVisible2 = false
 						console.log(response)
 					}).catch(function(error) {
@@ -732,7 +896,7 @@
 				this.axios.put("http://localhost:8089/threeproject/student/" + this.addForm.studentId + "/" + this.addForm
 						.deletename)
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
+						_this.axios.get("http://localhost:8089/threeproject/findstudent", {
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -750,10 +914,10 @@
 			//查看详细信息
 			look(row) {
 				this.addForm.sourceName = row.sourceName
-				this.addForm.studentName = row.studentName
+				this.addForm.studentName = row.register.consultant
 				this.addForm.sex = row.sex
 				this.addForm.address = row.address
-				this.addForm.studentPhone = row.studentPhone
+				this.addForm.studentPhone = row.register.phone
 				this.addForm.parentname = row.parentname
 				this.addForm.parentphone = row.parentphone
 				this.addForm.entrance = row.entrance
@@ -763,17 +927,39 @@
 				this.addForm.studytime = row.studytime
 				this.addForm.classesId = row.classesId
 				this.addForm.registerId = row.registerId
-				this.register.phone = row.register.phone
-				this.register.consultant = row.register.consultant
-				this.findclassstuId(this.addForm.studentId )
+				this.findstuclass(this.addForm.studentId)
+				this.findClassId(this.addForm.classesId)
 				this.dialogFormVisible3 = true
 			},
 			findClassId(classesId) {
-				console.log(classesId)
+				console.log("班级表编号" + classesId)
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findClassId/" + classesId)
 					.then(function(response) {
 						_this.Classes = response.data
+						// _this.StudentStatus.classes=_this.Classes
+						_this.addForm.classesId = _this.Classes.classesId
+						_this.addForm.classesName = response.data.classesName
+						console.log("班级名称：" + _this.StudentStatus.classes)
+						_this.addForm.starteddate = response.data.starteddate
+
+						_this.addForm.enddate = response.data.enddate
+						// _this.addForm.empName=response.data.emp.empName
+
+
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			// 根据学员编号查询班级编号与姓名
+			findstuclass(studentId) {
+				// this.StudentStatus=[]
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findstuclass/" + studentId)
+					.then(function(response) {
+						_this.StudentStatus = response.data
+
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -781,16 +967,17 @@
 			},
 			// 根据学员编号查询学员记录和班级
 			findclassstuId(studentId) {
-				this.StudentStatus=[]
+				// this.StudentStatus=[]
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findstudentId/" +  studentId)
+				this.axios.get("http://localhost:8089/threeproject/findstuclass/" + studentId)
 					.then(function(response) {
-						_this.StudentStatus.push(response.data) 
+						_this.StudentStatus = response.data
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
+
 			Addstudentstatus(studentId, classesId) {
 				this.StudentStatus.studentId = studentId
 				this.StudentStatus.classesId = classesId
@@ -820,6 +1007,7 @@
 				this.addForm.classes = row.classes
 				this.addForm.studentNumber = row.studentNumber
 				this.addForm.studytime = row.studytime
+
 				this.dialogFormVisible4 = true
 			},
 			// 分页
@@ -828,31 +1016,16 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.Stutable = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
+				this.selectName()
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.Stutable = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
+				this.selectName()
 			},
-			//新增学员交接表:从前端获取的咨询id
+			//审核学员并修改学员交接表中的教务审核状态和时间和人
 			shengpi() {
 				const _this = this
 				this.$confirm('确定要审核该学员吗?', '提示', {
@@ -860,75 +1033,174 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					var registerId=_this.chektable.map(item =>item.registerId).join()
-				this.axios.get("http://localhost:8089/threeproject/findregisterId/"+registerId)
-					.then(function(response) {
-						_this.Stujiaojie = response.data
-						
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
+					var studentId = _this.chektable.map(item => item.studentId).join()
+					this.axios.get("http://localhost:8089/threeproject/findstudentId/" + studentId)
+						.then(function(response) {
+							_this.Stustate = response.data
+
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
 				}).catch(() => {
 					this.$message({
 						type: 'error',
 						message: '已取消删除'
 					});
 				});
-				},
-				// 停课新增
-				showsupend(row){
-					console.log("fff"+row)
-					// this.addForm.classesName=row.classesName
-					this.addForm.classesId=row.classesId
-					this.addForm.courseId=row.courseId
-					this.addForm.suspendeReason=row.suspendeReason
-					console.log(this.addForm.studentName)
-					
-					this.findClassId(this.addForm.classesId)
-					this.dialogFormVisible5=true
-				},
-				// 新增退学
-				addsupende(){
-					const _this=this
-					this.axios.post("http://localhost:8089/threeproject/addsupende",this.addForm)
-						.then(function(response) {
-							var supendentity= response.data
-							_this.Supende.push(supendentity)
-							_this.dialogFormVisible5=false
-							console.log(response)
-						}).catch(function(error) {
-							console.log(error)
-						})
-				},
-				// 把学员状态改为1已分班
-				updatesuspendestate(row){
-					this.StudentStatus.studentId=row.studentId
-					console.log("aaaaaaaaaaaa"+this.StudentStatus.studentId)
-					const _this = this
-					this.axios.put("http://localhost:8089/threeproject/updatesuspendestate/"+this.StudentStatus.studentId)
-						.then(function(response) {
-							// _this.StudentStatus=response.data
-							_this.findclassstuId(_this.StudentStatus.studentId)
-							console.log(response)
-						}).catch(function(error) {
-							console.log(error)
-						})
-				}
+			},
+			// 停课新增
+			showsupend(row) {
+				const _this = this
+				this.$confirm('您确定要对该学员进行停/复课操作吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					if (_this.addForm.classesId == null) {
+						_this.$message({
+							showClose: true,
+							message: '请选择班级!',
+							type: 'error'
+						});
+					} else {
+						console.log("fff" + row)
+						// this.addForm.classesName=row.classesName
+						_this.addForm.classesId = row.classesId
+						_this.addForm.courseId = row.courseId
+						_this.addForm.suspendeReason = row.suspendeReason
+						console.log(_this.addForm.studentName)
+						this.findClassId(_this.addForm.classesId)
+						_this.dialogFormVisible5 = true
+					}
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '已取消停/复课操作'
+					});
+				});
+			},
+			// 新增停课
+			addsupende() {
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/addsupende", this.addForm)
+					.then(function(response) {
+						var supendentity = response.data
+						_this.Supende = supendentity
+						_this.dialogFormVisible5 = false
+						_this.findclassstuId(supendentity.studentId)
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			// 把学员状态改为1已分班
+			updatesuspendestate(row) {
+				this.StudentStatus.studentId = row.studentId
+				console.log("aaaaaaaaaaaa" + this.StudentStatus.studentId)
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updatesuspendestate/" + this.StudentStatus.studentId)
+					.then(function(response) {
+						// _this.StudentStatus=response.data
+						_this.findclassstuId(_this.StudentStatus.studentId)
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+
+			//退学：学员状态表中的状态改为5（退学审核中）；并新增一条退学表（根据学员编号新增）
+			showtuixue(row) {
+				const _this = this
+				this.$confirm('您确定要对该学员进行退学操作吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					if (_this.addForm.classesId == null || _this.addForm.status == 3) {
+						_this.$message({
+							showClose: true,
+							message: '请选择班级!',
+							type: 'error'
+						});
+					} else {
+						console.log("fff" + row)
+						// this.addForm.classesName=row.classesName
+						_this.addForm.classesId = row.classesId
+						_this.addForm.courseId = row.courseId
+						_this.addForm.suspendeReason = row.suspendeReason
+						_this.addForm.courseMoney = row.courseMoney
+						console.log(_this.addForm.studentName)
+						this.findClassId(_this.addForm.classesId)
+						_this.dialogFormVisible6 = true
+					}
+
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '已取消退学操作'
+					});
+				});
+			},
+			tuixue() {
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/Adddropout", this.addForm)
+					.then(function(response) {
+						var supendentity = response.data
+						_this.Droport.push(supendentity)
+						_this.dialogFormVisible6 = false
+
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//选择班级
+			showclasses(row) {
+				this.addForm.studentId = row.studentId
+				this.addForm.courseId = row.courseId
+				this.addForm.courseName = row.course.courseName
+				this.findcourseId(this.addForm.courseId)
+				this.dialogFormVisible7 = true
+			},
+			findcourseId(courseId) {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findcourseId/" + courseId)
+					.then(function(response) {
+						_this.Classes = response.data
+						_this.addForm.classesId = _this.Classes.classesId
+						_this.addForm.classesName = _this.Classes.classesName
+						_this.addForm.teacherNmae = _this.Classes.teacherId
+						_this.addForm.empName = _this.Classes.emp.empName
+						_this.addForm.starteddate = _this.Classes.starteddate
+						_this.addForm.enddate = _this.Classes.enddate
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			AddclassesId() {
+				// console.log("学员表："+this.addForm.studentId)
+				// console.log("学员表1："+this.addForm.classesId)
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/addclassesId/" + this.addForm.classesId + "/" + this
+						.addForm.studentId)
+					.then(function(response) {
+						_this.StudentStatus = response.data
+						_this.dialogFormVisible7 = false
+						_this.selectName()
+
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}
+
 		},
-		
+
 		created() {
-			// 显示所有学员信息
-			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					_this.Stutable = response.data.list
-					_this.pageInfo.total = response.data.total
-				}).catch(function(error) {
-					console.log(error)
-				}),
+			const _this = this
+			this.selectName(),
 				this.axios.get("http://localhost:8089/threeproject/findSource")
 				.then(function(response) {
 					_this.Source = response.data
@@ -943,15 +1215,44 @@
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
+				}),
+				// 查询所有班级
+				this.axios.get("http://localhost:8089/threeproject/findAllClass")
+				.then(function(response) {
+					_this.Classes = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				}),
+
+				// 课类
+				this.axios.get("http://localhost:8089/threeproject/findcoursetype")
+				.then(function(response) {
+					_this.classType = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				}),
+
+				// 课程
+				this.axios.get("http://localhost:8089/threeproject/findcourse", {
+					params: this.pageInfo
 				})
-				// 在学员交接表查询咨询登记信息；招生审核和教务审核
-				// this.axios.get("http://localhost:8089/threeproject/findallsou")
-				// .then(function(response) {
-				// 	_this.Stujiaojie = response.data
-				// 	console.log(response)
-				// }).catch(function(error) {
-				// 	console.log(error)
-				// })
+				.then(function(response) {
+					_this.Course = response.data.list
+					_this.pageInfo.total = response.data.total
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			// 在学员交接表查询咨询登记信息；招生审核和教务审核
+			// this.axios.get("http://localhost:8089/threeproject/findallsou")
+			// .then(function(response) {
+			// 	_this.Stujiaojie = response.data
+			// 	console.log(response)
+			// }).catch(function(error) {
+			// 	console.log(error)
+			// })
 
 
 		}
