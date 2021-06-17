@@ -106,7 +106,7 @@
 			},
 			updateDept() {
 				const _this = this
-				this.axios.put("http://localhost:8089/student/enterprise", this.form)
+				this.axios.put("http://localhost:8089/threeproject/enterprise", this.form)
 					.then(function(response) {
 						console.log(response)
 						var enterprise = response.data
@@ -141,7 +141,7 @@
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/student/findenterprise")
+			this.axios.get("http://localhost:8089/threeproject/findenterprise")
 				.then(function(response) {
 					_this.form = response.data
 					console.log(response)

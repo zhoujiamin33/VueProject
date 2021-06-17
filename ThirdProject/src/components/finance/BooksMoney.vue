@@ -121,10 +121,7 @@
 	export default{
 		data(){
 			return {
-				tableData:[
-				{checked:"",date: '2016-05-02', name: '王小虎1',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎2',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎3',  address: '上海市普陀区金沙江路 1518 弄'}]
+				tableData:[]
 			}
 		}
 	}

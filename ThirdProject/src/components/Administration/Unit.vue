@@ -1,6 +1,6 @@
 <template>
+	<!-- <div class="common-layout"> -->
 	<el-container :style="{height:height}">
-		<!-- <el-header>Header</el-header> -->
 		<el-container>
 			<el-main style="padding: 0px;">
 				<el-container style="border: #409EFF 1px solid;">
@@ -9,107 +9,130 @@
 						<el-select style="margin-left: 10px;" v-model="AnnSelect" placeholder="请输选择内容">
 							<el-option label="1" value="1"></el-option>
 						</el-select>
-						<el-input style="width: 200px;margin-left: 10px;" v-model="AnnSearch" placeholder="请输入内容"></el-input>
+						<el-input style="width: 200px;margin-left: 10px;" v-model="AnnSearch" placeholder="请输入内容">
+						</el-input>
 						<el-button icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
 					</el-header>
 					<el-main>
-						
+
 						<div class="edit">
-							<el-button @click="dialogFormVisible = true">新增</el-button>
-							<el-dialog title="新增"  v-model="dialogFormVisible" :close-on-click-modal="false">
+							<el-button @click="endform2">新增</el-button>
+							<el-dialog title="新增" v-model="dialogFormVisible" :close-on-click-modal="false">
 								<!-- :inline="true" -->
-								<el-form :model="form2" class="" :rules="forRules" ref="form2">
-									<el-form-item prop="Unit_Name">
-										<el-input style="width: 90%;" v-model="form2.Unit_Name" autocomplete="off" placeholder="单位名称"></el-input>
+								<el-form :model="Unit" class="" :rules="forRules" ref="Unit">
+									<el-form-item prop="unitName">
+										<el-input style="width: 90%;" v-model="Unit.unitName" autocomplete="off"
+											placeholder="单位名称"></el-input>
 									</el-form-item>
-									<el-form-item prop="Unit_Level">
-										<el-select v-model="form2.UnitType_Id" placeholder="单位类型" filterable allow-create default-first-option>
-											<el-option label="" value=""></el-option>
-											<el-option label="食品" value="食品"></el-option>
-											<el-option label="医疗" value="医疗"></el-option>
+									<el-form-item prop="unitLevel">
+										<el-select v-model="Unit.unittypeId" placeholder="单位类型" filterable allow-create
+											default-first-option>
+											<el-option v-for="itms in UnitType" :label="itms.unittypeName"
+												:value="itms.unittypeId"></el-option>
+
 										</el-select>&nbsp;
-										<el-input v-model="form2.Unit_Level" placeholder="单位级别" @blur="dwjb" :style="{border:borders}"></el-input>
+										<el-input v-model="Unit.unitLevel" placeholder="单位级别" @blur="dwjb"
+											:style="{border:borders}"></el-input>
 									</el-form-item>
 									<el-form-item>
-										<el-input v-model="form2.Unit_Phone" placeholder="单位电话"></el-input>&nbsp;
-										<el-input v-model="form2.Director" placeholder="负责人"></el-input>
+										<el-input v-model="Unit.unitPhone" placeholder="单位电话"></el-input>&nbsp;
+										<el-input v-model="Unit.director" placeholder="负责人"></el-input>
 									</el-form-item>
-									<el-form-item prop="Unit_Address">
-										<el-input style="width: 90%;" v-model="form2.Unit_Address" placeholder="单位地址"></el-input>
-									</el-form-item>
-									<el-form-item>
-										<el-input v-model="form2.MailCode" placeholder="邮政编码"></el-input>
+									<el-form-item prop="unitAddress">
+										<el-input style="width: 90%;" v-model="Unit.unitAddress" placeholder="单位地址">
+										</el-input>
 									</el-form-item>
 									<el-form-item>
-										<el-input v-model="form2.Profile" type="textarea" rows="12" placeholder="简介"></el-input>
+										<el-input v-model="Unit.mailcode" placeholder="邮政编码"></el-input>
 									</el-form-item>
 									<el-form-item>
-										<el-input v-model="form2.Remarks" type="textarea" rows="12" placeholder="备注"></el-input>
+										<el-input v-model="Unit.profile" type="textarea" rows="12" placeholder="简介">
+										</el-input>
+									</el-form-item>
+									<el-form-item>
+										<el-input v-model="Unit.remarks" type="textarea" rows="12" placeholder="备注">
+										</el-input>
 									</el-form-item>
 								</el-form>
 								<template #footer>
 									<span class="dialog-footer">
 										<el-button @click="">取 消</el-button>
-										<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+										<el-button type="primary" @click="UnitAdd">确 定</el-button>
 									</span>
 								</template>
 							</el-dialog>
 							<el-button @click="cutoff">删除</el-button>
 						</div>
-						<el-table ref="multipleTable" :data="Unit" height="500" tooltip-effect="dark" @selection-change="handleSelectionChange">
+						<el-table ref="multipleTable" :data="Units" height="500" tooltip-effect="dark"
+							@selection-change="handleSelectionChange">
 							<el-table-column type="selection" width="55">
 							</el-table-column>
 							<el-table-column label="单位名称" width="220">
-								<template #default="scope"><a href="#" @click="showEdit1(scope.row)">{{ scope.row.Unit_Name }}</a></template>
+								<template #default="scope"><a href="#"
+										@click="showEdit1(scope.row)">{{ scope.row.unitName }}</a></template>
 							</el-table-column>
-							<el-table-column prop="Unit_Phone" label="单位电话" width="230">
+							<el-table-column prop="unitPhone" label="单位电话" width="230">
 							</el-table-column>
-							<el-table-column prop="Email" label="电子邮箱" width="210" show-overflow-tooltip>
+							<el-table-column prop="email" label="电子邮箱" width="210" show-overflow-tooltip>
 							</el-table-column>
-							<el-table-column prop="Unit_Address" label="单位地址" width="360" show-overflow-tooltip>
+							<el-table-column prop="unitAddress" label="单位地址" width="360" show-overflow-tooltip>
 							</el-table-column>
-							<el-table-column prop="Profile" label="简介" width="260" show-overflow-tooltip>
+							<el-table-column prop="profile" label="简介" width="260" show-overflow-tooltip>
 							</el-table-column>
 						</el-table>
-						<el-dialog title="修改"  v-model="dialogFormVisible2" :close-on-click-modal="false">
+						<el-dialog title="修改" v-model="dialogFormVisible2" :close-on-click-modal="false">
 							<!-- :inline="true" -->
-							<el-form :model="form2" class="" :rules="forRules" ref="form2">
-								<el-form-item prop="Unit_Name">
-									<el-input style="width: 90%;" v-model="form2.Unit_Name" autocomplete="off" placeholder="单位名称"></el-input>
+							<el-form :model="Unit" class="" :rules="forRules" ref="Unit">
+								<el-form-item prop="unitName">
+									<el-input style="width: 90%;" v-model="Unit.unitName" autocomplete="off"
+										placeholder="单位名称"></el-input>
 								</el-form-item>
-								<el-form-item prop="Unit_Level">
-									<el-select v-model="form2.UnitType_Id" placeholder="单位类型" filterable allow-create default-first-option>
-										<el-option label="" value=""></el-option>
-										<el-option label="食品" value="食品"></el-option>
-										<el-option label="医疗" value="医疗"></el-option>
+								<el-form-item prop="unitLevel">
+									<el-select v-model="Unit.unittypeId" placeholder="单位类型" filterable allow-create
+										default-first-option>
+										<el-option v-for="itms in UnitType" :label="itms.unittypeName"
+											:value="itms.unittypeId"></el-option>
 									</el-select>&nbsp;
-									<el-input v-model="form2.Unit_Level" placeholder="单位级别" @blur="dwjb" :style="{border:borders}"></el-input>
+									<el-input v-model="Unit.unitLevel" placeholder="单位级别" @blur="dwjb"
+										:style="{border:borders}"></el-input>
 								</el-form-item>
 								<el-form-item>
-									<el-input v-model="form2.Unit_Phone" placeholder="单位电话"></el-input>&nbsp;
-									<el-input v-model="form2.Director" placeholder="负责人"></el-input>
+									<el-input v-model="Unit.unitPhone" placeholder="单位电话"></el-input>&nbsp;
+									<el-input v-model="Unit.director" placeholder="负责人"></el-input>
 								</el-form-item>
-								<el-form-item prop="Unit_Address">
-									<el-input style="width: 90%;" v-model="form2.Unit_Address" placeholder="单位地址"></el-input>
-								</el-form-item>
-								<el-form-item>
-									<el-input v-model="form2.MailCode" placeholder="邮政编码"></el-input>
+								<el-form-item prop="unitAddress">
+									<el-input style="width: 90%;" v-model="Unit.unitAddress" placeholder="单位地址">
+									</el-input>
 								</el-form-item>
 								<el-form-item>
-									<el-input v-model="form2.Profile" type="textarea" rows="12" placeholder="简介"></el-input>
+									<el-input v-model="Unit.mailcode" placeholder="邮政编码"></el-input>
 								</el-form-item>
 								<el-form-item>
-									<el-input v-model="form2.Remarks" type="textarea" rows="12" placeholder="备注"></el-input>
+									<el-input v-model="Unit.profile" type="textarea" rows="12" placeholder="简介">
+									</el-input>
+								</el-form-item>
+								<el-form-item>
+									<el-input v-model="Unit.remarks" type="textarea" rows="12" placeholder="备注">
+									</el-input>
 								</el-form-item>
 							</el-form>
 							<template #footer>
 								<span class="dialog-footer">
 									<el-button @click="">取 消</el-button>
-									<el-button type="primary" @click="dialogFormVisible2 = false">确 定</el-button>
+									<el-button type="primary" @click="UpdateUnit">确 定</el-button>
 								</span>
 							</template>
 						</el-dialog>
 					</el-main>
+					<el-footer>
+						<div class="block">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+								:current-page="pageInfo.currentPage" :page-sizes="[2, 5, 10, 20]"
+								:page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper"
+								:total="pageInfo.total">
+							</el-pagination>
+						</div>
+					</el-footer>
 				</el-container>
 			</el-main>
 		</el-container>
@@ -118,6 +141,7 @@
 </template>
 
 <script>
+	import qs from 'qs'
 	export default {
 		data() {
 			return {
@@ -127,58 +151,59 @@
 				auto: '200px',
 				AnnSearch: '',
 				AnnSelect: '',
-				Unit: [{
-					Unit_Id: '1',
-					Unit_Name: '光辉集团',
-					UnitType_Id: '食品',
-					Unit_Level: '1',
-					Director: '晴雯',
-					Unit_Address: '广东',
-					MailCode: '10086',
-					Unit_Phone: '13323124562',
-					Email: '123@.com',
-					Profile: '简介1',
-					Remarks: '备注1'
-
-				}],
-
+				Units: [],
+				UnitType: [],
 				multipleSelection: [],
-
-				//分页初始定位页数
-				currentPage4: 1,
+				pageInfo: {
+					currentPage: 1, //识别当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				//隐藏新增页面
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
-				form2: {
-					Unit_Id: '',
-					Unit_Name: '',
-					UnitType_Id: '',
-					Unit_Level: '',
-					Director: '',
-					Unit_Address: '',
-					MailCode: '',
-					Unit_Phone: '',
-					Email: '',
-					Profile: '',
-					Remarks: ''
+				Unit: {
+					unitId: '',
+					unitName: '',
+					unittypeId: '',
+					unitLevel: '',
+					director: '',
+					unitAddress: '',
+					mailcode: '',
+					unitPhone: '',
+					email: '',
+					profile: '',
+					remarks: '',
+					addname: '',
+					addtime: '',
+					updatename: '',
+					updatetime: '',
+					deletename: '',
+					deletetime: '',
+					timeliness: ''
 				},
 				//新增验证
 				forRules: {
-					Unit_Address: [{
+					unitAddress: [{
 						required: true,
 						message: '',
 						tigger: ['blur', 'change']
 					}],
-					Unit_Name: [{
+					unitName: [{
 						required: true,
 						message: '',
 						tigger: 'blur'
 					}],
 				},
-				borders:'#fff 1px solid'
+				borders: '#fff 1px solid'
 			};
 		},
 		methods: {
+			endform2() {
+				// this.Unit=[]
+
+				this.dialogFormVisible = true
+			},
 			handleOpen(key, keyPath) {
 				console.log(key, keyPath);
 			},
@@ -193,10 +218,6 @@
 					this.auto = "auto"
 				}
 			},
-			handleSelectionChange(val) {
-				this.multipleSelection = val;
-				console.log(this.multipleSelection)
-			},
 			handleSizeChange(val) {
 				console.log(`每页 ${val} 条`);
 			},
@@ -206,54 +227,178 @@
 			submitUpload() {
 				this.$refs.upload.submit();
 			},
-// 			<!-- Unit_Id: '1',
-// 			Unit_Name: '光辉集团',
-// 			UnitType_Id: '食品',
-// 			Unit_Level: '1',
-// 			Director: '晴雯',
-// 			Unit_Address: '广东',
-// 			MailCode: '10086',
-// 			Unit_Phone:'13323124562',
-// 			Email:'123@.com',
-// 			Profile:'简介1',
-// 			Remarks:'备注1' -->
 			showEdit1(row) {
 				console.log(row)
-				this.form2.Unit_Id = row.Unit_Id
-				this.form2.Unit_Name = row.Unit_Name
-				this.form2.UnitType_Id = row.UnitType_Id
-				this.form2.Unit_Level = row.Unit_Level
-				this.form2.Director = row.Director
-				this.form2.Unit_Address = row.Unit_Address
-				this.form2.Unit_Phone = row.Unit_Phone
-				this.form2.Email = row.Email
-				this.form2.Profile = row.Profile
-				this.form2.Remarks = row.Remarks
+				this.Unit.unitId = row.unitId
+				this.Unit.unitName = row.unitName
+				this.Unit.unittypeId = row.unittypeId
+				this.Unit.unitLevel = row.unitLevel
+				this.Unit.director = row.director
+				this.Unit.unitAddress = row.unitAddress
+				this.Unit.unitPhone = row.unitPhone
+				this.Unit.email = row.email
+				this.Unit.profile = row.profile
+				this.Unit.mailcode = row.mailcode
+				this.Unit.remarks = row.remarks
 				this.dialogFormVisible2 = true
 			},
+			handleSelectionChange(val) {
+				this.multipleSelection = [];
+				for (var i = 0; i < val.length; i++) {
+					this.multipleSelection.push(val[i].unitId);
+				}
+				console.log(val)
+			},
 			cutoff() {
+				var un = "默认"
 				if (this.multipleSelection.length == 0) {
 					this.$alert('<strong>请至选中一个！</strong>', '提示', {
 						dangerouslyUseHTMLString: true,
 					});
 				} else {
-					console.log("选中了！")
+					const _this = this
+					this.$confirm('是否删除？', '删除', {
+							distinguishCancelAndClose: true,
+							confirmButtonText: '是',
+							cancelButtonText: '否',
+							type: "warning"
+						})
+						.then(() => {
+							_this.axios.put("http://localhost:8089/threeproject/delUnit/" + this.multipleSelection +
+									"/" + un)
+								.then(function(response) {
+									var row = response
+									_this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+											params: _this.pageInfo
+										})
+										.then(function(response) {
+											_this.Units = response.data.list
+											_this.pageInfo.total = response.data.total
+											console.log(_this.UnitType)
+										}).catch(function(error) {
+											console.log(error)
+										})
+
+								}).catch(function(errer) {
+									console.log(errer)
+								})
+						}).catch(action => {
+							console.log("2")
+						});
 				}
 			},
-			dwjb(){
-				if(this.form2.Unit_Level==''){
-					this.borders="red 1px solid";
+			dwjb() {
+				if (this.Unit.unitLevel == '') {
+					this.borders = "red 1px solid";
 					console.log(this.borders)
-				}else{
-					this.borders="#fff 1px solid";
+				} else {
+					this.borders = "#fff 1px solid";
 				}
+			},
+			UnitAdd() {
+				console.log(this.Unit)
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/UnitAdd", this.Unit)
+					.then(function(response) {
+						var unit = response.data
+						_this.Units.push(unit)
+						_this.dialogFormVisible = false
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			UpdateUnit() {
+				const _this = this
+				console.log("this.Unit内容：")
+				console.log(this.Unit)
+				this.axios.put("http://localhost:8089/threeproject/UpdateUnit", this.Unit)
+					.then(function(response) {
+						var unit = response.data
+						console.log("response内容：")
+						console.log(response)
+						var row = _this.Units.filter(u => u.unitId == unit.unitId)[0]
+						row.unitName = unit.unitName
+						row.unittypeId = unit.unittypeId
+						row.unitLevel = unit.unitLevel
+						row.director = unit.director
+						row.unitAddress = unit.unitAddress
+						row.mailcode = unit.mailcode
+						row.unitPhone = unit.unitPhone
+						row.email = unit.email
+						row.profile = unit.profile
+						row.remarks = unit.remarks
+						_this.dialogFormVisible2 = false
+
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//分页
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo);
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log("-----------")
+						console.log(response.data)
+						_this.Units = response.data.list
+					}).catch(function(errer) {
+						console.log(errer)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log("-----------")
+						console.log(response.data)
+						_this.Units = response.data.list
+					}).catch(function(errer) {
+						console.log(errer)
+					})
 			}
+		},
+		created() {
+			const _this = this
+			// 			this.axios.get("http://localhost:8089/threeproject/findAllUnit")
+			// 			.then(function(response){
+			// 				_this.Units=response.data
+			// 				console.log(response)
+			// 			}).catch(function(errer){
+			// 				console.log(errer)
+			// 			}),
+			this.axios.get("http://localhost:8089/threeproject/UnitTypeShowAll")
+				.then(function(response) {
+					_this.UnitType = response.data
+					console.log(_this.UnitType)
+				}).catch(function(error) {
+					console.log(error)
+				}),
+				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.Units = response.data.list
+					_this.pageInfo.total = response.data.total
+					console.log(_this.UnitType)
+				}).catch(function(error) {
+					console.log(error)
+				})
+
 		}
 	}
 </script>
 
 <style>
-	
 	.el-textarea__inner {
 		height: 120px;
 	}
@@ -282,10 +427,27 @@
 		width: 100%;
 	}
 
-	.el-main {
-		color: #333;
+/* 	.el-header {
+		background-color: #B3C0D1;
+		color: #333; */
+		/* text-align: center; */
+		/* line-height: 60px; */
+	/* } */
 
-	}
+/* 	.el-aside {
+		background-color: #D3DCE6;
+		color: #333; */
+		/* text-align: center; */
+	/* 	height: 100%;
+		width: 100%; */
+	/* } */
+
+/* 	.el-main {
+		background-color: #E9EEF3;
+		color: #333; */
+		/* text-align: left; */
+		/* line-height: 160px; */
+	/* } */
 
 	.is-vertical {}
 

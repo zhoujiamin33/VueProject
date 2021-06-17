@@ -1,86 +1,93 @@
 <template>
 	<el-container>
 		
-		<!-- 侧边栏 -->
-		<el-aside  :width="isCollapse?'65px':'200px'" >
-		<!-- <el-aside width="auto"> -->
-			<!-- <el-scrollbar style="height: 100%;"> -->
-			<el-scrollbar>
-			<!-- 收起导航栏 -->
-			<div style="color: #fff; background-color:rgb(241, 241, 241); 
-				cursor: pointer;"  :class="{'web-top-close-nav':isCollapse}">
-				<i style="font-size: 30px; color: #303133;" class="open-close-nav" :class="{'el-icon-s-fold':!isCollapse,'el-icon-s-unfold':isCollapse}"
-					@click="openCloseNav"></i>
-			</div>		
-			<el-menu default-active="2" background-color="rgb(241, 241, 241)" text-color="#fff"
-				active-text-color="#409EFF" class="el-menu-vertical-demo" :collapse="isCollapse"
-				:collapse-transithion="false" unique-opened>
-					
-				<!-- 侧边栏内容 -->
-				<el-submenu :index="menu.parentId" v-for="menu in parentList">
-					<template #title>
-						<i :class="menu.menuIcon"></i>
-						<span style="font-size: 15px;color: #303133;">{{menu.menuName}}</span>
-					</template>
-						
-					<el-menu-item-group  v-for="childs in childrenList">
-						<el-menu-item  v-if="childs.parentId==menu.parentId">
-							<router-link :to="childs.menuPath" style="color:aliceblue">
-								<el-menu-item index="6-1" style="color: #303133;">	
-								   <i :class="childs.menuIcon"></i>
-									{{childs.menuName}}
-								</el-menu-item>	
-							</router-link>
-						</el-menu-item>
-					</el-menu-item-group>
-					
-				</el-submenu>
-				
-			</el-menu>
-			</el-scrollbar>
-		</el-aside>
+		<!-- 头部 -->
+		<el-header>
+			<div style="height:50px;width:200px;">
+				<el-avatar src="./public/logo.381d6a3e.png" style="margin-top: 10px;margin-left:10px;"></el-avatar>
+				<h3 style="color:#ffffff ;width: 200px;margin-top: -70px;margin-left:65px;">卓越培训系统</h3>
+			</div>
+			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #bababa;">
+				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
+				   <i class="el-icon-full-screen"
+				   style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;" @click=""></i>
+				<div class="photo" style="width:150px;text-align: center;">
+				    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" ></el-avatar>
+					<div style="margin-top: -70px;width: 270px;">
+						<el-dropdown >
+						  <span class="el-dropdown-link">Tsm管理员<i class="el-icon-arrow-down el-icon--right"></i></span>
+						  <template #dropdown>
+						    <el-dropdown-menu>
+						      <el-dropdown-item>修改密码</el-dropdown-item>
+						      <el-dropdown-item>修改资料</el-dropdown-item>
+							  <el-dropdown-item @click.native="logout">注销退出</el-dropdown-item>
+						    </el-dropdown-menu>
+						  </template>
+						</el-dropdown>
+					</div>
+				</div>
+		    </div>
+			
+		</el-header>
 		
 		<el-container>
-			<!-- 头部 -->
-			<el-header>
-				<!-- <div style="height:50px;"> -->
-					<!-- <img src="../../public/favicon.ico" /> -->
-					<!-- <span style="font-size: 20px;color: #FFFFFF;margin-left: 30px;">Tsm培训机构</span>
-				</div> -->
-				<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #bababa;">
-					<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
-					   <i class="el-icon-full-screen"
-					   style="
-					      position: absolute;
-					      left: 81%;
-					      top: 10px;
-					      padding: 5px 10px;
-					      font-size:33px;" @click=""></i>
-					<div class="photo" style="width:150px;text-align: center;">
-					    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-						<div style="margin-top: -70px;width: 270px;">
-							<el-dropdown >
-							  <span class="el-dropdown-link">Tsm管理员<i class="el-icon-arrow-down el-icon--right"></i></span>
-							  <template #dropdown>
-							    <el-dropdown-menu>
-							      <el-dropdown-item>修改密码</el-dropdown-item>
-							      <el-dropdown-item>修改资料</el-dropdown-item>
-								  <el-dropdown-item @click.native="logout">注销退出</el-dropdown-item>
-							    </el-dropdown-menu>
-							  </template>
-							</el-dropdown>
-						</div>
-					</div>
-			    </div>
-				
-			</el-header>
+			<!-- 侧边栏 -->
+			<el-aside  :width="isCollapse?'65px':'200px'" >
+			<!-- <el-aside width="auto"> -->
+				<!-- <el-scrollbar style="height: 100%;"> -->
+				<el-scrollbar>
+				<!-- 收起导航栏 -->
+				<div style="color: #fff; background-color:#e8eaee; 
+					cursor: pointer;"  :class="{'web-top-close-nav':isCollapse}">
+					<i style="font-size: 30px; color: #303133;" class="open-close-nav" :class="{'el-icon-s-fold':!isCollapse,'el-icon-s-unfold':isCollapse}"
+						@click="openCloseNav"></i>
+				</div>		
+				<el-menu default-active="2" background-color="#dcdee1" text-color="#fff"
+					active-text-color="#409EFF" class="el-menu-vertical-demo" :collapse="isCollapse"
+					:collapse-transithion="false" unique-opened>
+						
+					<!-- 侧边栏内容 -->
+					<el-submenu :index="menu.parentId" v-for="menu in parentList">
+						<template #title>
+							<i :class="menu.menuIcon"></i>
+							<span style="font-size: 15px;color: #666;">{{menu.menuName}}</span>
+						</template>
+							
+						<el-menu-item-group  v-for="childs in childrenList">
+							<el-menu-item  v-if="childs.parentId==menu.parentId">
+								<router-link :to="childs.menuPath" style="color:aliceblue">
+									<el-menu-item index="6-1" style="color: #666;">	
+									   <i :class="childs.menuIcon"></i>
+										{{childs.menuName}}
+									</el-menu-item>	
+								</router-link>
+							</el-menu-item>
+						</el-menu-item-group>
+						
+					</el-submenu>
+					
+				</el-menu>
+				</el-scrollbar>
+			</el-aside>
+			
+			<!-- 主体部 -->
 			<el-main>
 				<div style="width: 100%; height:30px;margin-top:-20px;">
-					<i class="el-icon-s-home" style="margin-left:-1220px;">首页</i>
+					<i class="el-icon-s-home" style="margin-left:-1220px;" @herf="{ path: '/' }">首页</i>
 				</div>
+				
+				<!-- 标签 -->
+				<!-- <template>
+					<el-breadcrumb separator-class="el-icon-arrow-right">
+					  <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+					  <el-breadcrumb-item :to="{ path: '/classtype' }">课类维护</el-breadcrumb-item>
+					  <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+					  <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+					</el-breadcrumb>
+				</template> -->
+				<!-- 路由 -->
 				<router-view></router-view>
 			</el-main>
-
 		</el-container>
 	</el-container>
 
@@ -170,26 +177,25 @@
 	.photo{
 		width: 50px;
 		height: 50px;
-		margin-top: -50px;
+		margin-top: -100px;
 		position: absolute;
 		left: 82%;
+		margin-right: 20px;
 	}
 	.el-header {
-		background-color: #ffffff;
+		background-color:#333333;
 		font-size: 20px;
-		align-items: center;
 		line-height: 60px;
 		font-size: 22px;
-		padding-right: 0%;
 	}
 	.el-header img {
 		vertical-align: middle;
 	}
 	.el-aside {
-		background-color: rgb(241, 241, 241);
+		background-color: #dcdee1;
 		display: block;
 		overflow-y: scroll;
-		height:820px;
+		height:650px;
 	}
 
 	.el-main {

@@ -160,8 +160,6 @@
 						console.log(error)
 					})
 			}
-
-
 		},
 		created() {
 			const _this = this
@@ -183,10 +181,6 @@
 					console.log(error)
 				})
 		}
-
-
-
-
 	}
 </script>
 
@@ -196,7 +190,6 @@
 		justify-content: flex-end;
 		/* align-content: center; */
 	}
-
 	/* .el-table th>.cell {
 	    display: inline-block;
 	    box-sizing: border-box;

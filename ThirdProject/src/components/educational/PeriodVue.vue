@@ -1,37 +1,212 @@
 <template>
 	<div>
-		<div style=" width:650px;margin-left: -140px;">
-			开课时段：
-			<el-input placeholder="请输入内容" v-model="input"  clearable style="width: 150px"> </el-input>
-			<el-row style="margin-left: 450px;margin-top: -40px;">
-			  <el-button >新增</el-button>
-			</el-row>
+		<div style=" width:650px;">
+			<el-button @click="dialogFormVisible=true">新增</el-button>
+			<el-button type="text" size="small" @click="del(scope.row)">批量删除</el-button>
+			<el-dialog title="添加培训时段" v-model="dialogFormVisible">
+				<el-form :model="form">
+					<el-form-item label="培训时段" :label-width="formLabelWidth">
+						<el-input v-model="form.period" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="新增人" :label-width="formLabelWidth">
+						<el-input v-model="form.addname" autocomplete="off"></el-input>
+					</el-form-item>
+				</el-form>
+				<template #footer>
+					<span class="dialog-footer">
+						<el-button @click="dialogFormVisible = false">取 消</el-button>
+						<el-button type="primary" @click="addTrainingperiod">确 定</el-button>
+					</span>
+				</template>
+			</el-dialog>
 		</div>
+
+
+		<el-dialog title="修改培训时段" v-model="dialogFormVisible2">
+			<el-form :model="form">
+				<el-form-item label="编号" :label-width="formLabelWidth">
+					<el-input v-model="form.periodId" disabled></el-input> <!-- disabled 只读 -->
+				</el-form-item>
+				<el-form-item label="培训时间" :label-width="formLabelWidth">
+					<el-input v-model="form.period" autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="修改人" :label-width="formLabelWidth">
+					<el-input v-model="form.addname" autocomplete="off"></el-input>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="dialogFormVisible2 = false">取 消</el-button>
+					<el-button type="primary" @click="updateTrainingperiod">确 定</el-button>
+				</span>
+			</template>
+		</el-dialog>
+
+
 		<!-- 表格 -->
 		<div>
-			<el-table :data="tableData" stripe style="width: 80%;margin-left:90px;">
+			<el-table :data="trainingperiodData" border style="width: 80%;margin-left: 200px;">
+				<el-table-column fixed prop="periodId" label="编号" width="180"> </el-table-column>
 				<el-table-column prop="name" type="selection" width="180"> </el-table-column>
-			    <el-table-column prop="date"  label="编号"  width="180"> </el-table-column>
-			    <el-table-column prop="address" label="培训时段"> </el-table-column>
-				<el-table-column fixed="right" label="操作" width="100">
-				  <template #default="scope">
-				    <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button>
-					<el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
-				  </template>
+				<el-table-column prop="period" label="培训时段"> </el-table-column>
+				<el-table-column label="操作" width="120">
+					<template #default="scope">
+						<el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+						<el-button @click="showEdit(scope.row)" type="text" size="small">编辑</el-button>
+						<el-button type="text" size="small" @click="delTrainingperiod(scope.row)">删除</el-button>
+					</template>
 				</el-table-column>
 			</el-table>
+		</div>
+		
+		<!-- 分页 -->
+		<div>
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
+			 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+			</el-pagination>
 		</div>
 	</div>
 </template>
 
 <script>
-	export default{
-		name:"period",
-		data(){
-			return{
-				input:"",
-				tableData:[{date: '2016-05-02',checked:"", name: '王小虎',  province: '上海'}]
+	import qs from "qs"
+	export default {
+		name: "PeriodVue",
+		data() {
+			return {
+				pageInfo:{
+					currentPage:1,  //标识当前页码
+					pagesize:2,  //每页多少条数据
+					total:0
+				},
+				trainingperiodData: [],
+				dialogFormVisible: false,
+				dialogFormVisible2: false,
+				formLabelWidth: '100px',
+				form: {
+					periodId: "",
+					period: "",
+					addname: ""
+				}
 			}
+		},
+		methods: {
+			handleClick(row) {
+				console.log(row);
+			},
+			showEdit(row) {
+				this.form.periodId = row.periodId
+				this.form.period = row.period
+				this.form.addname = row.addname
+				this.dialogFormVisible2 = true
+			},
+
+			//增加
+			addTrainingperiod() {
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/trainingperiod", this.form)
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/findPage2",{
+							params:_this.pageInfo
+						})
+						.then(function(response){
+								_this.trainingperiodData=response.data.list
+								_this.pageInfo.total=response.data.total
+							}).catch(function(error) {
+								console.log(error)
+						})
+						_this.dialogFormVisible=false
+						for(var key in _this.form){
+							delete _this.form[key]
+						}
+					}).catch(function(error){
+						console.log(error)
+					})
+			},
+
+			//修改
+			updateTrainingperiod() {
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/trainingperiod", this.form)
+					.then(function(response) {
+						var trainingperiod = response.data
+						var row = _this.trainingperiodData.filter(t => t.periodId == trainingperiod.periodId)[0]
+						row.period = trainingperiod.period
+						row.addname = trainingperiod.addname
+						_this.dialogFormVisible2 = false
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//删除
+			delTrainingperiod(row) {
+				const _this = this
+				var flag = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.delete("http://localhost:8089/threeproject/trainingperiod/" + row.periodId)
+						.then(function(response) {
+							var dept = response.data
+							var rows = _this.trainingperiodData
+								.filter(t => t.periodId != row.periodId)
+							console.log("del rows:%o", rows)
+							_this.trainingperiodData = rows
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
+			},
+			handleCurrentChange(currentPage){
+				var _this=this
+				this.pageInfo.currentPage=currentPage
+				var ps=qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				.then(function(response){
+					console.log(response.data)
+					_this.trainingperiodData=response.data.list
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			handleSizeChange(pagesize){
+				var _this=this
+				this.pageInfo.pagesize=pagesize
+				var ps=qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				.then(function(response){
+					console.log(response.data)
+					_this.trainingperiodData=response.data.list
+				}).catch(function(error){
+					console.log(error)
+				})
+			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findTrainingperiods")
+				.then(function(response) {
+					_this.trainingperiodData = response.data
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+			.then(function(response){
+				console.log(response)
+				_this.trainingperiodData=response.data.list
+				_this.pageInfo.total=response.data.total
+			}).catch(function(error){
+				console.log(error)
+			})
 		}
 	}
 </script>

@@ -51,7 +51,6 @@
 		defineComponent,
 		ref
 	} from 'vue'
-
 	export default {
 		methods: {
 			handleClick(row) {
@@ -115,20 +114,15 @@
 
 <style>
 	el-table-column {}
-
 	.z-boby {
 		height: 500px;
 	}
-
 	.mianwbk {}
-
 	.mianboby {
 		display: flex;
-
 		justify-content: space-between;
 		align-content: center
 	}
-
 	.mianbiao {
 		align-items: flex-start;
 	}

@@ -91,7 +91,6 @@
 		defineComponent,
 		ref
 	} from 'vue'
-
 	export default {
 		methods: {
 			handleClick(row) {
@@ -121,7 +120,6 @@
 				
 				},
 				// formLabelWidth: '120px'
-
 			}
 		},
 		methods: {
@@ -228,8 +226,8 @@
 <style>
 	.mianboby {
 		display: flex;
-
 		justify-content: space-between;
 		align-content: center
 	}
 </style>
+© 2021 GitHub, Inc.

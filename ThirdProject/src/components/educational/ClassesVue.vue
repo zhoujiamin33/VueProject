@@ -1,143 +1,261 @@
 <template>
 	<div>
-		<div style="margin-left: -660px;">
+		<div style="margin-left: -815px;">
 			快速检索：
-			<el-select v-model="select" placeholder="请选择" style="margin-top:50px;">
-				<el-option label="班级名称" value="1">班级名称</el-option>
-				<el-option label="班级编号" value="2">班级编号</el-option>
-				<el-option label="上课教师" value="3">上课教师</el-option>
+			<el-select v-model="value" placeholder="请选择" style="margin-top:50px; width: 120px;" clearable>
+				<el-option label="班级名称" value="班级名称"></el-option>
+				<el-option label="班级编号" value="班级编号"></el-option>
+				<el-option label="上课教师" value="上课教师"></el-option>
 			</el-select>
-			<el-input placeholder="请输入内容" v-model="input"  clearable style="width: 120px;"> </el-input>
+			<el-input placeholder="请输入内容" v-model="input"  clearable style="width: 230px;" />
 		</div>
 		<div>
-			<el-row style="margin-top: -40px;margin-left:970px;">
-			   <el-button @click="dialogFormVisible=true">新增</el-button>
+			<el-row style="margin-top: -40px;margin-left:1120px;">
+				<el-button @click="selectByContion">查询</el-button>
+			    <el-button @click="dialogFormVisible=true">新增</el-button>
 			</el-row>
-		</div>	
-			<!-- 新增弹窗 -->
-			<el-dialog title="新增班级" v-model="dialogFormVisible">
-			  <el-form :model="form">
-				  
-			    <div style="display: flex;justify-content: space-between;">
-					<el-form-item label="班级名称" :label-width="formLabelWidth">
-					  <el-input v-model="form.name" autocomplete="off"></el-input>
-					</el-form-item>
-					<el-form-item label="培训期限" :label-width="formLabelWidth">
-					  <el-date-picker v-model="form.value2"  type="daterange" align="right"  unlink-panels
-					        range-separator="至"  start-placeholder="开始日期"
-					        end-placeholder="结束日期" :shortcuts="shortcuts" style="width: 300px;">
-					  </el-date-picker>
-					</el-form-item>
-					
-				</div>
-				
-			   <div style="display: flex;justify-content: space-between;">
-				   <el-form-item label="年届管理" :label-width="formLabelWidth">
-				     <el-select v-model="form.year">
-				   	  <el-option></el-option>
-				     </el-select>
-					</el-form-item> 
-					<el-form-item label="学期管理" :label-width="formLabelWidth">
-					  <el-select v-model="form.schoolterm">
-						  <el-option></el-option>
-					  </el-select>
-					</el-form-item>
-			   </div>
-			   <div style="display: flex;justify-content: space-between;">
-				   
-				   <el-form-item label="培训类别" :label-width="formLabelWidth">
-				     <el-select v-model="form.coursetype">
-				   	  <el-option></el-option>
-				     </el-select>
-				   </el-form-item>
-				   <el-form-item label="开设课程" :label-width="formLabelWidth">
-				     <el-select v-model="form.course">
-				   	  <el-option></el-option>
-				     </el-select>
-				   </el-form-item>
-			   </div>
-				
-				<div style="display: flex;justify-content: space-between;">
-					
-					<el-form-item label="使用教材" :label-width="formLabelWidth">
-					  <el-select v-model="form.books">
-						  <el-option></el-option>
-					  </el-select>
-					</el-form-item>
-					<el-form-item label="开班人数" :label-width="formLabelWidth">
-					  <el-select v-model="form.catacity">
-						  <el-option></el-option>
-					  </el-select>
-					</el-form-item>
-				</div>
-				
-				<div style="display: flex;justify-content: space-between;">
-					<div>
-						<el-form-item label="开班设置" :label-width="formLabelWidth" >
-						  <el-select v-model="form.openclass" style="width: 120px;">
-							  <el-option></el-option>
-						  </el-select>
-						</el-form-item>
-					</div>
-					<div style="display: flex;justify-content: space-between;margin-left:150px;">
-						<el-form-item label="课时" :label-width="formLabelWidth" style="margin-left:-300px ;">
-						  <el-input v-model="form.classhours" style="width: 120px;"></el-input>
-						</el-form-item>
-						<el-form-item label="学费" :label-width="formLabelWidth" style="margin-left: -300px;">
-						  <el-input v-model="form.money" style="width: 120px;"> </el-input>
-						</el-form-item>
-					</div>
-				</div>
-				
-				
-			  </el-form>
-			  <template #footer>
-			    <span class="dialog-footer">
-			      <el-button @click="dialogFormVisible = false">取 消</el-button>
-			      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-			    </span>
-			  </template>
-			</el-dialog>
+		</div>
+			
+		<el-dialog title="新增班级" v-model="dialogFormVisible" width="75%">
+			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>选择教室
+				  </template>
+				  <el-select v-model="form.classroomId">
+					<el-option v-for="room in classRoom" :value="room.classroomId" :label="room.classroomName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-location-outline"></i>年届管理
+				  </template>
+				  <el-select v-model="session">
+					<el-option v-for="year in yeardata" :value="year.sessionName" :label="year.sessionName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-tickets"></i>学期管理
+				  </template>
+				  <el-select v-model="semester">
+				  	<el-option v-for="term in schoolterm" :value="term.semesterName" :label="term.semesterName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>培训类别
+				  </template>
+				  <el-select v-model="form.classtype" @change="selectCourse(classtype)">
+					<el-option v-for="type in coursetype" :value="type.classtypeName" :label="type.classtypeName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>开设课程
+				  </template>
+				  <el-select v-model="form.courseId">
+					<el-option v-for="courses in course" :value="courses.courseId" :label="courses.courseName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>使用教材
+				  </template>
+				  <el-select v-model="form.userbookId">
+					<el-option v-for="books in book" :value="books.bookId" :label="books.bookname"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>教员老师
+				  </template>
+				  <el-select v-model="form.teacherId">
+					<el-option v-for="emp in empdata" :value="emp.empId" :label="emp.empName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>带班教师
+				  </template>
+				  <el-select v-model="form.empId">
+					<el-option v-for="emp in empdata" :value="emp.empId" :label="emp.empName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<template #extra>
+				  <el-button type="primary" size="small" @click="addClass">新增</el-button>
+				</template>
+			</el-descriptions>
+		</el-dialog>
 		
+		<!-- 修改班级 -->
+		<el-dialog title="修改班级" v-model="dialogFormEdit" width="75%">
+			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>选择教室
+				  </template>
+				  <el-select v-model="formEdit.classroomId">
+					<el-option v-for="room in classRoom" :value="room.classroomId" :label="room.classroomName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>使用教材
+				  </template>
+				  <el-select v-model="formEdit.userbookId">
+					<el-option v-for="books in book" :value="books.bookId" :label="books.bookname"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>开始日期
+				  </template>
+				   <el-date-picker
+				        v-model="formEdit.starteddate"
+				        align="center"
+				        type="date"
+				        placeholder="选择日期"
+				        :disabled-date="disabledDate"
+				        :shortcuts="shortcuts">
+				    </el-date-picker>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>计划结束日期
+				  </template>
+				 <el-date-picker
+				      v-model="formEdit.enddate"
+				      align="center"
+				      type="date"
+				      placeholder="选择日期"
+				      :disabled-date="disabledDate"
+				      :shortcuts="shortcuts">
+				  </el-date-picker>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>教员老师
+				  </template>
+				  <el-select v-model="formEdit.teacherId">
+					<el-option v-for="emp in empdata" :value="emp.empId" :label="emp.empName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>带班教师
+				  </template>
+				  <el-select v-model="formEdit.empId">
+					<el-option v-for="emp in empdata" :value="emp.empId" :label="emp.empName"></el-option>
+				  </el-select>
+				</el-descriptions-item>
+				<template #extra>
+				  <el-button type="primary" size="small" @click="updateClass">保存</el-button>
+				</template>
+			</el-descriptions>
+		</el-dialog>
+		<!-- 查看班级详情 -->
+		<el-dialog title="查看班级详情" v-model="dialogFormsee" width="75%">
+			 <el-descriptions class="margin-top"  :column="3" :size="size" border>
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>班级号
+				  </template>
+				 <el-input v-model="form.classesNumber"></el-input>
+				</el-descriptions-item> 
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>班级名称
+				  </template>
+				 <el-input v-model="form.classesName"></el-input>
+				</el-descriptions-item> 
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>教室
+				  </template>
+				 <el-input v-model="form.classroomName"></el-input>
+				</el-descriptions-item>
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>使用教材
+				  </template>
+				 <el-input v-model="form.bookname"></el-input>
+				</el-descriptions-item>
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>开始日期
+				  </template>
+				    <el-date-picker
+				        v-model="form.starteddate" align="center" type="date"
+				        placeholder="选择日期" :disabled-date="disabledDate" :shortcuts="shortcuts">
+				    </el-date-picker>
+				</el-descriptions-item>
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>计划结束日期
+				  </template>
+				 <el-date-picker 
+					 v-model="form.enddate" align="center" type="date" placeholder="选择日期" 
+					 :disabled-date="disabledDate" :shortcuts="shortcuts">
+				 </el-date-picker>
+				</el-descriptions-item>
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>教员老师
+				  </template>
+				 <el-input v-model="form.teacherName"></el-input>
+				</el-descriptions-item>
+				
+				<el-descriptions-item>
+				  <template #label>
+					<i class="el-icon-office-building"></i>带班教师
+				  </template>
+				  <el-input v-model="form.empName"></el-input>
+				</el-descriptions-item>
+				
+				<template #extra>
+				  <el-button type="primary" size="small" @click="updateClass">保存</el-button>
+				</template>
+			</el-descriptions>
+			<p>班级学员</p>
+			<el-table :data="tableData" height="250" border style="width: 100%">
+			    <el-table-column prop="date" label="日期" width="180"></el-table-column>
+			    <el-table-column prop="name" label="姓名"  width="180"></el-table-column>
+			    <el-table-column prop="address" label="地址"></el-table-column>
+			</el-table>
+		</el-dialog>
 	</div>
 	<!-- 表格 -->
 	<div style="margin-top: 30px;">
-		<el-table :data="tableData"  border style="width:100%;margin-left:10px;">
-			<el-table-column fixed  type="selection"> </el-table-column>
-		    <el-table-column fixed prop="date" label="班级编号" width="150"> </el-table-column>
-			<el-table-column  prop="date" label="班级名称" width="150">
-				<template #default="scope">
-					<a href="#" @click="del(scope.row)">{{scope.row.data}}</a>
-				</template>
+		<el-table :data="tableData" height="300" border style="width:100%;margin-left:10px;">
+			<el-table-column fixed  type="selection" align="center"> </el-table-column>
+		    <el-table-column fixed prop="classesId" label="班级编号" width="150" align="center"> </el-table-column>
+			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
+		    <el-table-column prop="starteddate" label="培训期限"  width="200" align="center"></el-table-column>
+		    <el-table-column prop="city" label="上课安排" width="120" align="center"> </el-table-column>
+		    <el-table-column prop="emp.empName"  label="任课老师"  width="150" align="center"> </el-table-column>
+		    <el-table-column prop="zip" label="班级人数" width="120" align="center"> </el-table-column>
+			<el-table-column prop="zip" label="开班状态" width="120" align="center">
+					<template v-slot="scope">
+						<p v-if="scope.row.classesOpen==0">未开班</p>
+						<p v-if="scope.row.classesOpen==1">已开班</p>
+					</template>
 			</el-table-column>
-		    <el-table-column prop="province" label="培训期限"  width="120"> </el-table-column>
-		    <el-table-column prop="city" label="上课安排" width="120"> </el-table-column>
-		    <el-table-column prop="address"  label="任课老师"  width="600"> </el-table-column>
-		    <el-table-column prop="zip" label="班级人数" width="120"> </el-table-column>
-			<el-table-column prop="zip" label="派课" width="120"> </el-table-column>
-			<el-table-column prop="zip" label="开班状态" width="120"> </el-table-column>
-		    <el-table-column fixed="right" label="操作" width="100">
+		    <el-table-column fixed="right" label="操作" width="150" align="center">
 		      <template #default="scope">
-				<el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+				<el-button @click="show(scope.row)" type="text" size="small">查看</el-button>
+				<el-button @click="showEdit(scope.row)" type="text" size="small">修改</el-button>
+				<el-button @click="handleClick(scope.row)" type="text" size="small">派课</el-button>
 		      </template>
 		    </el-table-column>
 		</el-table>
 	</div>
-	<!-- 分页 -->
-	<div class="block" style="margin-left:-130px;margin-top: 10px;">
-	    <el-pagination
-		  每页大小发生改变时怎么处理
-	      @size-change="handleSizeChange"
-	      @current-change="handleCurrentChange"
-		  当前页码
-	      :current-page="pageInfo.currentPage"
-	      :page-sizes="[2, 3, 6, 10]"
-		  每页数据
-	      :page-size="pageInfo.pagesize"
-	      layout="total, sizes, prev, pager, next, jumper"
-	      :total="pageInfo.total">
-	    </el-pagination>
-	</div> 
 </template>
 
 <script>
@@ -146,26 +264,189 @@
 	    name:"ClassesVue",
 		data (){
 			return{
-				pageInfo:{
-					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
-					total:0
-				},
-				select:"",
+				value:"",
 				input:"",
 				tableData:[],
+				//年届名称
+				session:"",
+				// 学期名称
+				semester:"",
+				// 课类
+				classtype:"",
+				//新增弹窗
 				dialogFormVisible:false,
+				yeardata:[],schoolterm:[],course:[],coursetype:[],book:[],classRoom:[],empdata:[],
+				//新增表单
 				form:{
-					name:"",value2:"",openclass:"",year:"",schoolterm:"",coursetype:"",course:"",catacity:"",books:"",classhours:"",
-					money:"",
-				}
+					classtype:"",
+					classesName:"",
+					userbookId:"",
+					courseId:"",
+					classesNumber:"",
+					classroomName:"",
+					bookname:"",
+					starteddate:"",
+					enddate:"",
+					teacherName:"",
+					empName:""
+				},
+				dialogFormEdit:false,
+				//修改表单
+				formEdit:{
+					classesId:"",classroomId:"",userbookId:"",starteddate:"",enddate:"",teacherId:"",empId:""
+				},
+				dialogFormsee:false,
 			}
 		},
 		 setup() {
 		    return {
 		      input: ref('')
 		    }
-		  }
+		  },
+		  methods:{
+			  // 根据课类名查询课程
+			 selectCourse(classtypeId){
+				const _this=this
+				classtypeId=this.form.classtype
+				this.axios.get("http://localhost:8089/threeproject/selectByCourseTypeId/"+classtypeId)
+					.then(function(response) {
+					console.log(response)
+					_this.course=response.data
+				}).catch(function(error) {
+					console.log(error)
+				}) 
+			 },
+			 //新增班级
+			 addClass(){
+				 const _this=this
+				 this.form.classesName=this.session+this.semester+this.form.classtype
+				 console.log(this.form)
+				 this.axios.post("http://localhost:8089/threeproject/insertClass",this.form)
+				 .then(function(response){
+					_this.selectAll()
+					_this.dialogFormVisible=false
+				 }).catch(function(error){
+					 console.log(error)
+				 })
+			 },
+			 //修改显示
+			 showEdit(row){
+				this.formEdit.classesId=row.classesId
+				this.formEdit.classroomId=row.classroomId,
+				this.formEdit.userbookId=row.userbookId,
+				this.formEdit.starteddate=row.starteddate,
+				this.formEdit.enddate=row.enddate,
+				this.formEdit.teacherId=row.teacherId,
+				this.formEdit.empId=row.empId, 
+				this.dialogFormEdit=true
+			 },
+			 // 查看显示
+			 show(row){
+				console.log(row+"heihei")
+			 	this.form.classesNumber=row.classesNumber,
+			 	this.form.classesName=row.classesName,
+			 	this.form.classroomName=row.classroom.classroomName,
+			 	this.form.bookname=row.book.bookname,
+			 	this.form.starteddate=row.starteddate,
+			 	this.form.enddate=row.enddate,
+				//教员老师
+			 	this.form.teacherName=row.emp.teacherName, 
+				//带班老师
+				this.form.empName=row.emp.empName, 
+			 	this.dialogFormsee=true			
+			 },
+			 //修改班级
+			 updateClass(){
+				const _this=this
+				this.axios.put("http://localhost:8089/threeproject/updateClass",this.formEdit)
+				.then(function(response){
+					console.log(response)
+					_this.selectAll()
+					_this.dialogFormEdit=false
+				}).catch(function(error){
+					console.log(error)
+				})
+			 },
+			 // 多条件查询
+			 selectByContion(){
+				const _this=this
+				 this.axios.get("http://localhost:8089/threeproject/selectByContion/"+this.value+"/"+this.input)
+				.then(function(response){
+					console.log(response)
+					_this.tableData=response.data
+				}).catch(function(error){
+					console.log(error)
+				})
+			 },
+			 selectAll(){
+				 const _this=this
+				 this.axios.get("http://localhost:8089/threeproject/findAllClass")
+				 .then(function(response){
+				 	console.log(response)
+				 	_this.tableData=response.data
+				 }).catch(function(error){
+				 	console.log(error)
+				 })
+			 }
+		  },
+		  created() {
+		  	const _this=this
+		  	this.axios.get("http://localhost:8089/threeproject/findAllClass")
+		  	.then(function(response){
+		  		console.log(response)
+				_this.tableData=response.data
+		  	}).catch(function(error){
+				console.log(error)
+			}),
+			// 年届
+			this.axios.get("http://localhost:8089/threeproject/findyear")
+				.then(function(response) {
+				console.log(response)
+				_this.yeardata=response.data
+			}).catch(function(error) {
+				console.log(error)
+			}),
+			// 学期
+			this.axios.get("http://localhost:8089/threeproject/findSemester")
+				.then(function(response) {
+				console.log(response)
+				_this.schoolterm=response.data
+			}).catch(function(error) {
+				console.log(error)
+			}),
+			// 课类
+			this.axios.get("http://localhost:8089/threeproject/findClassType")
+				.then(function(response) {
+				console.log(response)
+				_this.coursetype=response.data
+			}).catch(function(error) {
+				console.log(error)
+			}),
+			// 使用教材
+			this.axios.get("http://localhost:8089/threeproject/selectAllBook")
+				.then(function(response) {
+				console.log(response)
+				_this.book=response.data
+			}).catch(function(error) {
+				console.log(error)
+			}),
+			//查询所有教室
+			this.axios.get("http://localhost:8089/threeproject/findAllClassRoom")
+				.then(function(response) {
+				console.log(response)
+				_this.classRoom=response.data
+			}).catch(function(error) {
+				console.log(error)
+			})
+			//查询教师
+			this.axios.get("http://localhost:8089/threeproject/findEmp")
+				.then(function(response) {
+				console.log(response)
+				_this.empdata=response.data
+			}).catch(function(error) {
+				console.log(error)
+			})
+		}
 	}
 </script>
 

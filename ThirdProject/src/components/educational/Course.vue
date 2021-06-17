@@ -10,21 +10,21 @@
 		  <el-form :model="form">
 		    <div >
 				<div style="display: flex; justify-content: space-between;">
-					<el-form-item label="课程类型" :label-width="formLabelWidth">
+					<el-form-item label="课程类型" >
 					  <el-select v-model="form.classtypeId" autocomplete="off" >
 						  <el-option v-for="item in typedata" :value="item.classtypeId" :label="item.classtypeName"></el-option>
 					  </el-select>
 					</el-form-item>
-					<el-form-item label="课程名称" :label-width="formLabelWidth">
+					<el-form-item label="课程名称" >
 					  <el-input v-model="form.courseName" autocomplete="off"></el-input>
 					</el-form-item>
 				</div>
 				<div style="display: flex; justify-content: space-between;">
-					<el-form-item label="课时" :label-width="formLabelWidth"
+					<el-form-item label="课时" 
 					 :rules="[{ type: 'number', message: '年龄必须为数字值'}]">
 					  <el-input v-model="form.classhours" autocomplete="off"></el-input>节
 					</el-form-item>
-					<el-form-item label="费用" :label-width="formLabelWidth">
+					<el-form-item label="费用" >
 					  <el-input v-model="form.courseMoney" autocomplete="off"></el-input>元
 					</el-form-item>
 				</div>
@@ -43,19 +43,19 @@
 		  <el-form :model="form">
 		    <div >
 				<div style="display: flex; justify-content: space-between;">
-					<el-form-item label="课程编号" :label-width="formLabelWidth">
+					<el-form-item label="课程编号">
 					  <el-input v-model="form.courseId" autocomplete="off" disabled></el-input>
 					</el-form-item>
-					<el-form-item label="课程名称" :label-width="formLabelWidth">
+					<el-form-item label="课程名称" >
 					  <el-input v-model="form.courseName" autocomplete="off"></el-input>
 					</el-form-item>
 				</div>
 				<div style="display: flex; justify-content: space-between;">
-					<el-form-item label="课时" :label-width="formLabelWidth"
+					<el-form-item label="课时" 
 					 :rules="[{ type: 'number', message: '年龄必须为数字值'}]">
 					  <el-input v-model="form.classhours" autocomplete="off"></el-input>节
 					</el-form-item>
-					<el-form-item label="费用" :label-width="formLabelWidth">
+					<el-form-item label="费用" >
 					  <el-input v-model="form.courseMoney" autocomplete="off"></el-input>元
 					</el-form-item>
 				</div>
@@ -101,10 +101,10 @@
 			  <!-- 新增课程详细 -->
 			  <el-dialog title="新增课程详细" v-model="dialogDetailForm" style="width:300px;">
 				  <el-form :model="detailsForm" style="display: flex;justify-content: space-between;">
-					<el-form-item label="课程序列号" :label-width="formLabelWidth">
+					<el-form-item label="课程序列号">
 						<el-input v-model="detailsForm.serial" autocomplete="off"></el-input>
 					</el-form-item>  
-				  	<el-form-item label="课程详细名称" :label-width="formLabelWidth">
+				  	<el-form-item label="课程详细名称" >
 				  		<el-input v-model="detailsForm.detailcourseName" autocomplete="off"></el-input>
 				  	</el-form-item>
 				  </el-form>
@@ -119,10 +119,10 @@
 			  <!-- 修改课程详细 -->
 			  <el-dialog title="修改课程详细" v-model="dialogDetailForm2" style="width:300px;">
 			  		<el-form :model="detailsForm" style="display: flex;justify-content: space-between;">
-			  			<el-form-item label="课程序列号" :label-width="formLabelWidth">
+			  			<el-form-item label="课程序列号">
 			  				<el-input v-model="detailsForm.serial" autocomplete="off"></el-input>
 			  			</el-form-item>  
-			  		<el-form-item label="课程详细名称" :label-width="formLabelWidth">
+			  		<el-form-item label="课程详细名称">
 			  			<el-input v-model="detailsForm.detailcourseName" autocomplete="off"></el-input>
 			  		</el-form-item>
 			  		</el-form>
@@ -149,10 +149,15 @@
 		    <el-table-column  prop="classtype.classtypeName" label="课程类型" width="150" align="center" > </el-table-column>
 		    <el-table-column prop="classhours" label="课时量"  width="120" align="center"> </el-table-column>
 		    <el-table-column prop="courseMoney" label="费用" width="120" align="center"> </el-table-column>
-		    <el-table-column  fixed="right" prop="courseState ? 0 '课程开报中':'课程停报中'"  label="开设状态" width="200" align="center">
-		    	<el-tooltip :content="'课程' + value+'报中'" placement="top">
-		    	  <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"  active-value="开" inactive-value="停"></el-switch>
-		    	</el-tooltip>
+		    <el-table-column  fixed="right" prop="courseState"  label="开设状态" width="200" align="center">
+				<template #default="scope">
+					<p v-if="courseState==0">
+						<el-switch v-model="form.delivery"></el-switch>
+					</p>
+					<p v-if="courseState==1">
+						<el-switch v-model="form.delivery"></el-switch>
+					</p>
+				</template>
 		    </el-table-column>
 			<el-table-column fixed="right" label="操作"  width="100" align="center">
 				<template #default="scope">
@@ -203,7 +208,7 @@ export default{
 			typedata:[],
 			tableData:[],
 			form:{
-				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:"",courseState:""
+				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:"",courseState:true
 			},
 			detailData:[],
 			dialogFormVisible:false,
@@ -285,13 +290,12 @@ export default{
 					  console.log(error)
 				  })
 				_this.dialogFormVisible=false 
-				for(var key in _this.form){
-					delete _this.form[key];
-				}
+				this.$refs[form].resetFields()
 			  }).catch(function(error){
 				  console.log(error)
 			  })
 		  },
+		  //修改课程
 		  updateCourse(){
 		  	const _this=this
 		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form)
@@ -303,9 +307,23 @@ export default{
 				datas.courseMoney=course.courseMoney
 				datas.classhours=course.classhours
 		  		_this.dialogFormVisible2=false
+				this.$refs[form].resetFields()
 		  	}).catch(function(error){
 		  		console.log(error)
 		  	})
+		  },
+		  //修改课程状态
+		  updateCourseState(row){
+			 const _this=this
+			 console.log(row)
+			 this.axios.put("http://localhost:8089/threeproject/updateCourse",row)
+			 .then(function(response){
+			 	console.log(response)
+			 	var course=response.data
+			 	var datas=_this.tableData.filter(d=>d.courseId==course.courseId)[0]
+			 }).catch(function(error){
+			 	console.log(error)
+			 }) 
 		  },
 		  //查询课程详细表
 		  findDetailCourses(courseId){
@@ -323,6 +341,7 @@ export default{
 			  	console.log(error)
 			  })
 		  },
+		  //新增课程详细
 		  addDetails(){
 			const _this=this
 			this.detailsForm.courseId=this.pageInfo2.courseId
@@ -339,10 +358,14 @@ export default{
 					console.log(error)
 				})
 				_this.dialogDetailForm=false
+				for(var key in _this.detailsForm){
+					delete _this.detailsForm[key];
+				}
 			}).catch(function(error){
 				console.log(error)
 			}) 
 		  },
+		  //显示课程
 		  setCurrent(row) {
 		    // this.$refs.singleTable.setCurrentRow(row);
 		  	this.form.courseId=row.courseId
@@ -352,6 +375,7 @@ export default{
 		  	this.form.courseState=row.courseState
 		  	this.dialogFormVisible2=true
 		  },
+		  //显示课程详细
 		  showRowDetail(row){
 			this.detailsForm.detailcourseId=row.detailcourseId
 			this.detailsForm.serial=row.serial
@@ -359,6 +383,7 @@ export default{
 			this.dialogDetailForm2=true
 			console.log("课程详细"+this.detailsForm)
 		  },
+		  //修改课程详细
 		  updateDetails(){
 			  const _this=this
 			  this.axios.put("http://localhost:8089/threeproject/updateDetails",this.detailsForm)
@@ -368,6 +393,9 @@ export default{
 				   row.detailcourseName=detailcourse.detailcourseName
 				   row.serial=detailcourse.serial
 				   _this.dialogDetailForm2=false
+				   for(var key in _this.detailsForm){
+				   	delete _this.detailsForm[key];
+				   }
 			  }).catch(function(error){
 				  console.log(error)
 			  })
