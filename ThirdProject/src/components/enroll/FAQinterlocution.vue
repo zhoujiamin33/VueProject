@@ -15,35 +15,35 @@
 				<el-button @click="dialogFormVisible= true">管理</el-button>
 				<el-dialog title="FAQ问答管理" :data="FaqQuestionsDate" v-model="dialogFormVisible">
 					<el-form :inline="true" :model="form" class="demo-ruleForm">
-				<el-button type="" @click="dialogFormVisible2 = true">新增</el-button>
+						<div  style="margin-left: 500px;">
+							<el-button type="" @click="dialogFormVisible2 = true">新增</el-button>
 
-						<el-button @click="delReturnvisit" style="margin-left: 600px;">删除</el-button>
+							<el-button @click="delFaqQuestions">删除</el-button>
+						</div>
 						<div>
 							<el-form :inline="true" :model="form" class="demo-ruleForm">
 								<el-table :data="FaqQuestionsDate" stripe style="width: 100%"
-									@selection-change="handleSelectionChange2" @filter-change="filterChange">
-									<el-table-column type="" width="45">
+									@selection-change="handleSelectionChange" @filter-change="filterChange">
+									<el-table-column type="selection" width="45">
 									</el-table-column>
-									<el-table-column prop="" label="ID" width="80px">
+									<el-table-column prop="faqId" label="ID" width="80px">
 									</el-table-column>
-									<el-table-column prop="form.problem" label="问题" width="160px">
+									<el-table-column prop="problem" label="问题" width="160px">
 									</el-table-column>
-									<el-table-column prop="form.answer" label="回答">
+									<el-table-column prop="answer" label="回答">
 									</el-table-column>
-
+									<el-table-column fixed="right" label="操作" width="70">
+										<template #default="scope">
+											<el-button type="text" @click="showEdit(scope.row)">修改</el-button>
+										</template>
+									
+									</el-table-column>
 								</el-table>
 							</el-form>
 
 						</div>
 
-						<div style="display: flex; justify-content: space-between; margin-top: 40px;">
-							<el-form-item label="新增问题 :" prop="">
-								<el-input v-model="" style="width: 200px;"></el-input>
-							</el-form-item>
-							<el-form-item label="新增回答 :" prop="">
-								<el-input v-model="" style="width: 200px;"></el-input>
-							</el-form-item>
-						</div>
+
 
 					</el-form>
 
@@ -68,18 +68,35 @@
 						<el-form-item label="修改人:" :label-width="formLabelWidth">
 							<el-input v-model="form.addname" autocomplete="off"></el-input>
 						</el-form-item>
-
-						<el-form-item label="点击次数:" :label-width="formLabelWidth">
-							<el-input v-model="form.clickcount" autocomplete="off"></el-input>
-						</el-form-item>
 					</el-form>
 					<template #footer>
 						<span class="dialog-footer">
 							<el-button type="primary" @click="addFaqQuestions">新建并保存</el-button>
-							<el-button @click="dialogFormVisible = false">取 消</el-button>
+							<el-button @click="dialogFormVisible2 = false">取 消</el-button>
 						</span>
 					</template>
 				</el-dialog>
+				
+				<el-dialog title="修改FAQ信息" v-model="dialogFormVisible3">
+					<el-form :model="form">
+						<el-form-item label="FAQ问题:">
+							<el-input v-model="form.problem" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="问题答案:">
+							<el-input v-model="form.answer" autocomplete="off"></el-input>
+						</el-form-item>
+						<el-form-item label="修改人:">
+							<el-input v-model="form.updatename" autocomplete="off"></el-input>
+						</el-form-item>
+					</el-form>
+					<template #footer>
+						<span class="dialog-footer">
+							<el-button type="primary" @click="updateFaqQuestions">新建并保存</el-button>
+							<el-button @click="dialogFormVisible3 = false">取 消</el-button>
+						</span>
+					</template>
+				</el-dialog>
+				
 				<!-- 
 				<el-popconfirm title="这是一段内容确定删除吗？">
 					<template #reference>
@@ -134,15 +151,20 @@
 					label: '问题'
 				}],
 				FaqQuestionsDate: [],
+				dialogFormVisible3: false,
 				dialogFormVisible2: false,
 				dialogFormVisible: false,
+				
 				formLabelWidth: '100px',
 				form: {
 					faqId: "",
 					problem: "",
 					answer: "",
 					addname: "",
-					clickcount: ""
+					clickcount: "",
+					updatename:'',
+					updatetime:'',
+					timeliness:''
 				},
 				formLabelWidth: '120px',
 				value: '',
@@ -177,32 +199,44 @@
 
 		},
 		methods: {
-
+			handleSelectionChange(val) {
+				this.multipleSelection = [];
+				this.multipleSelection = val;
+				console.log(val + "--------------")
+			},
 			handleClick(row) {
 				console.log(row);
 			},
-			showEdit(row) {
-				console.log(row);
-				this.form.planreturnvisit = row.planreturnvisit;
-				this.form.courseName = row.courseName;
-				this.form.registerId = row.registerId;
-				this.form.courseId = row.courseId;
-				this.form.consultant = row.consultant;
-				this.form.sex = row.sex;
-				this.form.sourceId = row.sourceId;
-				this.form.attentstate = row.attentstate;
-				this.form.consultationmode = row.consultationmode
-				this.form.timeliness = row.timeliness
-				this.form.addname = row.addname
-				this.form.consultcontent = row.consultcontent
-				this.form.phone = row.phone
-				this.form.paystate = row.paystate
+			// showEdit(row) {
+			// 	console.log(row);
+			// 	this.form.planreturnvisit = row.planreturnvisit;
+			// 	this.form.courseName = row.courseName;
+			// 	this.form.registerId = row.registerId;
+			// 	this.form.courseId = row.courseId;
+			// 	this.form.consultant = row.consultant;
+			// 	this.form.sex = row.sex;
+			// 	this.form.sourceId = row.sourceId;
+			// 	this.form.attentstate = row.attentstate;
+			// 	this.form.consultationmode = row.consultationmode
+			// 	this.form.timeliness = row.timeliness
+			// 	this.form.addname = row.addname
+			// 	this.form.consultcontent = row.consultcontent
+			// 	this.form.phone = row.phone
+			// 	this.form.paystate = row.paystate
 
-				this.dialogFormVisible2 = true
+			// 	this.dialogFormVisible2 = true
+			// },
+			showEdit(row) {
+				this.form.faqId=row.faqId
+				this.form.problem = row.problem
+				this.form.answer = row.answer
+				this.form.updatename = row.updatename
+				this.dialogFormVisible3 = true
 			},
+			//新增
 			addFaqQuestions() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/FaqQuestions", this.form)
+				this.axios.post("http://localhost:8089/threeproject/AddFaqQuestions", this.form)
 					.then(function(response) {
 						console.log(response)
 						var faq_questions = response.data
@@ -216,6 +250,56 @@
 						console.log(error)
 					})
 			},
+			//修改
+			updateFaqQuestions() {
+				const _this = this
+				console.log(this.faqId+"kkk")
+				this.axios.put("http://localhost:8089/threeproject/UpFaqQuestions", this.form)
+					.then(function(response) {
+						
+						// var faqQuestions = response.data
+						// var row = _this.FaqQuestionsDate.filter(f => f.faqId == faqQuestions.faqId)[0]
+						// console.log("----22")
+						// row.problem = faqQuestions.problem
+						// 	console.log("-----------3")
+						// row.answer = faqQuestions.answer
+						// row.updatename = faqQuestions.updatename
+						_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+							.then(function(response) {
+								_this.FaqQuestionsDate = response.data
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					_this.dialogFormVisible3 = false
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			delFaqQuestions() {
+				const _this = this
+				_this.multipleSelection.forEach(item => {
+					console.log(item)
+					console.log(item.faqId+"=======")
+					item.deletename = "启用人"
+					this.axios.put("http://localhost:8089/threeproject/DelFaq/" + item.faqId)
+						.then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+								.then(function(response) {
+									_this.FaqQuestionsDate = response.data
+									console.log(response)
+								}).catch(function(error) {
+									console.log(error)
+								})
+							var Faq = response.data
+							console.log("response内容:")
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				})
+			},
+			
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage

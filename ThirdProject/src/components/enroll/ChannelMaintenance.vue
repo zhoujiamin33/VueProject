@@ -44,7 +44,6 @@
 						<el-form-item label="修改人名称" :label-width="formLabelWidth">
 							<el-input v-model="form.addname" autocomplete="off"></el-input>
 						</el-form-item>
-
 					</el-form>
 					<template #footer>
 						<span class="dialog-footer">
@@ -128,7 +127,7 @@
 			},
 			addSource() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Source", this.form)
+				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form)
 					.then(function(response) {
 						console.log(response)
 						var source = response.data
@@ -144,7 +143,7 @@
 			},
 			updateSource() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/Source", this.form)
+				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form)
 					.then(function(response) {
 						var source = response.data
 						console.log("source:%o", source)
