@@ -37,7 +37,6 @@
 						<p v-if="scope.row.entryfees.feesaccumulated!=0">
 							<el-button @click="qianfei(scope.row)" type="text" size="small">学费补缴</el-button>
 						</p>
-	 					
 	 			     </template>
 	 			</el-table-column>
 	 		</el-table>
@@ -348,8 +347,8 @@
 					//修改报班缴费的累计欠费
 					_this.updateAccumulated1(_this.form.feesId,_this.form.feesaccumulated,_this.form2.alongmoney)
 					console.log(_this.form.feesId+"asdc"+_this.form.feesaccumulated)
-					_this.form=[]
-					_this.form2=[]
+					_this.form={}
+					_this.form2={}
 					_this.dialogoutStanding=false
 				}).catch(function(error){
 					console.log(error)

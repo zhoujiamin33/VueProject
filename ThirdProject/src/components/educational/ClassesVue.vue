@@ -230,28 +230,36 @@
 			    <el-table-column prop="address" label="地址"></el-table-column>
 			</el-table>
 		</el-dialog>
+		
+		<!-- 派课 -->
+		<el-dialog title="派课" v-model="dialogFormtokei" width="75%">
+			
+		</el-dialog>
 	</div>
 	<!-- 表格 -->
 	<div style="margin-top: 30px;">
 		<el-table :data="tableData" height="300" border style="width:100%;margin-left:10px;">
 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
-		    <el-table-column fixed prop="classesId" label="班级编号" width="150" align="center"> </el-table-column>
+		    <el-table-column fixed prop="classesId" label="班级编号" width="150" align="center"></el-table-column>
 			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
 		    <el-table-column prop="starteddate" label="培训期限"  width="200" align="center"></el-table-column>
-		    <el-table-column prop="city" label="上课安排" width="120" align="center"> </el-table-column>
 		    <el-table-column prop="emp.empName"  label="任课老师"  width="150" align="center"> </el-table-column>
 		    <el-table-column prop="zip" label="班级人数" width="120" align="center"> </el-table-column>
-			<el-table-column prop="zip" label="开班状态" width="120" align="center">
-					<template v-slot="scope">
-						<p v-if="scope.row.classesOpen==0">未开班</p>
-						<p v-if="scope.row.classesOpen==1">已开班</p>
-					</template>
+			<el-table-column prop="zip" label="开班状态" width="200" align="center">
+				<template v-slot="scope">
+					<p v-if="scope.row.classesOpen==0">
+						<el-button type="warning" icon="el-icon-more-outline" circle size="mini" @click="updateClassesOpen1(scope.row)"></el-button>
+					</p>
+					<p v-if="scope.row.classesOpen==1">
+						<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateClassesOpen0(scope.row)"></el-button>
+					</p>
+				</template>
 			</el-table-column>
 		    <el-table-column fixed="right" label="操作" width="150" align="center">
 		      <template #default="scope">
 				<el-button @click="show(scope.row)" type="text" size="small">查看</el-button>
 				<el-button @click="showEdit(scope.row)" type="text" size="small">修改</el-button>
-				<el-button @click="handleClick(scope.row)" type="text" size="small">派课</el-button>
+				<el-button @click="selectById(scope.row)" type="text" size="small">派课</el-button>
 		      </template>
 		    </el-table-column>
 		</el-table>
@@ -264,6 +272,7 @@
 	    name:"ClassesVue",
 		data (){
 			return{
+				switchvalue:"",
 				value:"",
 				input:"",
 				tableData:[],
@@ -296,6 +305,14 @@
 					classesId:"",classroomId:"",userbookId:"",starteddate:"",enddate:"",teacherId:"",empId:""
 				},
 				dialogFormsee:false,
+				//修改班级状态的id
+				form2:{
+					classesId:"",
+					updatename:""
+				},
+				dialogFormtokei:false,
+				//根据id查询班级信息
+				selectById:[]
 			}
 		},
 		 setup() {
@@ -386,6 +403,54 @@
 				 	_this.tableData=response.data
 				 }).catch(function(error){
 				 	console.log(error)
+				 })
+			 },
+			 //修改为已开班状态
+			 updateClassesOpen1(row){
+				 const _this=this
+				 this.form2.classesId=row.classesId
+				 this.form2.updatename="admin"
+				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2)
+				 .then(function(response){
+					 _this.axios.get("http://localhost:8089/threeproject/findAllClass")
+					 .then(function(response){
+						console.log(response)
+						_this.tableData=response.data
+					 }).catch(function(error){
+						console.log(error)
+					 })
+				 }).catch(function(error){
+				 	console.log(error)
+				 })
+			 },
+			 //修改为未开班状态
+			 updateClassesOpen0(row){
+			 	const _this=this
+				this.form2.classesId=row.classesId
+				this.form2.updatename="admin"
+			 	this.axios.put("http://localhost:8089/threeproject/updateClassesOpen0",this.form2)
+			 	.then(function(response){
+			 		_this.axios.get("http://localhost:8089/threeproject/findAllClass")
+			 		.then(function(response){
+			 			console.log(response)
+			 			_this.tableData=response.data
+			 		}).catch(function(error){
+			 			console.log(error)
+			 		})
+			 	}).catch(function(error){
+			 		console.log(error)
+			 	})			 
+			 },
+			 //根据id查询班级详细信息
+			 selectById(row){
+				 const _this=this
+				 this.axios.get("http://localhost:8089/threeproject/selectById/"+row.classesId)
+				 .then(function(response){
+					console.log(response)
+					_this.selectById=response.data
+					_this.dialogFormtokei=true
+				 }).catch(function(error){
+					 console.log(error)
 				 })
 			 }
 		  },

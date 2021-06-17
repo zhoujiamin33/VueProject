@@ -151,11 +151,11 @@
 		    <el-table-column prop="courseMoney" label="费用" width="120" align="center"> </el-table-column>
 		    <el-table-column  fixed="right" prop="courseState"  label="开设状态" width="200" align="center">
 				<template #default="scope">
-					<p v-if="courseState==0">
-						<el-switch v-model="form.delivery"></el-switch>
+					<p v-if="scope.row.courseState==0">
+						<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateapproval(scope.row)"></el-button>
 					</p>
-					<p v-if="courseState==1">
-						<el-switch v-model="form.delivery"></el-switch>
+					<p v-if="scope.row.courseState==1">
+						<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateRevokeapproval(scope.row)"></el-button>
 					</p>
 				</template>
 		    </el-table-column>
@@ -208,7 +208,7 @@ export default{
 			typedata:[],
 			tableData:[],
 			form:{
-				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:"",courseState:true
+				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:""
 			},
 			detailData:[],
 			dialogFormVisible:false,
@@ -289,8 +289,8 @@ export default{
 				  }).catch(function(error){
 					  console.log(error)
 				  })
-				_this.dialogFormVisible=false 
-				this.$refs[form].resetFields()
+				_this.dialogFormVisible=false
+				_this.form={}
 			  }).catch(function(error){
 				  console.log(error)
 			  })

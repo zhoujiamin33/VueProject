@@ -45,9 +45,9 @@
 
 		<!-- 表格 -->
 		<div>
-			<el-table :data="trainingperiodData" border style="width: 80%;margin-left: 200px;">
-				<el-table-column fixed prop="periodId" label="编号" width="180"> </el-table-column>
+			<el-table :data="trainingperiodData" border style="width:100%;margin-left:10px;">
 				<el-table-column prop="name" type="selection" width="180"> </el-table-column>
+				<el-table-column fixed prop="periodId" label="编号" width="180"> </el-table-column>
 				<el-table-column prop="period" label="培训时段"> </el-table-column>
 				<el-table-column label="操作" width="120">
 					<template #default="scope">
@@ -116,9 +116,7 @@
 								console.log(error)
 						})
 						_this.dialogFormVisible=false
-						for(var key in _this.form){
-							delete _this.form[key]
-						}
+						_this.form={}
 					}).catch(function(error){
 						console.log(error)
 					})
@@ -192,13 +190,6 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findTrainingperiods")
-				.then(function(response) {
-					_this.trainingperiodData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
 			this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
 			.then(function(response){
 				console.log(response)

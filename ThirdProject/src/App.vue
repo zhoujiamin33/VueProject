@@ -11,6 +11,7 @@ import MainVue from './components/MainVue.vue'
 // import mains from './components/main.vue'
 
 
+
 export default {
   name: 'App',
   components: {
