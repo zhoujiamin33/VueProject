@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<div class="mianboby" >
+		<div class="mianboby">
 			<div>
-				<el-button type="" @click="dialogFormVisible = true">新增</el-button>
+				<el-button type="" @click="dialogFormVisible = true" :before-close="cls">新增</el-button>
 				<el-dialog title="新增学期信息" v-model="dialogFormVisible">
 					<el-form :model="form">
 						<el-form-item label="学期名称:" :label-width="formLabelWidth">
@@ -20,7 +20,7 @@
 					</template>
 				</el-dialog>
 			</div>
-			<el-dialog title="修改学期信息" v-model="dialogFormVisible2">
+			<el-dialog title="修改学期信息" v-model="dialogFormVisible2" :before-close="cls">
 				<el-form :model="form">
 					<el-form-item label="id" :label-width="formLabelWidth">
 						<el-input v-model="form.semesterId" autocomplete="off" disabled></el-input>
@@ -93,13 +93,34 @@
 			handleClick(row) {
 				console.log(row);
 			},
+			cls(){
+				const _this = this
+				
+				for (var key in _this.form) {
+					delete _this.form[key];
+					console.log("111")
+					_this.dialogFormVisible2 = false
+				}
+			},
+
 			addSemester() {
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/Semester", this.form)
 					.then(function(response) {
+					
+						_this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								console.log(response)
+								_this.SemesterDate = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
 						console.log(response)
 						var semester = response.data
-						_this.SemesterDate.push(semester)
+						
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];
@@ -113,6 +134,16 @@
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/Semester", this.form)
 					.then(function(response) {
+						// this.axios.get("http://localhost:8089/threeproject/findPage", {
+						// 		params: this.pageInfo
+						// 	})
+						// 	.then(function(response) {
+						// 		console.log(response.data)
+						// 		_this.SemesterDate = response.data.list
+						// 	}).catch(function(error) {
+						// 		console.log(error)
+						// 	})
+						
 						var semester = response.data
 						console.log("semester:%o", semester)
 						var row = _this.SemesterDate.filter(d => d.semesterId == semester.semesterId)[0]
@@ -135,7 +166,7 @@
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findPage", {
+				this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -150,7 +181,7 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findPage", {
+				this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -190,6 +221,7 @@
 		justify-content: flex-end;
 		/* align-content: center; */
 	}
+
 	/* .el-table th>.cell {
 	    display: inline-block;
 	    box-sizing: border-box;

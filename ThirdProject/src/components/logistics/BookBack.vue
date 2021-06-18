@@ -3,12 +3,13 @@
 		<div class="a">
 			<b class="b" style="font-size: 15px;margin-left: -582px;">快速检索：</b>
 			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				<el-option label="教材名" value="教材名"></el-option>
+				<el-option label="经办人" value="经办人"></el-option>
 			</el-select>
 			<el-input style="width: 180px;" v-model="input" placeholder="请输入内容" clearable></el-input>
 			<el-button style="float:right;margin-left: 10px;">删除</el-button>
 			<el-button style="float:right" @click="thkd=true">退回开单</el-button>
-			<el-button style="float:right">查询</el-button>
+			<el-button style="float:right" @click="selectBookback">查询</el-button>
 
 			<el-dialog title="退回开单" v-model="thkd">
 				<el-form :model="form" label-width="80px" size="mini">
@@ -54,7 +55,7 @@
 			<el-dialog title="选择教材" width="47%" v-model="thkd1">
 				<el-form :model="form1" label-width="80px" size="mini">
 					<el-form-item label="退回教材 :">
-						<el-select style="margin-left: -442px;" v-model="form1.book.bookId" placeholder="请选择" autocomplete="off" @change="selectbooksprice()">
+						<el-select style="margin-left: -442px;width: 193px;" v-model="form1.book.bookId" placeholder="请选择" autocomplete="off" @change="selectbooksprice()">
 							<el-option v-for="item in bookdata" :key="item.bookId" :label="item.bookname" :value="item.bookId" />
 						</el-select>
 					</el-form-item>
@@ -121,20 +122,8 @@
 	} from 'vue'
 	export default {
 		name: "BookBack",
-		setup() {
-			return {
-				input: ref('')
-			}
-		},
 		data() {
 			return {
-				options: [{
-					value: '选项1',
-					label: '教材名'
-				}, {
-					value: '选项2',
-					label: '经办人'
-				}],
 				form1: {
 					book: {},
 					course: {}
@@ -154,7 +143,8 @@
 				tableData1: [],
 				tableData: [],
 				receipts: 0,
-				value: '',
+				value: "",
+				input:"",
 				pageInfo: {
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
@@ -262,6 +252,19 @@
 					});
 				});
 			},
+			
+			//多条件查询
+			selectBookback() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectBookback/"+this.value+"/"+this.input)
+					.then(function(response) {
+						console.log(response)
+						_this.tableData = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			
 			selectAllBooks() {
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/selectAllBook")
