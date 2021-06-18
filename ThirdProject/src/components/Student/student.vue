@@ -62,41 +62,80 @@
 
 		<!-- 修改 -->
 		<el-dialog title="修改学员" v-model="dialogFormVisible2">
-			<el-form :model="addForm" :inline="true" :rules="rules" ref="addForm">
-				<el-form-item label="生源渠道:" required prop="sourceId">
+			<el-descriptions :model="addForm" class="margin-top" title="修改学员" :column="2" :size="size" border>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-user"></i>
+						生源渠道:
+					</template>
 					<el-select v-model="addForm.sourceId" placeholder="请选择生源渠道" style="width: 178px;">
 						<el-option :label="item.sourceName" :value="item.sourceId" v-for="item in Source"></el-option>
 					</el-select>
-				</el-form-item>
-				<el-form-item label="姓名:" prop="studentName" label-width="80px" required>
-					<el-input v-model="addForm.studentName"></el-input>
-				</el-form-item>
-				<el-form-item label="性别:" prop="sex" label-width="90px">
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-mobile-phone"></i>
+						姓名:
+					</template>
+			<el-input v-model="addForm.studentName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						性别:
+					</template>
 					<el-radio v-model="addForm.sex" label="男">男</el-radio>
 					<el-radio v-model="addForm.sex" label="女">女</el-radio>
-				</el-form-item>
-				<el-form-item label="居住地址:" prop="address" required>
-					<el-input v-model="addForm.address"></el-input>
-				</el-form-item>
-				<el-form-item label="移动电话:" prop="studentPhone">
-					<el-input v-model="addForm.studentPhone"></el-input>
-				</el-form-item>
-				<el-form-item label="家长姓名:" prop="parentname">
-					<el-input v-model="addForm.parentname"></el-input>
-				</el-form-item>
-				<el-form-item label="家长手机:" prop="parentphone" required>
-					<el-input v-model="addForm.parentphone"></el-input>
-				</el-form-item>
-				<el-form-item label="入学备注:" prop="entrance">
-					<el-input v-model="addForm.entrance"></el-input>
-				</el-form-item>
-				<el-form-item label="课程顾问:" prop="empName" required>
-					<el-input v-model="addForm.empName"></el-input>
-				</el-form-item>
-				<el-form-item label="录入人:" prop="empName" label-width="80px">
-					<el-input v-model="addForm.empName2"></el-input>
-				</el-form-item>
-			</el-form>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						居住地址:
+					</template>
+				<el-input v-model="addForm.address"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						移动电话:
+					</template>
+				<el-input v-model="addForm.studentPhone"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						家长姓名:
+					</template>
+						<el-input v-model="addForm.parentname"></el-input>
+					
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						移动电话:
+					</template>
+				<el-input v-model="addForm.parentphone"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						入学备注:
+					</template>
+				<el-input v-model="addForm.entrance"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						课程顾问:
+					</template>
+			<el-input v-model="addForm.empName"></el-input>
+			
+				</el-descriptions-item>
+			
+				
+			
+			</el-descriptions>
+			
 			<template #footer>
 				<span class="dialog-footer">
 					<el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -132,13 +171,13 @@
 					{{this.addForm.studytime}}
 				</el-descriptions-item>
 			</el-descriptions>
-			<el-table border title="预报课程">
-				<el-table-column label="课程名称" prop=""></el-table-column>
-				<el-table-column label="课时数" prop=""></el-table-column>
-				<el-table-column label="课程费用" prop=""></el-table-column>
-				<el-table-column label="优惠打折" prop=""></el-table-column>
-				<el-table-column label="扣课时数" prop=""></el-table-column>
-				<el-table-column label="实收费用" prop=""></el-table-column>
+			<el-table border title="预报课程" :data="Supplementary"> 
+				<el-table-column label="课程名称" prop="supplementaryName"></el-table-column>
+				<el-table-column label="课时数" prop="classhours"></el-table-column>
+				<el-table-column label="课程费用" prop="courseMoney"></el-table-column>
+				<el-table-column label="优惠打折" prop="无折扣">无折扣</el-table-column>
+				<el-table-column label="扣课时数" prop="0">0</el-table-column>
+				<el-table-column label="实收费用" prop="course.courseMoney"></el-table-column>
 				<el-table-column label="操作">
 					<el-button type="text">删除</el-button>
 				</el-table-column>
@@ -151,12 +190,12 @@
 					</template>
 					<div style="display: flex;width: 150px;">
 						<el-select v-model="addForm.classtypeId" placeholder="请选择课类" style="width: 178px;"
-							@change="findclasstypeId(addForm.classtypeId)">
+							@change="findclasstypeId">
 							<el-option :label="item.classtypeName" :value="item.classtypeId" v-for="item in classType">
 							</el-option>
 						</el-select>
-						<el-select v-model="addForm.courseId" placeholder="请选择课程" style="width: 178px;">
-							<el-option :label="item.courseName" :value="item.courseId" v-for="item in Course">
+						<el-select v-model="addForm.course.courseId" placeholder="请选择课程" style="width: 178px;" @change="selectByCourseId">
+							<el-option :label="i.courseName" :value="i.courseId" v-for="i in addForm.course">
 							</el-option>
 						</el-select>
 					</div>
@@ -166,56 +205,58 @@
 						<i class="el-icon-mobile-phone"></i>
 						课时数:
 					</template>
-					<el-input v-model="register.consultant"></el-input>
+					{{this.addForm.classhours}}
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-location-outline"></i>
 						费用:
 					</template>
-					<el-input v-model="register.phone"></el-input>
+					{{this.addForm.courseMoney}}
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-tickets"></i>
 						优惠折扣:
 					</template>
-					<el-input v-model="addForm.parentname"></el-input>
+					无优惠
+					<!-- <el-input v-model="addForm.parentname"></el-input> -->
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						扣课时数:
 					</template>
-					<el-input v-model="addForm.parentphone"></el-input>
+					0
+					<!-- <el-input v-model="addForm.parentphone"></el-input> -->
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						备注:
 					</template>
-					<el-input v-model="addForm.parentphone"></el-input>
+					<!-- <el-input v-model="addForm.parentphone"></el-input> -->
 				</el-descriptions-item>
 				<el-descriptions-item>
-					<el-button>添加预报</el-button>
+					<el-button @click="AddSupplementary">添加预报</el-button>
 				</el-descriptions-item>
 			</el-descriptions>
-			<el-descriptions :model="addForm" class="margin-top" :column="2" :size="size" border>
+			<el-descriptions :model="supplementaryform" class="margin-top" :column="2" :size="size" border>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						费用总额:
 					</template>
-					<el-input v-model="addForm.parentphone"></el-input>
+					<el-input v-model="supplementaryform.course.courseMoney"></el-input>
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						缴费方式:
 					</template>
-					<el-select v-model="addForm.sourceId" placeholder="请选择缴费方式" style="width: 178px;">
-						<el-option label="sourceName" value="sourceId">全额缴费</el-option>
-						<el-option label="sourceName" value="sourceId">预缴费</el-option>
+					<el-select v-model="supplementaryform.payment" placeholder="请选择缴费方式" style="width: 178px;">
+						<el-option label="全额缴费" value="1">全额缴费</el-option>
+						<el-option label="预缴费" value="2">预缴费</el-option>
 					</el-select>
 				</el-descriptions-item>
 				<el-descriptions-item>
@@ -223,14 +264,14 @@
 						<i class="el-icon-tickets"></i>
 						课程顾问:
 					</template>
-					<!-- <el-input v-model="register.emp.empId"></el-input> -->
+					<el-input v-model="supplementaryform.addname"></el-input>
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-tickets"></i>
 						录入人:
 					</template>
-					<el-input v-model="addForm.studytime"></el-input>
+					<el-input v-model="supplementaryform.addname"></el-input>
 				</el-descriptions-item>
 
 			</el-descriptions>
@@ -238,7 +279,7 @@
 			<template #footer>
 				<span class="dialog-footer">
 					<el-button @click="dialogFormVisible4 = false">关闭</el-button>
-					<el-button type="primary" @click="Addstudent">确定添加</el-button>
+					<el-button type="primary" @click="okSupplementary">确定添加</el-button>
 				</span>
 			</template>
 		</el-dialog>
@@ -658,7 +699,9 @@
 					classtypeName: '', //课程名称
 					classtypeId: '', //课程编号
 					teacherId: '', //教师
-					status: '' //学员状态表的状态
+					status: '', //学员状态表的状态
+					classhours:'',//课时数
+					course:[]
 				},
 				Course: [], //课程
 
@@ -708,20 +751,79 @@
 				Supende: [], //停课表
 				Droport: [], //退学表
 				Stutable: [], //学员表
-				classType: [] //课类表
-
+				classType: [], //课类表
+				Supplementary:[],//预报总表
+				supplementaryform:{
+					course:[],
+					supplementaryId:'',
+					supplementaryName:'',
+					payment:'',//缴费方式
+					addname:'',//录入人
+					courseId: '', //课程编号
+					courseName: '', //课程名称
+						courseMoney: '', //应收费用
+						detailsupplementaryName:''
+				}
 			}
 		},
 		methods: {
 			// 获取课类的编号
 			findclasstypeId(classtypeId) {
+				console.log("kkk"+classtypeId)
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findclasstypeId/" + classtypeId)
 					.then(function(response) {
-						_this.classType = response.data
-						_this.addForm.courseId = _this.classType.courseId
-						_this.addForm.courseName = _this.classType.courseName
-						// _this.addForm.
+						_this.Course = response.data
+						_this.addForm.course = _this.Course
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			selectByCourseId(courseId){
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectByCourseId/" + courseId)
+					.then(function(response) {
+						_this.Course = response.data
+						_this.addForm.classhours = _this.Course.classhours
+						_this.addForm.courseMoney = _this.Course.courseMoney
+						console.log(_this.addForm.courseMoney)
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			// 新增预报
+			AddSupplementary(){
+				this.supplementaryform.course.classhours = this.addForm.classhours
+				this.supplementaryform.course.courseId = this.addForm.courseId
+				this.supplementaryform.course.courseMoney = this.addForm.courseMoney
+				this.supplementaryform.supplementaryName=this.Course.courseName
+				this.Supplementary.push(this.supplementaryform)
+			},
+			// 确定补报
+			okSupplementary(){
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/AddSupplementary", this.supplementaryform)
+					.then(function(response) {
+						_this.Supplementary = response.data
+						_this.AddDetailsupplementary(_this.Supplementary.supplementaryId,_this.Supplementary.supplementaryName)
+						
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			AddDetailsupplementary(supplementaryId,supplementaryName){
+				this.supplementaryform.supplementaryId=supplementaryId
+				this.supplementaryform.detailsupplementaryName=supplementaryName
+				console.log("this.supplementaryform.supplementaryId"+this.supplementaryform.supplementaryId)
+				console.log("this.supplementaryform.supplementaryId"+this.supplementaryform.detailsupplementaryName)
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/AddDetailsupplementary", this.supplementaryform)
+					.then(function(response) {
+						_this.Supplementary = response.data
+						_this.dialogFormVisible4=false
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -914,10 +1016,10 @@
 			//查看详细信息
 			look(row) {
 				this.addForm.sourceName = row.sourceName
-				this.addForm.studentName = row.register.consultant
+				this.addForm.studentName = row.studentName
 				this.addForm.sex = row.sex
 				this.addForm.address = row.address
-				this.addForm.studentPhone = row.register.phone
+				this.addForm.studentPhone = row.studentPhone
 				this.addForm.parentname = row.parentname
 				this.addForm.parentphone = row.parentphone
 				this.addForm.entrance = row.entrance
@@ -1180,15 +1282,13 @@
 					})
 			},
 			AddclassesId() {
-				// console.log("学员表："+this.addForm.studentId)
-				// console.log("学员表1："+this.addForm.classesId)
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/addclassesId/" + this.addForm.classesId + "/" + this
 						.addForm.studentId)
 					.then(function(response) {
 						_this.StudentStatus = response.data
+						_this.findstuclass(_this.addForm.studentId)
 						_this.dialogFormVisible7 = false
-						_this.selectName()
 
 						console.log(response)
 					}).catch(function(error) {
@@ -1232,19 +1332,19 @@
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
-				}),
+				})
 
 				// 课程
-				this.axios.get("http://localhost:8089/threeproject/findcourse", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					_this.Course = response.data.list
-					_this.pageInfo.total = response.data.total
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+				// this.axios.get("http://localhost:8089/threeproject/findcourse", {
+				// 	params: this.pageInfo
+				// })
+				// .then(function(response) {
+				// 	_this.Course = response.data.list
+				// 	_this.pageInfo.total = response.data.total
+				// 	console.log(response)
+				// }).catch(function(error) {
+				// 	console.log(error)
+				// })
 			// 在学员交接表查询咨询登记信息；招生审核和教务审核
 			// this.axios.get("http://localhost:8089/threeproject/findallsou")
 			// .then(function(response) {

@@ -39,7 +39,7 @@ import FAQ from '../components/enroll/FAQinterlocution.vue'
 import channelmaintenance from '../components/enroll/ChannelMaintenance.vue'
 
 // 学员管理
-import student from '../components/Student/student.vue'
+import student from '../components/Student/Student.vue'
 import suspende from '../components/Student/Suspende.vue'
 import rakeareport from '../components/Student/RakeaReport.vue'
 import shift from '../components/Student/Shift.vue'
