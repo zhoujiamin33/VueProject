@@ -20,12 +20,12 @@
 			<div style="">
 				<el-button>查询</el-button>
 
-				<el-button @click="dialogFormVisible = true">新增</el-button>
-				<el-button @click="shengpi">审批</el-button>
+				<el-button @click="dialogFormVisible = true" >新增</el-button>
+				<el-button @click="shengpi" >审批</el-button>
 
 				<el-button @click="delRegister">删除</el-button>
 				<div>
-					<el-dialog :required="true" title="新增咨询登记信息" v-model="dialogFormVisible">
+					<el-dialog :required="true" title="新增咨询登记信息" v-model="dialogFormVisible" :before-close="cls">
 
 						<el-form :inline="true" :model="form" ref="ruleForm" class="demo-ruleForm">
 
@@ -115,7 +115,7 @@
 
 		<div>
 			<el-table ref="multipleTable" :data="ConsultationDate" tooltip-effect="dark"
-				style="width: 100%;margin-left: ;" @selection-change="handleSelectionChange">
+				style="width: 100%;margin-left: ;" @selection-change="handleSelectionChange" :before-close="cls">
 				<el-table-column type="selection" width="45">
 				</el-table-column>
 				<el-table-column prop="registerId" label="Id" width="50">
@@ -154,8 +154,8 @@
 				<el-table-column fixed="right" label="操作" width="130">
 					<template #default="scope">
 						<el-button type="text" @click="shengpi">审批</el-button>
-						<el-button type="text" @click="showEdit(scope.row)">修改</el-button>
-						<el-button type="text" @click="showEdit2(scope.row)">回访</el-button>
+						<el-button type="text" @click="showEdit(scope.row)" >修改</el-button>
+						<el-button type="text" @click="showEdit2(scope.row)" >回访</el-button>
 					</template>
 
 				</el-table-column>
@@ -163,7 +163,7 @@
 
 			<!-- 修改 -->
 			<div>
-				<el-dialog v-model="dialogFormVisible2" title="修改咨询登记信息">
+				<el-dialog v-model="dialogFormVisible2" title="修改咨询登记信息" :before-close="cls">
 					<el-form :inline="true" :model="form" ref="ruleForm" class="demo-ruleForm">
 						<div style="display: flex; justify-content: space-between;">
 							<el-form-item label="接待人 :" prop="name">
@@ -250,7 +250,7 @@
 				</el-dialog>
 			</div>
 			<!-- //回访 -->
-			<el-dialog title="客户回访信息" :data="ConsultationDate" v-model="dialogFormVisible3">
+			<el-dialog title="客户回访信息" :data="ConsultationDate" v-model="dialogFormVisible3" :before-close="cls">
 
 				<el-form :inline="true" :model="form" class="demo-ruleForm">
 
@@ -541,7 +541,17 @@
 				this.multipleSelection2 = val;
 
 			},
-
+			cls(){
+				
+				this.dialogFormVisible = false
+				this.dialogFormVisible2 = false
+				this.dialogFormVisible3 = false
+				for (var key in this.retform) {
+					delete this.retform[key];
+					console.log("111")
+					
+				}
+			},
 
 			showEdit(row) {
 				console.log(row);
@@ -700,7 +710,7 @@
 				})
 			},
 			//新增学员交接表:从前端获取的咨询id
-			shengpi() {
+			shengpi(row) {
 				const _this = this
 				this.$confirm('确定要审核该学员吗?', '提示', {
 					confirmButtonText: '确定',
@@ -708,7 +718,7 @@
 					type: 'warning'
 				}).then(() => {
 					var registerId = _this.multipleSelection.map(item => item.registerId).join()
-					console.log(registerId)
+					console.log(registerId+"-------")
 					this.axios.get("http://localhost:8089/threeproject/findRegisterId/" + registerId)
 						.then(function(response) {
 							_this.ReturnvisitDate = response.data

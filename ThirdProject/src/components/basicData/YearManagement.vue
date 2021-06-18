@@ -98,13 +98,21 @@
 			addSession() {
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/Session", this.form)
-				this.axios.get("http://localhost:8089/threeproject/findPageSession", {
-						params: this.pageInfo
-					})
+				
 					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/findPageSession", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								console.log(response)
+								_this.SessionDate = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
 						console.log(response)
 						var session = response.data
-						_this.SessionDate.push(session)
+						
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];
@@ -114,6 +122,7 @@
 						console.log(error)
 					})
 			},
+			
 			updateSession() {
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/Session", this.form)
