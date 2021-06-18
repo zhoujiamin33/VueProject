@@ -308,11 +308,19 @@
 				//修改班级状态的id
 				form2:{
 					classesId:"",
-					updatename:""
+					updatename:"",
+					courseId:""
 				},
 				dialogFormtokei:false,
 				//根据id查询班级信息
-				selectById:[]
+				selectById:[],
+				//给开班的班级添加第一节课程详细
+				form3:{
+					classesId:"",
+					detailcourseId:""
+				},
+				//根据课程id查询课程详细表序列号为100的数据
+				detailsdata:[] 
 			}
 		},
 		 setup() {
@@ -410,8 +418,10 @@
 				 const _this=this
 				 this.form2.classesId=row.classesId
 				 this.form2.updatename="admin"
+				 this.form2.courseId=row.courseId
 				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2)
 				 .then(function(response){
+					 _this.selectByCourseKey100(_this.form2.courseId,_this.form2.classesId)
 					 _this.axios.get("http://localhost:8089/threeproject/findAllClass")
 					 .then(function(response){
 						console.log(response)
@@ -421,6 +431,26 @@
 					 })
 				 }).catch(function(error){
 				 	console.log(error)
+				 })
+			 },
+			 //根据课程id查询课程详细表序列号为100的数据
+			 selectByCourseKey100(courseid,classesId){
+				 const _this=this
+				 this.axios.get("http://localhost:8089/threeproject/selectByCourseKey100/"+courseid)
+				 .then(function(response){
+					 console.log(response)
+					 _this.detailsdata=response.data
+					 //把课程详细表序列号为100的数据赋值给刚刚新增的班级
+					 _this.form3.classesId=classesId
+					 _this.form3.detailcourseId=response.data.detailcourseId
+					 _this.axios.put("http://localhost:8089/threeproject/updateDetails",_this.form3)
+					 .then(function(response){
+						 console.log(response)
+					 }).catch(function(error){
+						 console.log(error)
+					 })
+				 }).catch(function(error){
+					 console.log(error)
 				 })
 			 },
 			 //修改为未开班状态
@@ -441,7 +471,7 @@
 			 		console.log(error)
 			 	})			 
 			 },
-			 //根据id查询班级详细信息
+			 //根据班级id查询班级详细信息
 			 selectById(row){
 				 const _this=this
 				 this.axios.get("http://localhost:8089/threeproject/selectById/"+row.classesId)
