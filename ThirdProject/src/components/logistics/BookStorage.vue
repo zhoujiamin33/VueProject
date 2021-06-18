@@ -3,12 +3,14 @@
 		<div class="a">
 			<b class="b" style="font-size: 15px;margin-left: -512px;">快速检索：</b>
 			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				<el-option label="教材名" value="教材名"></el-option>
+				<el-option label="入库人" value="入库人"></el-option>
 			</el-select>
 			<el-input style="width: 180px;" v-model="input" placeholder="请输入内容" clearable></el-input>
 			<el-button style="float:right;margin-left: 10px;">导出</el-button>
 			<el-button style="float:right">删除</el-button>
 			<el-button style="float:right" @click="jcrk = true">教材入库</el-button>
+			<el-button style="float:right;" @click="selectBookstorage">查询</el-button>
 
 			<!-- 新增 -->
 			<el-dialog title="教材入库" width="47%" v-model="jcrk">
@@ -61,7 +63,7 @@
 			</el-dialog>
 
 
-			<el-button style="float:right;">查询</el-button>
+			
 		</div>
 		<div>
 			<el-table :data="tableData" stripe border style="width: 100%">
@@ -120,13 +122,6 @@
 					pagesize: 2, //每页多少条数据
 					total: 0
 				},
-				options: [{
-					value: '选项1',
-					label: '教材名'
-				}, {
-					value: '选项2',
-					label: '入库人'
-				}],
 				value: '',
 				tableData: [],
 				jcrk: false,
@@ -143,12 +138,8 @@
 					return time.getTime() > Date.now()
 				},
 				xgrk: false,
-				input: ref(''),
+				input: "",
 				zjkc: false,
-				//-----------------------------------------------------教材收支表----------------------------------------------
-				Expenditure:{
-				}
-				
 			}
 		},
 		methods: {
@@ -197,6 +188,18 @@
 						for (var key in _this.form) {
 							delete _this.form[key]
 						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			
+			//多条件查询
+			selectBookstorage() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectBookstorage/"+this.value+"/"+this.input)
+					.then(function(response) {
+						console.log(response)
+						_this.tableData = response.data
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -268,12 +271,6 @@
 						console.log(error)
 					})
 			},
-			//-----------------------------------------------财务教材收支表------------------------------------------------
-			//新增教材入库支出
-			insertExpenditure(){
-				const _this=this
-				this.axios.post("http://localhost:8089/threeproject/insertExpenditure",this.Expenditure)
-			}
 		},
 		created() {
 			const _this = this

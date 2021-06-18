@@ -6,6 +6,9 @@ import mains from '../components/main.vue'
 
 // 个人办公
 import mail from '../components/Personal/Mail.vue'
+import daillog from '../components/Personal/DailLog.vue'
+import ideas from '../components/Personal/Ideas.vue'
+import memorandum from '../components/Personal/Memorandum.vue'
 
 // 教务管理
 import ClassesVue from '../components/educational/ClassesVue.vue'
@@ -69,6 +72,9 @@ const routes=[
 	{path:'/booksmoney',component:booksmoney},
 	{path:'/unit',component:unit},
 	{path:'/mail',component:mail},
+	{path:'/daillog',component:daillog},
+	{path:'/ideas',component:ideas},
+	{path:'/memorandum',component:memorandum},
 	{path:'/system',component:system},
 	{path:'/bookreturn',component:bookreturn},
 	{path:'/notice',component:notice},

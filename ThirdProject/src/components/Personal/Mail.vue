@@ -149,7 +149,7 @@
 				<div>
 					<div>
 						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 20px;">标题：</b>
-						<el-input placeholder="请输入内容" v-model="input3" style="width: 1180px;" size="mini">
+						<el-input placeholder="请输入内容" v-model="input4" style="width: 1180px;" size="mini">
 							<template #append>
 								<el-select v-model="select" placeholder="请选择" style="width: 120px;" size="mini">
 									<el-option label="内部邮件" value="1"></el-option>
@@ -183,7 +183,7 @@
 					</div>
 					<div>
 						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -7px;">选择附件：</b>
-						<el-input placeholder="请选择要上传的附件" v-model="input4" style="width: 1024px;margin-top: 8px;" size="mini">
+						<el-input placeholder="请选择要上传的附件" v-model="input5" style="width: 1024px;margin-top: 8px;" size="mini">
 						</el-input>
 						<el-button type="primary" size="mini" style="margin-top: 10px;margin-left: 3px;">浏览.....</el-button>
 						<el-button type="primary" icon="el-icon-upload2" size="mini" style="margin-top: 10px;margin-left: 3px;">上传</el-button>
@@ -245,39 +245,7 @@
 				}],
 				value2: '',
 				input1: ref(''),
-				tableData: [{
-					zt: '',
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					qbsjr: 'www',
-					jb: '普通',
-					fj: '',
-					fsr: 'k',
-					date: '2021-05-20'
-				}, {
-					zt: '',
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					qbsjr: 'www',
-					jb: '普通',
-					fj: '',
-					fsr: 'k',
-					date: '2021-05-20'
-				}, {
-					zt: '',
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					qbsjr: 'www',
-					jb: '普通',
-					fj: '',
-					fsr: 'k',
-					date: '2021-05-20'
-				}, {
-					zt: '',
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					qbsjr: 'www',
-					jb: '普通',
-					fj: '',
-					fsr: 'k',
-					date: '2021-05-20'
-				}],
+				tableData: [],
 
 				options3: [{
 					value: '选项1',
@@ -301,56 +269,7 @@
 				value4: '',
 				input2: ref(''),
 
-				tableData1: [{
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}, {
-					title: '你平时挺活泼开朗的啊，为什么你的眼神总是死气沉沉',
-					jsr: 'k',
-					jb: '普通',
-					fj: '',
-					date: '2021-05-20',
-					ms: '否'
-				}],
+				tableData1: [],
 
 				options5: [{
 					value: '选项1',
@@ -393,42 +312,7 @@
 				value7: '',
 				input3: ref(''),
 
-				tableData3: [{
-					title: '顶',
-					jsr: '顶顶',
-					jb: '顶顶顶',
-					fj: '顶顶顶顶',
-					date: '顶顶顶顶顶',
-					ms: '顶顶顶顶顶顶'
-				}, {
-					title: '顶',
-					jsr: '顶顶',
-					jb: '顶顶顶',
-					fj: '顶顶顶顶',
-					date: '顶顶顶顶顶',
-					ms: '顶顶顶顶顶顶'
-				}, {
-					title: '顶',
-					jsr: '顶顶',
-					jb: '顶顶顶',
-					fj: '顶顶顶顶',
-					date: '顶顶顶顶顶',
-					ms: '顶顶顶顶顶顶'
-				}, {
-					title: '顶',
-					jsr: '顶顶',
-					jb: '顶顶顶',
-					fj: '顶顶顶顶',
-					date: '顶顶顶顶顶',
-					ms: '顶顶顶顶顶顶'
-				}, {
-					title: '顶',
-					jsr: '顶顶',
-					jb: '顶顶顶',
-					fj: '顶顶顶顶',
-					date: '顶顶顶顶顶',
-					ms: '顶顶顶顶顶顶'
-				}],
+				tableData3: [],
 
 				input4: ref(''),
 				select: ref(''),
@@ -446,7 +330,7 @@
 				checked1: false,
 				checked2: false,
 				
-				input4: ref(''),
+				input5: ref(''),
 			};
 		},
 	};

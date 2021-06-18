@@ -12,7 +12,6 @@
 			<el-table-column prop="press" label="出版社"> </el-table-column>
 			<el-table-column label="操作" width="120">
 				<template #default="scope">
-					<el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
 					<el-button @click="showEdit(scope.row)" type="text" size="small">编辑</el-button>
 					<el-button type="text" size="small" @click="delTrainingperiod(scope.row)">删除</el-button>
 				</template>
