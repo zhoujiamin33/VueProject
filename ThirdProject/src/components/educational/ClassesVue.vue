@@ -12,7 +12,7 @@
 		<div>
 			<el-row style="margin-top: -40px;margin-left:1120px;">
 				<el-button @click="selectByContion">查询</el-button>
-			    <el-button @click="dialogFormVisible=true">新增</el-button>
+			    <el-button  type="primary" @click="dialogFormVisible=true">新增</el-button>
 			</el-row>
 		</div>
 			
@@ -453,6 +453,7 @@
 					 console.log(error)
 				 })
 			 },
+			//赋值课程详细数据同时新增排课表
 			 //修改为未开班状态
 			 updateClassesOpen0(row){
 			 	const _this=this

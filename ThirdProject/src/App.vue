@@ -4,9 +4,6 @@
 
 <script>
 import MainVue from './components/MainVue.vue'
-
-
-
 export default {
   name: 'App',
   components: {

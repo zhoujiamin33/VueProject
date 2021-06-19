@@ -125,6 +125,7 @@ export default{
 			}
 			console.log(val)
 		}, 
+		//批量删除
 		cutoff() {
 			// var deletename="默认"
 			if (this.multipleSelection.length == 0) {

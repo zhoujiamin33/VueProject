@@ -203,8 +203,8 @@
 					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
 					.then(function(response) {
 						console.log(response)
-						var entryfees=response.data
-						var datas=_this.tableData.filter(d=>d.feesId==entryfees.feesId)[0]
+						// var entryfees=response.data
+						// var datas=_this.tableData.filter(d=>d.feesId==entryfees.feesId)[0]
 						_this.tableData=response.data.list
 						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
@@ -223,8 +223,8 @@
 					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
 					.then(function(response) {
 						console.log(response)
-						var entryfees=response.data
-						var datas=_this.tableData.filter(d=>d.feesId==entryfees.feesId)[0]
+						// var entryfees=response.data
+						// var datas=_this.tableData.filter(d=>d.feesId==entryfees.feesId)[0]
 						_this.tableData=response.data.list
 						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {

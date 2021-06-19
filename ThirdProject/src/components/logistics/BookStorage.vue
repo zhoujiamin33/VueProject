@@ -25,10 +25,6 @@
 						<el-input style="width: 300px;margin-left: -148px;" v-model="form.storagecount" placeholder="" clearable></el-input>
 						<b style="font-weight: 100;">本</b>
 					</el-form-item>
-<!-- 					<el-form-item label="入库时间 :" style="margin-left: 170px;">
-						<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期" style="width: 300px;margin-left: -160px;">
-						</el-date-picker>
-					</el-form-item> -->
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer" style="position: absolute;left: 300px;top: 180px;">
@@ -131,7 +127,9 @@
 					empId: "",
 					storagecount: "",
 					//storagetime: "",
-					totalprice: ""
+					totalprice: "",
+					//教材入库支出表的入库数量
+					refundCount:""
 				},
 
 				disabledDate(time) {
@@ -165,6 +163,7 @@
 								console.log(error)
 							})
 						_this.jcrk = false
+						_this.insertExpenditure(response.data.mbookstorageId)
 						for (var key in _this.form) {
 							delete _this.form[key]
 						}
@@ -172,7 +171,22 @@
 						console.log(error)
 					})
 			},
-
+			//新增教材支出表数据
+			insertExpenditure(mbookstorageId){
+				const _this=this
+				this.form.mbookstorageId=mbookstorageId
+				this.form.refundCount=this.form.storagecount
+				console.log(this.form.mbookstorageId+"mbookstorageId")
+				console.log(this.form.bookId+"bookId")
+				console.log(this.form.refundCount+"storagecount")
+				console.log(this.form.totalprice+"totalprice")
+				this.axios.post("http://localhost:8089/threeproject/insertExpenditure",this.form)
+				.then(function(response){
+					console.log(response)
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
 			//修改
 			updateBookstorage() {
 				const _this = this

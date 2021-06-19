@@ -152,7 +152,7 @@
 		    <el-table-column  fixed="right" prop="courseState"  label="开设状态" width="200" align="center">
 				<template #default="scope">
 					<p v-if="scope.row.courseState==0">
-						<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateapproval(scope.row)"></el-button>
+						<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateCourseState(scope.row)"></el-button>
 					</p>
 					<p v-if="scope.row.courseState==1">
 						<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateRevokeapproval(scope.row)"></el-button>
@@ -203,7 +203,7 @@ export default{
 				courseId:""
 			},
 			detailsForm:{
-				courseId:"",detailcourseId:"",detailcourseName:"",serial:""
+				courseId:"",detailcourseId:"",detailcourseName:"",serial:"",addname:""
 			},
 			typedata:[],
 			tableData:[],
@@ -216,7 +216,11 @@ export default{
 			findDetail:false,
 			dialogDetailForm:false,
 			dialogDetailForm2:false,
-			multipleSelection:[]
+			multipleSelection:[],
+			//修改课程状态表单
+			form2:{
+				courseId:"", updatename:""
+			}
 		}
 	},
 	 methods: {
@@ -295,32 +299,23 @@ export default{
 				  console.log(error)
 			  })
 		  },
-		  //修改课程
-		  updateCourse(){
-		  	const _this=this
-		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form)
-		  	.then(function(response){
-		  		console.log(response)
-		  		var course=response.data
-				var datas=_this.tableData.filter(d=>d.courseId==course.courseId)[0]
-		  		datas.courseName=course.courseName
-				datas.courseMoney=course.courseMoney
-				datas.classhours=course.classhours
-		  		_this.dialogFormVisible2=false
-				this.$refs[form].resetFields()
-		  	}).catch(function(error){
-		  		console.log(error)
-		  	})
-		  },
+		  
 		  //修改课程状态
 		  updateCourseState(row){
+			  console.log(row+"qwe")
+			  this.form2.updatename= "admin"
+			  this.form2.courseId=row.courseId
 			 const _this=this
-			 console.log(row)
-			 this.axios.put("http://localhost:8089/threeproject/updateCourse",row)
+			 this.axios.put("http://localhost:8089/threeproject/updateCourseState",this.form2)
 			 .then(function(response){
-			 	console.log(response)
-			 	var course=response.data
-			 	var datas=_this.tableData.filter(d=>d.courseId==course.courseId)[0]
+				_this.axios.get("http://localhost:8089/threeproject/findcourse",{params:_this.pageInfo})
+				.then(function(response){
+					_this.tableData=response.data.list
+					_this.pageInfo.total=response.data.total 
+					console.log(response)
+				}).catch(function(error){
+					console.log(error)
+				})
 			 }).catch(function(error){
 			 	console.log(error)
 			 }) 
@@ -341,30 +336,31 @@ export default{
 			  	console.log(error)
 			  })
 		  },
-		  //新增课程详细
-		  addDetails(){
-			const _this=this
-			this.detailsForm.courseId=this.pageInfo2.courseId
-			console.log(this.detailData)
-			console.log(this.detailsForm)
-			this.axios.post("http://localhost:8089/threeproject/addDetails",this.detailsForm)
-			.then(function(response){
-				_this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:_this.pageInfo2})
-				.then(function(response){
-					console.log(response)
-					_this.detailData=response.data.list
-					_this.pageInfo2.total=response.data.total 
-				}).catch(function(error){
-					console.log(error)
-				})
-				_this.dialogDetailForm=false
-				for(var key in _this.detailsForm){
-					delete _this.detailsForm[key];
-				}
-			}).catch(function(error){
-				console.log(error)
-			}) 
-		  },
+		 //新增课程详细
+		 addDetails(){
+		 	const _this=this
+		 	this.detailsForm.courseId=this.pageInfo2.courseId
+		 	console.log(this.detailData)
+		 	console.log(this.detailsForm)
+			this.detailsForm.addname="Tsm管理员"
+		 	this.axios.post("http://localhost:8089/threeproject/addDetails",this.detailsForm)
+		 	.then(function(response){
+		 		_this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:_this.pageInfo2})
+		 		.then(function(response){
+		 			console.log(response)
+		 			_this.detailData=response.data.list
+		 			_this.pageInfo2.total=response.data.total 
+		 		}).catch(function(error){
+		 			console.log(error)
+		 		})
+		 		_this.dialogDetailForm=false
+		 		for(var key in _this.detailsForm){
+		 			delete _this.detailsForm[key];
+		 		}
+		 	}).catch(function(error){
+		 		console.log(error)
+		 	}) 		
+		 },
 		  //显示课程
 		  setCurrent(row) {
 		    // this.$refs.singleTable.setCurrentRow(row);
@@ -374,6 +370,23 @@ export default{
 		  	this.form.classhours=row.classhours
 		  	this.form.courseState=row.courseState
 		  	this.dialogFormVisible2=true
+		  },
+		  //修改课程
+		  updateCourse(){
+		  	const _this=this
+		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form)
+		  	.then(function(response){
+		  		console.log(response)
+		  		var course=response.data
+		  		var datas=_this.tableData.filter(d=>d.courseId==course.courseId)[0]
+		  		datas.courseName=course.courseName
+		  		datas.courseMoney=course.courseMoney
+		  		datas.classhours=course.classhours
+		  		_this.dialogFormVisible2=false
+		  		_this.form={}
+		  	}).catch(function(error){
+		  		console.log(error)
+		  	})
 		  },
 		  //显示课程详细
 		  showRowDetail(row){

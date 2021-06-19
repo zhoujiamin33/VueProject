@@ -1,6 +1,6 @@
 <template>
 	<el-tabs type="border-card"  style="margin-top: 40px;">
-	  <el-tab-pane label="教材入库收支">
+	  <el-tab-pane label="教材入库支出">
 		  <div style="margin-top:10px;">
 		  	<!-- 搜索框、输入框 、按钮-->
 		  	<div style="margin-left:5px;line-height: 40px;">
@@ -20,7 +20,6 @@
 					<el-input  v-model="course" style="width: 150px;"></el-input>
 		  			<el-button style="margin-left: 10px;">查询</el-button>
 					<el-button type="danger" >删除</el-button>
-					<el-button type="primary" icon="el-icon-plus" style="margin-left:10px;">新增入库</el-button>
 		  		</el-row>
 		  	</div>
 		 </div>	
@@ -28,33 +27,37 @@
 		<div style="position: relative;margin-top: 50px;">
 		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;">
 		 		<el-table-column fixed  type="selection"> </el-table-column>
-		 		<el-table-column  prop="date" label="单据号" width="150"> </el-table-column>
-		 	    <el-table-column prop="province" label="收支日期"  width="120"> </el-table-column>
-		 	    <el-table-column prop="city" label="收支明细" width="120"> </el-table-column>
-		 	    <el-table-column prop="address"  label="入库数量"  width="600"> </el-table-column>
-		 	    <el-table-column prop="zip" label="收支总额" width="120"> </el-table-column>
-		 		<el-table-column prop="address"  label="增加人"  width="600"> </el-table-column>
-		 		<el-table-column prop="zip" label="缴费状态" width="120"> </el-table-column>
-		 	    <el-table-column fixed="right" label="操作" width="100">
-		 	      <template #default="scope">
-		 	        <el-button @click="handleClick(scope.row)" type="text" size="small">审核</el-button>
-		 	        <el-button type="text" size="small">撤销</el-button>
-		 	      </template>
-		 	    </el-table-column>
+		 		<el-table-column  prop="expensesName" label="单据号" width="200"> </el-table-column>
+		 	    <el-table-column prop="expensesDate" label="收支日期"  align="center"> </el-table-column>
+		 	    <el-table-column prop="expensesDetails" label="收支明细" align="center"> </el-table-column>
+		 	    <el-table-column prop="refundCount"  label="入库数量"  align="center"> </el-table-column>
+		 	    <el-table-column prop="totalmoney" label="支出总额" align="center"> </el-table-column>
+		 		<el-table-column prop="zip" label="审核状态" align="center">
+		 			<template #default="scope">
+		 				<p v-if="scope.row.approval==0">
+		 					<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateApproval(scope.row)"></el-button>
+		 				</p>				
+		 			    <p v-if="scope.row.approval==1">
+		 					<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateReApproval(scope.row)"></el-button>			
+		 			    </p>
+		 			</template>
+		 		</el-table-column>
 		 	</el-table>
 		 </div>
 		<div style="display: flex; justify-content: space-between;">
 			<!-- 底部金额总结 -->
-				<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
-				<el-pagination
-				@size-change="handleSizeChange"
-				@current-change="handleCurrentChange"
-				:current-page="currentPage4"
-				:page-sizes="[100, 200, 300, 400]"
-				:page-size="100"
-				layout="total, sizes, prev, pager, next, jumper"
-				:total="400" style="margin-top:10px;margin-right:-10px;">
-				</el-pagination>
+			<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
+			<el-pagination
+			@size-change="handleSizeChange"
+			@current-change="handleCurrentChange"
+			当前页码
+			:current-page="pageInfo.currentPage"
+			:page-sizes="[2, 4, 6, 10]"
+			每页数据
+			:page-size="pageInfo.pagesize"
+			layout="total, sizes, prev, pager, next, jumper"
+			:total="pageInfo.total">
+			</el-pagination>	
 		</div>
 	  </el-tab-pane>
 	  <el-tab-pane label="教材出库收支">
@@ -83,34 +86,38 @@
 		   </div>	
 		  <!-- 表格 -->
 		  <div style="position: relative;margin-top: 50px;">
-		   	<el-table :data="tableData"  border style="width:100%;margin-left:5px;">
+		   	<el-table :data="tableData2"  border style="width:100%;margin-left:5px;">
 		   		<el-table-column fixed  type="selection"> </el-table-column>
-		   		<el-table-column  prop="date" label="单据号" width="150"> </el-table-column>
-		   	    <el-table-column prop="province" label="收支日期"  width="120"> </el-table-column>
-		   	    <el-table-column prop="city" label="收支明细" width="120"> </el-table-column>
-		   	    <el-table-column prop="address"  label="出库数量"  width="600"> </el-table-column>
-		   	    <el-table-column prop="zip" label="收支总额" width="120"> </el-table-column>
-		   		<el-table-column prop="address"  label="增加人"  width="600"> </el-table-column>
-		   		<el-table-column prop="zip" label="收支状态" width="120"> </el-table-column>
-		   	    <el-table-column fixed="right" label="操作" width="100">
-		   	      <template #default="scope">
-		   	        <el-button @click="handleClick(scope.row)" type="text" size="small">审核</el-button>
-		   	        <el-button type="text" size="small">撤销</el-button>
-		   	      </template>
-		   	    </el-table-column>
+		   		<el-table-column  prop="expensesName" label="单据号" width="150"> </el-table-column>
+		   	    <el-table-column prop="expensesDate" label="收支日期"  width="120"> </el-table-column>
+		   	    <el-table-column prop="expensesDetails" label="收支明细" width="120"> </el-table-column>
+		   	    <el-table-column prop="refundCount"  label="入库数量"  width="600"> </el-table-column>
+		   	    <el-table-column prop="totalmoney" label="支出总额" width="120"> </el-table-column>
+		   		<el-table-column prop="zip" label="审核状态" width="120">
+					<template #default="scope">
+						<p v-if="scope.row.approval==0">
+							<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateApproval(scope.row)"></el-button>
+						</p>				
+					    <p v-if="scope.row.approval==1">
+							<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateReApproval(scope.row)"></el-button>			
+					    </p>
+					</template>
+				</el-table-column>
 		   	</el-table>
 		   </div>
 		  <div style="display: flex; justify-content: space-between;">
 		  	<!-- 底部金额总结 -->
 		  		<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 		  		<el-pagination
-		  		@size-change="handleSizeChange"
-		  		@current-change="handleCurrentChange"
-		  		:current-page="currentPage4"
-		  		:page-sizes="[100, 200, 300, 400]"
-		  		:page-size="100"
+		  		@size-change="handleSizeChange2"
+		  		@current-change="handleCurrentChange2"
+		  		当前页码
+		  		:current-page="pageInfo2.currentPage"
+		  		:page-sizes="[2, 4, 6, 10]"
+		  		每页数据
+		  		:page-size="pageInfo2.pagesize"
 		  		layout="total, sizes, prev, pager, next, jumper"
-		  		:total="400" style="margin-top:10px;margin-right:10px;">
+		  		:total="pageInfo2.total">
 		  		</el-pagination>
 		  </div>
 	  </el-tab-pane>
@@ -118,11 +125,152 @@
 </template>
 
 <script>
+	import qs from 'qs'
 	export default{
 		data(){
 			return {
-				tableData:[]
+				tableData:[],
+				pageInfo:{
+					currentPage: 1,//标识当前页码
+					pagesize:2,//每页多少条数据
+					total:0
+				},
+				pageInfo2:{
+					currentPage: 1,//标识当前页码
+					pagesize:2,//每页多少条数据
+					total:0
+				},
+				//审核表单
+				form:{
+					updatename:"",expensesId:""
+				}
 			}
+		},
+		methods:{
+			handleSizeChange(pagesize) {
+			    var _this=this
+			    this.pageInfo.pagesize=pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+			    .then(function(response){
+			    	console.log("-------------------------------------------")
+			    	console.log(response.data)
+			    	_this.tableData=response.data.list
+			    }).catch(function(error){
+			    	console.log(error)
+			    })
+			},
+			handleCurrentChange(currentPage) {
+				var _this=this
+				this.pageInfo.currentPage=currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+				.then(function(response){
+					console.log(response.data)
+					_this.tableData=response.data.list
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			
+			updateApproval(row){
+				const _this=this
+				this.form.expensesId=row.expensesId
+				this.form.updatename="admin"
+				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form)
+				.then(function(response) {
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData=response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+			},
+			deleteTimeliness(row){
+				// var deletename="默认"
+				// if (this.multipleSelection.length == 0) {
+				// 	this.$alert('<strong>请至选中一个！</strong>', '提示', {
+				// 	dangerouslyUseHTMLString: true,
+				// 	});
+				// }else {
+				// 	const _this = this
+				// 	this.$confirm('是否删除？', '删除', {
+				// 	distinguishCancelAndClose: true,
+				// 	confirmButtonText: '是',
+				// 	cancelButtonText: '否',
+				// 	type:"warning"
+				// }).then(() => {
+				// 	_this.axios.put("http://localhost:8089/threeproject/deleteTimeliness/"+this.multipleSelection)
+				// 	.then(function(response){
+				// 		var row=response
+				// 		_this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo})
+				// 		.then(function(response) {
+				// 			_this.tableData = response.data.list
+				// 			_this.pageInfo.total=response.data.total
+				// 			console.log(_this.UnitType)
+				// 		}).catch(function(error) {
+				// 			console.log(error)
+				// 		})
+				// 	}).catch(function(errer){
+				// 		console.log(errer)
+				// 	})
+				// 		console.log("43321")
+				// 	}).catch(action => {
+				// 		console.log("2")
+				// 	});
+				// }
+				const _this=this
+				this.form.expensesId=row.expensesId
+				this.form.updatename="admin"
+				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form)
+				.then(function(response) {
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData=response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+			},
+			updateReApproval(row){
+				const _this=this
+				this.form.expensesId=row.expensesId
+				this.form.updatename="admin"
+				this.axios.put("http://localhost:8089/threeproject/updateReApproval",this.form)
+				.then(function(response) {
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData=response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+			}
+		},
+		created() {
+			const _this=this
+			this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+			.then(function(response) {
+				console.log(response)
+				_this.tableData=response.data.list
+				_this.pageInfo.total = response.data.total
+			}).catch(function(error) {
+				console.log(error)
+			})
 		}
 	}
 </script>

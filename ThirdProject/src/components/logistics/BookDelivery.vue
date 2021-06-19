@@ -167,7 +167,6 @@
 					tota: "",
 					salenumber: "",
 					deliverytime: "",
-
 					deliverycount: "",
 					receivablemoney: "",
 					booksprice: ""
@@ -237,7 +236,6 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
-						// _this.form.bookdeliveryId=response.data.bookdeliveryId
 						console.log(response)
 						_this.add(response.data.bookdeliveryId)
 						_this.xskd = false
@@ -250,9 +248,6 @@
 
 
 			},
-
-
-
 			add(row) {
 				const _this = this
 				this.form.bookId = this.form1.book.bookId

@@ -1,8 +1,10 @@
 <template>
 	<div>
 		<div style=" width:650px;">
-			<el-button @click="dialogFormVisible=true">新增</el-button>
-			<el-button type="text" size="small" @click="del(scope.row)">批量删除</el-button>
+			<el-button type="danger" @click="del(scope.row)" style="margin-left:-460px;margin-bottom:20px">批量删除</el-button>
+			<el-button @click="dialogFormVisible=true" type="primary">新增</el-button>
+			
+			<!-- 新增 -->
 			<el-dialog title="添加培训时段" v-model="dialogFormVisible">
 				<el-form :model="form">
 					<el-form-item label="培训时段" :label-width="formLabelWidth">
@@ -21,7 +23,7 @@
 			</el-dialog>
 		</div>
 
-
+		<!-- 修改 -->
 		<el-dialog title="修改培训时段" v-model="dialogFormVisible2">
 			<el-form :model="form">
 				<el-form-item label="编号" :label-width="formLabelWidth">
@@ -60,7 +62,7 @@
 		</div>
 		
 		<!-- 分页 -->
-		<div>
+		<div style="margin-top:20px">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
 			 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
 			</el-pagination>

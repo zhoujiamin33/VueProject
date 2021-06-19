@@ -29,9 +29,8 @@
 					  <el-input v-model="detailcourseName"  style="width: 150px;align-self: center;"></el-input>
 				  </el-descriptions-item>
 				</el-descriptions> 
-				<div>
-					<el-button type="primary"  style="width:100px;margin-top:40px; margin-right: -900px;">排课生成</el-button>
-				</div>
+				<el-button type="primary"  style="width:100px;margin-top:40px; ">取消排课</el-button>
+				<el-button type="primary"  style="width:100px;margin-top:40px; ">排课生成</el-button>
 			</el-dialog>
 			
 			<!-- 课程表 -->
@@ -98,7 +97,11 @@
 				}).catch(function(error){
 					console.log(error)
 				})
-			}
+			},
+			//新增排课表
+			insertScheduling(){
+							 
+			},
 		},
 		created(){
 			//查询所有课段
