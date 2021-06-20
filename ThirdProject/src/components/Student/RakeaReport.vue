@@ -3,13 +3,13 @@
 	<div class="mian">
 		<div class="mainbody">
 			<div style="margin-right: 320px;display: flex;">
-			<span style="margin-top: 10px;width: 90px;">快速检索：</span>
+				<span style="margin-top: 10px;width: 90px;">快速检索：</span>
 				<el-select v-model="select" placeholder="请选择">
 					<el-option label="课程名称" value="1"></el-option>
 					<el-option label="姓名" value="2"></el-option>
 					<el-option label="学号" value="3"></el-option>
 				</el-select>
-	
+
 				<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
 					@clear="serchVal">
 				</el-input>
@@ -20,47 +20,138 @@
 				<el-button @click="qxbb()">取消补报</el-button>
 			</div>
 		</div>
-	
-		<el-table :data="tableData" border>
-			<el-table-column prop="studentId" label="Id">
+
+		<el-table :data="tableData" border @selection-change="handleSelectionChange">
+			<el-table-column prop="supplementaryId" label="Id">
 			</el-table-column>
 			<el-table-column type="selection">
 			</el-table-column>
-			<el-table-column prop="studytime" label="补报日期">
+			<el-table-column prop="addtime" label="补报日期">
 			</el-table-column>
-			<el-table-column prop="studentName" label="姓名">
+			<el-table-column prop="student.studentName" label="姓名">
 			</el-table-column>
-			<el-table-column prop="address" label="课程名称">
+			<el-table-column prop="supplementaryName" label="课程名称">
 			</el-table-column>
-			<el-table-column prop="studentPhone" label="课程费用">
+			<el-table-column prop="course.courseMoney" label="课程费用">
 			</el-table-column>
-			<el-table-column prop="studentState" label="实际收费">
+			<el-table-column prop="course.courseMoney" label="实际收费">
 			</el-table-column>
-			<el-table-column prop="studentState" label="扣课实数">
+			<el-table-column prop="无" label="扣课实数">无
 			</el-table-column>
-			<el-table-column prop="studentState" label="备注">
+			<el-table-column prop="addname" label="课程顾问">
 			</el-table-column>
-			<el-table-column prop="studentState" label="课程顾问">
+			<el-table-column prop="addname" label="录入人">
 			</el-table-column>
-			<el-table-column prop="studentState" label="录入人">
-			</el-table-column>
-			<el-table-column prop="studentState" label="状态">
+			<el-table-column prop="state" label="状态">
+				<template v-slot="scope">
+					<p v-if="scope.row.state==0">未审核</p>
+					<p v-if="scope.row.state==1">已审核</p>
+				</template>
+
 			</el-table-column>
 			<el-table-column prop="index" label="操作">
-				<!-- <template #default="scope">
-					<el-button type="text">补报</el-button>
-					<el-button type="text" @click="dialogFormupdate= true">修改</el-button>
-					<el-button type="text">查看</el-button>
-				</template> -->
+				<template v-slot="scope">
+					<p v-if="scope.row.state==0"></p>
+					<p v-if="scope.row.state==1">
+						<el-button @click="showclasses(scope.row)">请选择班级</el-button>
+					</p>
+				</template>
 			</el-table-column>
 		</el-table>
-	
+
 		<div class="block">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
 				:current-page="pageInfo.currentPage" :page-sizes="[2, 3, 6, 10]" :page-size="pageInfo.pagesize"
 				layout="total, sizes, prev, pager, next, jumper" :total="pageInfo.total">
 			</el-pagination>
 		</div>
+		<!-- 选择班级 -->
+		<el-dialog title="为学生选择班级" v-model="dialogFormVisible7">
+			<el-descriptions :model="addForm" class="margin-top" title="为学生选择班级" :column="2" :size="size" border>
+				<!-- <el-descriptions-item >
+				<template #label>
+					<i class="el-icon-user"></i>
+					编号:
+				</template>
+				<el-input v-model="addForm.studentId"></el-input>
+			</el-descriptions-item> -->
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-user"></i>
+						课程类别:
+					</template>
+					{{this.addForm.courseName}}
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-mobile-phone"></i>
+						班级名称:
+					</template>
+					{{this.addForm.classesName}}
+					<!-- <el-select v-model="addForm.classesId" > -->
+					<!-- <el-option v-for="i in Classes"  :label="i.classesName" :value="i.classesId" 
+						></el-option> -->
+					<!-- @click.native ="findClassId(i.classesId)" -->
+					<!-- </el-select> -->
+
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级编号:
+					</template>
+					{{this.addForm.classesId}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						班级名称:
+					</template>
+					{{this.addForm.classesName}}
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						所报人数:
+					</template>
+
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						教师:
+					</template>
+					<el-input v-model="addForm.empName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						开始时间:
+					</template>
+					<el-input v-model="addForm.starteddate"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						结束时间:
+					</template>
+					<el-input v-model="addForm.enddate"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-tickets"></i>
+						备注:
+					</template>
+					<el-input v-model="addForm.dropReason"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<el-button @click="AddclassesId">保存</el-button>
+					<el-button @click="dialogFormVisible7=false">关闭</el-button>
+				</el-descriptions-item>
+			</el-descriptions>
+		</el-dialog>
 	</div>
 </template>
 
@@ -79,30 +170,55 @@
 					pagesize: 3,
 					total: 0
 				},
-				addForm:{
-					name:'',
-					Student_Phone:'',
-					ParentName:'',
-					Entrance:'',
-					address:'',
-				}
-				      
+				addForm: {
+					studentId: '',
+					courseId: '',
+					courseName: '',
+					classesName: '',
+					classesId: '',
+					course: [],
+					student: [],
+					starteddate: '',
+					enddate: '',
+					teacherNmae: '',
+					empName: '',
+					supplementaryId: ''
+
+				},
+				dialogFormVisible7: false,
+				// 被复选框选中的值
+				chektable: []
+
 			}
 		},
 		methods: {
-			getstudentList() {
-
+			// 被复选框选中获取到的值
+			handleSelectionChange(row) {
+				console.log(row)
+				this.chektable = row;
 			},
 			tgsp() {
+				const _this = this
 				this.$confirm('确定要审批通过吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.$message({
-						type: 'success',
-						message: '审批通过!'
-					});
+					if (_this.chektable.length == 0) {
+						_this.$message({
+							showClose: true,
+							message: '请选择删除内容!',
+							type: 'error'
+						});
+					} else {
+						console.log(eeee)
+						var ids = _this.chektable.map(item => item.supplementaryId).join()
+						_this.pdatesupplementarystate(ids)
+						_this.$message({
+							type: 'success',
+							message: '审批通过!'
+						});
+					}
 				}).catch(() => {
 					this.$message({
 						type: 'info',
@@ -126,12 +242,52 @@
 						message: '未取消补报'
 					});
 				});
+			},
+			//选择班级
+			showclasses(row) {
+				this.addForm.studentId = row.studentId
+				this.addForm.courseId = row.supplementaryId
+				this.addForm.courseName = row.supplementaryName
+				this.findcourseId(this.addForm.courseId)
+				this.dialogFormVisible7 = true
+			},
+			// 审核状态
+			updatesupplementarystate(supplementaryId) {
+				console.log("---" + supplementaryId)
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate/" + supplementaryId)
+					.then(function(response) {
+						this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+							.then(function(response) {
+								_this.tableData = response.data
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			findcourseId(courseId) {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findcourseId/" + courseId)
+					.then(function(response) {
+						_this.Classes = response.data
+						_this.addForm.classesId = _this.Classes.classesId
+						_this.addForm.classesName = _this.Classes.classesName
+						_this.addForm.teacherNmae = _this.Classes.teacherId
+						_this.addForm.empName = _this.Classes.emp.empName
+						_this.addForm.starteddate = _this.Classes.starteddate
+						_this.addForm.enddate = _this.Classes.enddate
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
 			}
-			
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/student/findstudent")
+			this.axios.get("http://localhost:8089/threeproject/findsupplementary")
 				.then(function(response) {
 					_this.tableData = response.data
 					console.log(response)
@@ -161,9 +317,9 @@
 		align-items: center;
 		margin-left: 30%;
 	}
-	span{
-	font-size: 12px;
+
+	span {
+		font-size: 12px;
 		font-weight: 400;
 	}
 </style>
-

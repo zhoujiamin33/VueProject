@@ -177,7 +177,7 @@
 				<el-table-column label="课程费用" prop="courseMoney"></el-table-column>
 				<el-table-column label="优惠打折" prop="无折扣">无折扣</el-table-column>
 				<el-table-column label="扣课时数" prop="0">0</el-table-column>
-				<el-table-column label="实收费用" prop="course.courseMoney"></el-table-column>
+				<el-table-column label="实收费用" prop="courseMoney"></el-table-column>
 				<el-table-column label="操作">
 					<el-button type="text">删除</el-button>
 				</el-table-column>
@@ -247,7 +247,7 @@
 						<i class="el-icon-office-building"></i>
 						费用总额:
 					</template>
-					<el-input v-model="supplementaryform.course.courseMoney"></el-input>
+					<el-input v-model="supplementaryform.courseMoney"></el-input>
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -754,15 +754,16 @@
 				classType: [], //课类表
 				Supplementary:[],//预报总表
 				supplementaryform:{
-					course:[],
 					supplementaryId:'',
 					supplementaryName:'',
 					payment:'',//缴费方式
 					addname:'',//录入人
 					courseId: '', //课程编号
 					courseName: '', //课程名称
-						courseMoney: '', //应收费用
-						detailsupplementaryName:''
+					courseMoney: '', //应收费用
+					detailsupplementaryName:'',
+					classhours:'',
+					studentId:''
 				}
 			}
 		},
@@ -795,10 +796,13 @@
 			},
 			// 新增预报
 			AddSupplementary(){
-				this.supplementaryform.course.classhours = this.addForm.classhours
-				this.supplementaryform.course.courseId = this.addForm.courseId
-				this.supplementaryform.course.courseMoney = this.addForm.courseMoney
+				this.supplementaryform.classhours = this.addForm.classhours
+				this.supplementaryform.courseId = this.addForm.course.courseId
+				this.supplementaryform.courseMoney = this.addForm.courseMoney
 				this.supplementaryform.supplementaryName=this.Course.courseName
+				this.supplementaryform.detailsupplementaryName=this.Course.courseName
+				this.supplementaryform.studentId=this.addForm.studentId
+				this.supplementaryform.studentId=this.addForm.studentId
 				this.Supplementary.push(this.supplementaryform)
 			},
 			// 确定补报
@@ -806,24 +810,35 @@
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/AddSupplementary", this.supplementaryform)
 					.then(function(response) {
-						_this.Supplementary = response.data
-						_this.AddDetailsupplementary(_this.Supplementary.supplementaryId,_this.Supplementary.supplementaryName)
-						
-						console.log(response)
+						// _this.Supplementary=response.data
+						// _this.findsupplementary()
+						_this.AddDetailsupplementary(response.data.supplementaryId)
+						_this.dialogFormVisible4=false
+						_this.findsupplementary()
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-			AddDetailsupplementary(supplementaryId,supplementaryName){
+			AddDetailsupplementary(supplementaryId){
 				this.supplementaryform.supplementaryId=supplementaryId
-				this.supplementaryform.detailsupplementaryName=supplementaryName
 				console.log("this.supplementaryform.supplementaryId"+this.supplementaryform.supplementaryId)
 				console.log("this.supplementaryform.supplementaryId"+this.supplementaryform.detailsupplementaryName)
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/AddDetailsupplementary", this.supplementaryform)
 					.then(function(response) {
 						_this.Supplementary = response.data
-						_this.dialogFormVisible4=false
+						
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			// 查询补报课程
+			findsupplementary(){
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+					.then(function(response) {
+						_this.Supplementary = response.data
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
