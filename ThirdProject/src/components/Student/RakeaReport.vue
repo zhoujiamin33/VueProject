@@ -53,7 +53,7 @@
 				<template v-slot="scope">
 					<p v-if="scope.row.state==0"></p>
 					<p v-if="scope.row.state==1">
-						<el-button @click="showclasses(scope.row)">请选择班级</el-button>
+						<el-button type="text" @click="showclasses(scope.row)">请选择班级</el-button>
 					</p>
 				</template>
 			</el-table-column>
@@ -211,9 +211,8 @@
 							type: 'error'
 						});
 					} else {
-						console.log(eeee)
 						var ids = _this.chektable.map(item => item.supplementaryId).join()
-						_this.pdatesupplementarystate(ids)
+						_this.updatesupplementarystate(ids)
 						_this.$message({
 							type: 'success',
 							message: '审批通过!'
@@ -227,19 +226,30 @@
 				});
 			},
 			qxbb() {
+				const _this = this
 				this.$confirm('确定要取消该学员的补报吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.$message({
-						type: 'success',
-						message: '已取消补报!'
-					});
+					if (_this.chektable.length == 0) {
+						_this.$message({
+							showClose: true,
+							message: '请选择取消的内容!',
+							type: 'error'
+						});
+					} else {
+						var ids = _this.chektable.map(item => item.supplementaryId).join()
+						_this.updatesupplementarystate0(ids)
+						_this.$message({
+							type: 'success',
+							message: '取消补报成功!'
+						});
+					}
 				}).catch(() => {
 					this.$message({
 						type: 'info',
-						message: '未取消补报'
+						message: '已取消补报'
 					});
 				});
 			},
@@ -257,13 +267,17 @@
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate/" + supplementaryId)
 					.then(function(response) {
-						this.axios.get("http://localhost:8089/threeproject/findsupplementary")
-							.then(function(response) {
-								_this.tableData = response.data
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
+						_this.shwosu()
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			updatesupplementarystate0(supplementaryId) {
+				console.log("---" + supplementaryId)
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate0/" + supplementaryId)
+					.then(function(response) {
+						_this.shwosu()
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -279,6 +293,16 @@
 						_this.addForm.empName = _this.Classes.emp.empName
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			shwosu(){
+				const _this=this
+				this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+					.then(function(response) {
+						_this.tableData = response.data
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
