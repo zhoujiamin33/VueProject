@@ -129,13 +129,8 @@
 						课程顾问:
 					</template>
 			<el-input v-model="addForm.empName"></el-input>
-			
 				</el-descriptions-item>
-			
-				
-			
 			</el-descriptions>
-			
 			<template #footer>
 				<span class="dialog-footer">
 					<el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -273,9 +268,7 @@
 					</template>
 					<el-input v-model="supplementaryform.addname"></el-input>
 				</el-descriptions-item>
-
 			</el-descriptions>
-
 			<template #footer>
 				<span class="dialog-footer">
 					<el-button @click="dialogFormVisible4 = false">关闭</el-button>
@@ -369,15 +362,11 @@
 				<el-table-column prop="classes.classesName" label="班级名称">
 					<template v-slot="scope">
 						<p v-if="scope.row.classes.classesId==null">
-
 						</p>
 						<p v-if="scope.row.classes.classesId!=null">
 							{{this.addForm.classesName}}
 						</p>
-
 					</template>
-
-
 				</el-table-column>
 				<el-table-column prop="signuptime" label="报班时间">
 				</el-table-column>
@@ -407,7 +396,6 @@
 						<p v-if="scope.row.status!=3">
 							<el-button type="text" @click="showsupend(scope.row)">停课</el-button>
 						</p>
-
 					</template>
 
 				</el-table-column>
@@ -463,13 +451,6 @@
 					</template>
 					<el-input v-model="addForm.parentname" disabled></el-input>
 				</el-descriptions-item>
-				<!-- <el-descriptions-item>
-					<template #label>
-						<i class="el-icon-office-building"></i>
-						报班备注:
-					</template>
-					<el-input v-model="addForm.parentphone"></el-input>
-				</el-descriptions-item> -->
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
@@ -542,13 +523,6 @@
 					</template>
 					<el-input v-model="addForm.dropReason"></el-input>
 				</el-descriptions-item>
-				<!-- <el-descriptions-item>
-				<template #label>
-					<i class="el-icon-tickets"></i>
-					退还金额:
-				</template>
-				<el-input v-model="addForm.dropReason"></el-input>元
-			</el-descriptions-item> -->
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-tickets"></i>
@@ -566,13 +540,6 @@
 		<!-- 选择班级 -->
 		<el-dialog title="为学生选择班级" v-model="dialogFormVisible7">
 			<el-descriptions :model="addForm" class="margin-top" title="为学生选择班级" :column="2" :size="size" border>
-				<!-- <el-descriptions-item >
-				<template #label>
-					<i class="el-icon-user"></i>
-					编号:
-				</template>
-				<el-input v-model="addForm.studentId"></el-input>
-			</el-descriptions-item> -->
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-user"></i>
@@ -587,13 +554,6 @@
 						班级名称:
 					</template>
 					{{this.addForm.classesName}}
-					<!-- <el-select v-model="addForm.classesId" > -->
-					<!-- <el-option v-for="i in Classes"  :label="i.classesName" :value="i.classesId" 
-						></el-option> -->
-					<!-- @click.native ="findClassId(i.classesId)" -->
-					<!-- </el-select> -->
-
-
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -700,8 +660,15 @@
 					classtypeId: '', //课程编号
 					teacherId: '', //教师
 					status: '', //学员状态表的状态
+
 					classhours:''//课时数
-					// course:[]
+
+					classhours:'',//课时数
+					course:[],
+					//退费管理的新增人
+					addname:"",
+					//退费管理的id
+					dropId:""
 				},
 				Course: [], //课程
 
@@ -810,8 +777,6 @@
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/AddSupplementary", this.supplementaryform)
 					.then(function(response) {
-						// _this.Supplementary=response.data
-						// _this.findsupplementary()
 						_this.AddDetailsupplementary(response.data.supplementaryId)
 						_this.dialogFormVisible4=false
 						_this.findsupplementary()
@@ -827,7 +792,6 @@
 				this.axios.post("http://localhost:8089/threeproject/AddDetailsupplementary", this.supplementaryform)
 					.then(function(response) {
 						_this.Supplementary = response.data
-						
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -941,7 +905,6 @@
 
 			// 新增学员
 			Addstudent() {
-
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/student", this.addForm)
 					.then(function(response) {
@@ -1062,8 +1025,6 @@
 
 						_this.addForm.enddate = response.data.enddate
 						// _this.addForm.empName=response.data.emp.empName
-
-
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1251,7 +1212,6 @@
 						this.findClassId(_this.addForm.classesId)
 						_this.dialogFormVisible6 = true
 					}
-
 				}).catch(() => {
 					this.$message({
 						type: 'error',
@@ -1266,12 +1226,25 @@
 						var supendentity = response.data
 						_this.Droport.push(supendentity)
 						_this.dialogFormVisible6 = false
-
+						_this.Refund(response.data.dropId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
+			//财务部（退学、退费）
+			Refund(dropId){
+				const _this=this
+				this.addForm.addname="admin"
+				this.addForm.dropId=dropId
+				this.axios.get("http://localhost:8089/threeproject/insertRefund",this.addForm)
+				.then(function(response){
+					console.log(response)
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			
 			//选择班级
 			showclasses(row) {
 				this.addForm.studentId = row.studentId

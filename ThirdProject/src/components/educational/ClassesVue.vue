@@ -224,8 +224,8 @@
 				</template>
 			</el-descriptions>
 			<p>班级学员</p>
-			<el-table :data="tableData" height="250" border style="width: 100%">
-			    <el-table-column prop="date" label="日期" width="180"></el-table-column>
+			<el-table :data="selectById" height="250" border style="width: 100%">
+			    <el-table-column prop="selectById" label="沙" width="180"></el-table-column>
 			    <el-table-column prop="name" label="姓名"  width="180"></el-table-column>
 			    <el-table-column prop="address" label="地址"></el-table-column>
 			</el-table>
@@ -240,7 +240,7 @@
 	<div style="margin-top: 30px;">
 		<el-table :data="tableData" height="300" border style="width:100%;margin-left:10px;">
 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
-		    <el-table-column fixed prop="classesId" label="班级编号" width="150" align="center"></el-table-column>
+		    <el-table-column fixed prop="classesNumber" label="班级编号" width="150" align="center"></el-table-column>
 			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
 		    <el-table-column prop="starteddate" label="培训期限"  width="200" align="center"></el-table-column>
 		    <el-table-column prop="emp.empName"  label="任课老师"  width="150" align="center"> </el-table-column>
@@ -350,6 +350,7 @@
 				 .then(function(response){
 					_this.selectAll()
 					_this.dialogFormVisible=false
+					_this.form={}
 				 }).catch(function(error){
 					 console.log(error)
 				 })

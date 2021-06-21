@@ -54,13 +54,18 @@
 		data(){
 			return {
 				Approval:"",student:"",course:"",value2:"",
-				tableData:[
-				{checked:"",date: '2016-05-02', name: '王小虎1',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎2',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎3',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎4',  address: '上海市普陀区金沙江路 1518 弄'},
-				{checked:"",date: '2016-05-02', name: '王小虎4',  address: '上海市普陀区金沙江路 1518 弄'},]
+				tableData:[]
 			}
+		},
+		created(){
+			const _this=this
+			this.axios.get("http://localhost:8089/threeproject/selectAllRefund")
+			.then(function(response){
+				console.log(response)
+				_this.tableData=response.data
+			}).catch(function(error){
+				console.log(error)
+			})
 		}
 	}
 </script>

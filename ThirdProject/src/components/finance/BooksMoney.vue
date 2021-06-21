@@ -88,18 +88,18 @@
 		  <div style="position: relative;margin-top: 50px;">
 		   	<el-table :data="tableData2"  border style="width:100%;margin-left:5px;">
 		   		<el-table-column fixed  type="selection"> </el-table-column>
-		   		<el-table-column  prop="expensesName" label="单据号" width="150"> </el-table-column>
-		   	    <el-table-column prop="expensesDate" label="收支日期"  width="120"> </el-table-column>
-		   	    <el-table-column prop="expensesDetails" label="收支明细" width="120"> </el-table-column>
-		   	    <el-table-column prop="refundCount"  label="入库数量"  width="600"> </el-table-column>
-		   	    <el-table-column prop="totalmoney" label="支出总额" width="120"> </el-table-column>
-		   		<el-table-column prop="zip" label="审核状态" width="120">
+		   		<el-table-column  prop="refundName" label="单据号" width="200" align="center"> </el-table-column>
+		   	    <el-table-column prop="refundDate" label="收支日期" align="center" > </el-table-column>
+		   	    <el-table-column prop="refundDetails" label="收支明细" align="center"> </el-table-column>
+		   	    <el-table-column prop="refundCount"  label="出库数量" align="center"> </el-table-column>
+		   	    <el-table-column prop="totalmoney" label="收入总额" align="center"> </el-table-column>
+		   		<el-table-column prop="zip" label="审核状态" >
 					<template #default="scope">
 						<p v-if="scope.row.approval==0">
-							<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateApproval(scope.row)"></el-button>
+							<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateApprovalincome(scope.row)"></el-button>
 						</p>				
 					    <p v-if="scope.row.approval==1">
-							<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateReApproval(scope.row)"></el-button>			
+							<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateReApprovalincome(scope.row)"></el-button>			
 					    </p>
 					</template>
 				</el-table-column>
@@ -140,9 +140,13 @@
 					pagesize:2,//每页多少条数据
 					total:0
 				},
-				//审核表单
+				//审核教材入库表单
 				form:{
-					updatename:"",expensesId:""
+					approvalname:"",expensesId:"",revokeappname:""
+				},
+				//审核教材出库表单
+				form:{
+					approvalname:"",warehouseincomeId:"",revokeappname:""
 				}
 			}
 		},
@@ -173,11 +177,37 @@
 					console.log(error)
 				})
 			},
-			
+			handleSizeChange2(pagesize) {
+			    var _this=this
+			    this.pageInfo2.pagesize=pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo2})
+			    .then(function(response){
+			    	console.log("-------------------------------------------")
+			    	console.log(response.data)
+			    	_this.tableData=response.data.list
+			    }).catch(function(error){
+			    	console.log(error)
+			    })
+			},
+			handleCurrentChange2(currentPage) {
+				var _this=this
+				this.pageInfo2.currentPage=currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo2})
+				.then(function(response){
+					console.log(response.data)
+					_this.tableData=response.data.list
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			//审核教材入库
 			updateApproval(row){
 				const _this=this
 				this.form.expensesId=row.expensesId
-				this.form.updatename="admin"
+				this.form.approvalname="admin"
 				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form)
 				.then(function(response) {
 					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
@@ -242,10 +272,11 @@
 					console.log(error)
 				})
 			},
+			//撤销审核教材入库
 			updateReApproval(row){
 				const _this=this
 				this.form.expensesId=row.expensesId
-				this.form.updatename="admin"
+				this.form.revokeappname="admin"
 				this.axios.put("http://localhost:8089/threeproject/updateReApproval",this.form)
 				.then(function(response) {
 					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
@@ -259,7 +290,46 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+			},
+			//审核教材出库
+			updateApprovalincome(row){
+				const _this=this
+				this.form.warehouseincomeId=row.warehouseincomeId
+				this.form.approvalname="admin"
+				this.axios.put("http://localhost:8089/threeproject/updateApprovalincome",this.form)
+				.then(function(response) {
+					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:_this.pageInfo2})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData2=response.data.list
+						_this.pageInfo2.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
+			},
+			//撤销审核教材出库
+			updateReApprovalincome(row){
+				const _this=this
+				this.form.warehouseincomeId=row.warehouseincomeId
+				this.form.revokeappname="admin"
+				this.axios.put("http://localhost:8089/threeproject/updateReApprovalincome",this.form)
+				.then(function(response) {
+					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:_this.pageInfo2})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData2=response.data.list
+						_this.pageInfo2.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+				}).catch(function(error) {
+					console.log(error)
+				})
 			}
+			
 		},
 		created() {
 			const _this=this
@@ -268,6 +338,14 @@
 				console.log(response)
 				_this.tableData=response.data.list
 				_this.pageInfo.total = response.data.total
+			}).catch(function(error) {
+				console.log(error)
+			}),
+			this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:this.pageInfo2})
+			.then(function(response) {
+				console.log(response)
+				_this.tableData2=response.data.list
+				_this.pageInfo2.total = response.data.total
 			}).catch(function(error) {
 				console.log(error)
 			})

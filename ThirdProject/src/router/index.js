@@ -35,6 +35,7 @@ import schoolterm from '../components/basicData/SchoolTerm.vue'
 import yearmangement from '../components/basicData/YearManagement.vue'
 import usersetting from '../components/basicData/UserSettings.vue'
 
+
 //招生管理
 import consultaion from '../components/enroll/Consultation.vue'
 import workhandover from '../components/enroll/WorkHandover.vue'

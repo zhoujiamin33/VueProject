@@ -1,23 +1,19 @@
-0<template>
+<template>
 	<div style="margin-top:40px;width: 100%;">
 	 	<!-- 搜索框、输入框 、按钮-->
 	 	<div style="margin-left:10px;line-height: 40px;">
 	 		<el-row >
 	 			是否审核：
-	 			<el-select  v-model="Approval"  placeholder="请选择" >
-	 				<el-option>已审核</el-option>
-					<el-option>未审核</el-option>
+	 			<el-select  v-model="ApprovalState"  placeholder="请选择" >
+	 				<el-option value="1" label="已审核">已审核</el-option>
+					<el-option value="0" label="未审核">未审核</el-option>
 	 			</el-select>
-	 			缴费日期：
-	 			<el-date-picker v-model="value2"  type="daterange" align="right"  unlink-panels 
-	 			      range-separator="至" 
-	 			      start-placeholder="开始日期"
-	 			      end-placeholder="结束日期"
-	 			      :shortcuts="shortcuts">
-	 			</el-date-picker>
-				经办人：
-				<el-input  v-model="course" style="width: 150px;"></el-input>
-	 			<el-button style="margin-left: 20px;">查询</el-button>
+	 			<span style="margin-left: 20px;font-size: 15px;">缴费日期：</span>
+	 			  <el-date-picker v-model="value"  align="right" type="date"
+	 			      placeholder="选择日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>
+				<span style="margin-left: 20px;font-size: 15px;">录入人：</span>
+				<el-input  v-model="input" style="width: 150px;"></el-input>
+	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
 				<el-button type="primary" icon="el-icon-plus" style="margin-left:125px;" @click="dialogFormVisible=true">新增报班</el-button>
 	 		</el-row>
 	 	</div>
@@ -68,8 +64,6 @@
 			:total="pageInfo.total">
 			</el-pagination>
 		</div>
-		
-		
 		<!-- 新增报班缴费 -->
 		<el-dialog title=" 新增报班缴费" v-model="dialogFormVisible">
 		  <el-form :model="form">
@@ -120,7 +114,7 @@
 		name:"entryfees",
 		data(){
 			return {
-				Approval:"",student:"",course:"",
+				ApprovalState:"",value2:"",input:"",value:"",
 				tableData:[],
 				pageInfo:{
 					currentPage: 1,//标识当前页码
@@ -137,7 +131,29 @@
 				registerdata:[],
 				coursedata:[],
 				// 修改缴费状态时传咨询登记id
-				registerId:""
+				registerId:"",
+				//日期
+				disabledDate(time) {
+				    return time.getTime() > Date.now()
+				},
+				shortcuts: [{
+				    text: 'Today',
+				    value: new Date(),
+				}, {
+				    text: 'Yesterday',
+				    value: (() => {
+				    const date = new Date()
+				    date.setTime(date.getTime() - 3600 * 1000 * 24)
+				        return date
+				      })(),
+				    }, {
+				      text: 'A week ago',
+				      value: (() => {
+				      const date = new Date()
+				      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+				      return date
+				    })(),
+				}]
 			}
 		},
 		methods:{
@@ -188,7 +204,7 @@
 					console.log(_this.form.registerId+"ghj")
 					_this.dialogFormVisible=false
 					//清空表单
-					_this.form=[]
+					_this.form={}
 					_this.coursedata=[]
 				}).catch(function(error){
 					console.log(error)
@@ -304,6 +320,20 @@
 						console.log(error)
 					})
 				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			selectBycontionEntry(){
+				const _this=this
+				console.log(this.ApprovalState+"abc")
+				console.log(this.value2+"abcd")
+				this.value2=new Date(this.value)
+				console.log(this.input+"abcdef")
+				this.axios.get("http://localhost:8089/threeproject/updatepaystate/"+this.ApprovalState+"/"+this.value2+"/"+this.input)
+				.then(function(response) {
+					console.log(response)
+					_this.tableData=response.data
+				}).catch(function(error) {
 					console.log(error)
 				})
 			}

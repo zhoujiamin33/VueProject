@@ -129,7 +129,9 @@
 					//storagetime: "",
 					totalprice: "",
 					//教材入库支出表的入库数量
-					refundCount:""
+					refundCount:"",
+					//教材入库支出表的新增人员
+					addname:""
 				},
 
 				disabledDate(time) {
@@ -176,10 +178,7 @@
 				const _this=this
 				this.form.mbookstorageId=mbookstorageId
 				this.form.refundCount=this.form.storagecount
-				console.log(this.form.mbookstorageId+"mbookstorageId")
-				console.log(this.form.bookId+"bookId")
-				console.log(this.form.refundCount+"storagecount")
-				console.log(this.form.totalprice+"totalprice")
+				this.form.addname="admin"
 				this.axios.post("http://localhost:8089/threeproject/insertExpenditure",this.form)
 				.then(function(response){
 					console.log(response)

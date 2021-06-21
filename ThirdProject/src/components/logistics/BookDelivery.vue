@@ -182,6 +182,10 @@
 
 
 				xskd1: false,
+			  //新增教材出库收入
+			  form2:{
+				  addname:"",deliverycount:"",bookId:"",bookdeliveryId:""
+				}
 			}
 		},
 		methods: {
@@ -239,9 +243,11 @@
 						console.log(response)
 						_this.add(response.data.bookdeliveryId)
 						_this.xskd = false
-						for (var key in _this.form) {
-							delete _this.form[key]
-						}
+						_this.insertincome(response.data.bookdeliveryId)
+						// for (var key in _this.form) {
+						// 	delete _this.form[key]
+						// }
+						_this.form={}
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -273,7 +279,23 @@
 						console.log(error)
 					})
 			},
-
+			//新增教材出库收入
+			insertincome(bookdeliveryId){
+				const _this=this
+				this.form2.addname="admin"
+				this.form2.bookdeliveryId=bookdeliveryId
+				console.log(this.form2.bookdeliveryId+"def")
+				this.form2.refundCount=this.form.deliverycount
+				console.log(this.form2.deliverycount+"igh")
+				this.form2.bookId=this.form.bookId
+				console.log(this.form2.bookId+"abc")
+				this.axios.post("http://localhost:8089/threeproject/insertincome",this.form2)
+				.then(function(repsonse){
+					console.log(repsonse)
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
 			//多条件查询
 			selectBookdelivery() {
 				const _this = this
