@@ -187,7 +187,8 @@
 				},
 				dialogFormVisible7: false,
 				// 被复选框选中的值
-				chektable: []
+				chektable: [],
+				Classes:[]
 
 			}
 		},
@@ -256,8 +257,9 @@
 			//选择班级
 			showclasses(row) {
 				this.addForm.studentId = row.studentId
+				this.addForm.supplementaryId = row.supplementaryId
 				this.addForm.courseId = row.supplementaryId
-				this.addForm.courseName = row.supplementaryName
+				this.addForm.supplementaryName = row.supplementaryName
 				this.findcourseId(this.addForm.courseId)
 				this.dialogFormVisible7 = true
 			},
@@ -311,9 +313,18 @@
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+			this.axios.get("http://localhost:8089/threeproject/findsupplementary",{params:this.pageInfo})
 				.then(function(response) {
-					_this.tableData = response.data
+					_this.tableData = response.data.list
+					_this.pageInfo.total = response.data.total
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				}),
+				// 查询所有班级
+				this.axios.get("http://localhost:8089/threeproject/findAllClass")
+				.then(function(response) {
+					_this.Classes = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)

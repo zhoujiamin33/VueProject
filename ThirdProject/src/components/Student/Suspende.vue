@@ -159,9 +159,10 @@
 				},
 				showsupende(){
 					const _this = this;
-					this.axios.get("http://localhost:8089/threeproject/findAllsuspende")
+					this.axios.get("http://localhost:8089/threeproject/findAllsuspende",{params:this.pageInfo})
 						.then(function(response) {
-							_this.SuspendeData= response.data
+							_this.SuspendeData= response.data.list
+							_this.pageInfo.total = response.data.total
 							console.log(response)
 						}).catch(function(error) {
 							console.log(error)

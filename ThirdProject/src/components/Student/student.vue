@@ -700,8 +700,8 @@
 					classtypeId: '', //课程编号
 					teacherId: '', //教师
 					status: '', //学员状态表的状态
-					classhours:'',//课时数
-					course:[]
+					classhours:''//课时数
+					// course:[]
 				},
 				Course: [], //课程
 
@@ -1285,6 +1285,7 @@
 				this.axios.get("http://localhost:8089/threeproject/findcourseId/" + courseId)
 					.then(function(response) {
 						_this.Classes = response.data
+						console.log(response)
 						_this.addForm.classesId = _this.Classes.classesId
 						_this.addForm.classesName = _this.Classes.classesName
 						_this.addForm.teacherNmae = _this.Classes.teacherId
