@@ -189,8 +189,8 @@
 							<el-option :label="item.classtypeName" :value="item.classtypeId" v-for="item in classType">
 							</el-option>
 						</el-select>
-						<el-select v-model="addForm.course.courseId" placeholder="请选择课程" style="width: 178px;" @change="selectByCourseId">
-							<el-option :label="i.courseName" :value="i.courseId" v-for="i in addForm.course">
+						<el-select v-model="addForm.courseId" placeholder="请选择课程" style="width: 178px;" @change="selectByCourseId">
+							<el-option :label="i.courseName" :value="i.courseId" v-for="i in form.course">
 							</el-option>
 						</el-select>
 					</div>
@@ -543,8 +543,11 @@
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-user"></i>
-						课程类别:
+						课程名称:
 					</template>
+					<!-- <el-select v-model="addForm.courseId" @change="findcourseId">
+						<el-option v-for="item in form.course" :label="item.courseName" :key="item.courseId" :value="item.courseId"></el-option>
+					</el-select> -->
 					{{this.addForm.courseName}}
 
 				</el-descriptions-item>
@@ -553,7 +556,10 @@
 						<i class="el-icon-mobile-phone"></i>
 						班级名称:
 					</template>
-					{{this.addForm.classesName}}
+					<el-select v-model="addForm.classesId" @change="selectclassesId">
+						<el-option v-for="item in form.classes" :label="item.classesName" :key="item.classesId" :value="item.classesId"></el-option>
+					</el-select>
+					<!-- {{this.addForm.classesName}} -->
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -581,21 +587,21 @@
 						<i class="el-icon-tickets"></i>
 						教师:
 					</template>
-					<el-input v-model="addForm.empName"></el-input>
+					{{this.addForm.empName}}
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						开始时间:
 					</template>
-					<el-input v-model="addForm.starteddate"></el-input>
+					{{this.addForm.starteddate}}
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
 						结束时间:
 					</template>
-					<el-input v-model="addForm.enddate"></el-input>
+					{{this.addForm.enddate}}
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -628,7 +634,7 @@
 					value: '', //值
 					currentPage: 1,
 					pagesize: 3,
-					total: 0
+					total: 0,
 				},
 				addForm: {
 					studentId: '',
@@ -660,15 +666,15 @@
 					classtypeId: '', //课程编号
 					teacherId: '', //教师
 					status: '', //学员状态表的状态
-
-					classhours:''//课时数
-
 					classhours:'',//课时数
-					course:[],
 					//退费管理的新增人
-					addname:"",
-					//退费管理的id
-					dropId:""
+					addname:''
+					
+				},
+				form:{
+				 course:[],
+				 classes:[],
+				 emp:[]
 				},
 				Course: [], //课程
 
@@ -681,26 +687,26 @@
 					studentName: [{
 							required: true,
 							message: '请输入学生姓名',
-							trigger: "blur"
+							trigger: "blur",
 						},
 						{
 							min: 2,
 							max: 5,
 							message: "长度在2到5个字符",
-							trigger: "blur"
-						}
+							trigger: "blur",
+						},
 					],
 					parentName: [{
 							required: true,
 							message: '请输入家长姓名',
-							trigger: "blur"
+							trigger: "blur",
 						},
 						{
 							min: 2,
 							max: 5,
 							message: "长度在2到5个字符",
-							trigger: "blur"
-						}
+							trigger: "blur",
+						},
 					]
 				},
 				// 生源渠道表
@@ -730,9 +736,10 @@
 					courseMoney: '', //应收费用
 					detailsupplementaryName:'',
 					classhours:'',
-					studentId:''
+					studentId:'',
 				}
 			}
+			
 		},
 		methods: {
 			// 获取课类的编号
@@ -742,7 +749,7 @@
 				this.axios.get("http://localhost:8089/threeproject/findclasstypeId/" + classtypeId)
 					.then(function(response) {
 						_this.Course = response.data
-						_this.addForm.course = _this.Course
+						_this.form.course = _this.Course
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -755,7 +762,7 @@
 						_this.Course = response.data
 						_this.addForm.classhours = _this.Course.classhours
 						_this.addForm.courseMoney = _this.Course.courseMoney
-						console.log(_this.addForm.courseMoney)
+						console.log(_this.form.course.courseMoney)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -763,12 +770,11 @@
 			},
 			// 新增预报
 			AddSupplementary(){
-				this.supplementaryform.classhours = this.addForm.classhours
-				this.supplementaryform.courseId = this.addForm.course.courseId
-				this.supplementaryform.courseMoney = this.addForm.courseMoney
+				this.supplementaryform.classhours = this.Course.classhours
+				this.supplementaryform.courseId = this.Course.courseId
+				this.supplementaryform.courseMoney = this.Course.courseMoney
 				this.supplementaryform.supplementaryName=this.Course.courseName
 				this.supplementaryform.detailsupplementaryName=this.Course.courseName
-				this.supplementaryform.studentId=this.addForm.studentId
 				this.supplementaryform.studentId=this.addForm.studentId
 				this.Supplementary.push(this.supplementaryform)
 			},
@@ -800,9 +806,10 @@
 			// 查询补报课程
 			findsupplementary(){
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+				this.axios.get("http://localhost:8089/threeproject/findsupplementary",{params:this.pageInfo})
 					.then(function(response) {
-						_this.Supplementary = response.data
+						_this.Supplementary = response.data.list
+						_this.pageInfo.total = response.data.total
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1007,7 +1014,7 @@
 				this.addForm.studytime = row.studytime
 				this.addForm.classesId = row.classesId
 				this.addForm.registerId = row.registerId
-				this.findstuclass(this.addForm.studentId)
+				this.findclassstuId(this.addForm.studentId)
 				this.findClassId(this.addForm.classesId)
 				this.dialogFormVisible3 = true
 			},
@@ -1032,7 +1039,6 @@
 			},
 			// 根据学员编号查询班级编号与姓名
 			findstuclass(studentId) {
-				// this.StudentStatus=[]
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findstuclass/" + studentId)
 					.then(function(response) {
@@ -1045,7 +1051,6 @@
 			},
 			// 根据学员编号查询学员记录和班级
 			findclassstuId(studentId) {
-				// this.StudentStatus=[]
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findstuclass/" + studentId)
 					.then(function(response) {
@@ -1175,7 +1180,6 @@
 			// 把学员状态改为1已分班
 			updatesuspendestate(row) {
 				this.StudentStatus.studentId = row.studentId
-				console.log("aaaaaaaaaaaa" + this.StudentStatus.studentId)
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/updatesuspendestate/" + this.StudentStatus.studentId)
 					.then(function(response) {
@@ -1247,24 +1251,47 @@
 			
 			//选择班级
 			showclasses(row) {
-				this.addForm.studentId = row.studentId
-				this.addForm.courseId = row.courseId
-				this.addForm.courseName = row.course.courseName
-				this.findcourseId(this.addForm.courseId)
-				this.dialogFormVisible7 = true
+				if(row.status==2){
+					this.$message({
+						showClose: true,
+						message: '该同学已退学!',
+						type: 'error'
+					});
+				}else {
+					this.addForm.studentId = row.studentId
+					this.addForm.courseId = row.course.courseId
+					this.addForm.courseName = row.course.courseName
+					this.findcourseId(this.addForm.courseId)
+					this.dialogFormVisible7 = true
+				}
+				
 			},
 			findcourseId(courseId) {
+				console.log("课程编号："+courseId)
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findcourseId/" + courseId)
 					.then(function(response) {
 						_this.Classes = response.data
+						_this.form.classes=_this.Classes
 						console.log(response)
-						_this.addForm.classesId = _this.Classes.classesId
-						_this.addForm.classesName = _this.Classes.classesName
-						_this.addForm.teacherNmae = _this.Classes.teacherId
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			selectclassesId(classesId){
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectById/" + classesId)
+					.then(function(response) {
+						_this.Classes = response.data
+						console.log(response)
+						// _this.form.classes=_this.Classes
+						// _this.form.classes.classesId = _this.Classes.classesId
+						// _this.form.classes.classesName = _this.Classes.classesName
+						_this.addForm.teacherNmae = _this.Classes.emp.teacherId
 						_this.addForm.empName = _this.Classes.emp.empName
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
+						console.log("kk"+_this.addForm.classesName+_this.addForm.starteddate)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1343,8 +1370,8 @@
 			// 	console.log(error)
 			// })
 
-
 		}
+		
 	}
 </script>
 
