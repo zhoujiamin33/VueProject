@@ -7,9 +7,9 @@
 			</el-select>
 			<el-checkbox v-model="checked" style="margin-left: 5px;">显示工作外时间</el-checkbox>
 			<b style="font-size: 13px;font-weight: 100;margin-left: 60px;">优先级：</b>
-			<img src="../assets/绿.gif">&nbsp;低&nbsp;&nbsp;
-			<img src="../assets/黄.gif">&nbsp;普通&nbsp;&nbsp;
-			<img src="../assets/红.gif">&nbsp;高
+			<img src="../../assets/绿.gif">&nbsp;低&nbsp;&nbsp;
+			<img src="../../assets/黄.gif">&nbsp;普通&nbsp;&nbsp;
+			<img src="../../assets/红.gif">&nbsp;高
 			<el-button type="info" @click="dialogFormVisible=true" plain size="mini" style="color: #000000;position: relative;left: 708px;">新建日程</el-button>
 		</div>
 		<div>
@@ -112,7 +112,7 @@
 					</tr>
 					<tr>
 						<td align="center">
-							<img src="../assets/红.gif">
+							<img src="../../assets/红.gif">
 						</td>
 						<td>
 							<a href="#">
