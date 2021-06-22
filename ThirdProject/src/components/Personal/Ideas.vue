@@ -13,24 +13,56 @@
 						<el-table :data="tableData" stripe border style="width: 100%;margin-top: 8px;">
 							<el-table-column type="index" width="50" align="center">
 							</el-table-column>
-							<el-table-column prop="yjbt" label="意见标题" width="415">
+							<el-table-column prop="ideasTitle" label="意见标题" width="415">
+								<template #default="scope">
+									<a href="#" @click="showEdit(scope.row)">{{scope.row.ideasTitle}}</a>
+								</template>
 							</el-table-column>
-							<el-table-column prop="yjx" label="意见箱">
+							<el-table-column prop="suggest.suggestName" label="意见箱">
 							</el-table-column>
-							<el-table-column prop="fbr" label="发表人">
+							<el-table-column prop="emp.empName" label="发表人">
 							</el-table-column>
-							<el-table-column prop="time" label="发表时间">
+							<el-table-column prop="timeofpublication" label="发表时间">
 							</el-table-column>
-							<el-table-column prop="hfr" label="回复人">
+							<el-table-column prop="reply" label="回复人">
 							</el-table-column>
-							<el-table-column prop="hftime" label="回复时间">
+							<el-table-column prop="revoverytime" label="回复时间">
 							</el-table-column>
 						</el-table>
 					</div>
 
-					<!-- 分页 -->
-					<div>
 
+					<el-dialog title="编辑" width="47%" v-model="huifu">
+						<template #footer>
+							<span class="dialog-footer">
+								<el-button style="margin-left: -100px;" type="primary" @click="updateIdeas">保 存</el-button>
+								<el-button @click="xskd1=false">关 闭</el-button>
+							</span>
+						</template>
+						<el-form :model="form" label-width="80px" size="mini">
+							<el-form-item label="意见标题 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasTitle" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表人 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.empName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表时间 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.timeofpublication" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoveryname" clearable></el-input>
+							</el-form-item>
+						</el-form>
+					</el-dialog>
+
+
+					<div>
+						<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
+						 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+						</el-pagination>
 					</div>
 				</div>
 			</el-tab-pane>
@@ -64,21 +96,9 @@
 									</el-input>
 								</div>
 								<div>
-									<!-- 富文本编辑器 -->
-								</div>
-								<div>
-									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 33px;">相关附件：</b>
-									<el-select v-model="select" placeholder="请选择" style="width: 507px;margin-top: 8px;" size="mini">
-									</el-select>
-									<el-button type="primary" icon="el-icon-download" size="mini" style="margin-top: 10px;margin-left: 3px;">下载</el-button>
-									<el-button type="primary" icon="el-icon-remove-outline" size="mini" style="margin-top: 10px;margin-left: 3px;">删除</el-button>
-								</div>
-								<div>
-									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 33px;">选择附件：</b>
-									<el-input placeholder="请选择要上传的附件" v-model="input1" style="width: 507px;margin-top: 8px;" size="mini">
+									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 33px;">意见内容：</b>
+									<el-input type="textarea" :rows="2" v-model="input" size="mini" style="width: 660px;margin-top: 8px;">
 									</el-input>
-									<el-button type="primary" size="mini" style="margin-top: 10px;margin-left: 3px;">浏览.....</el-button>
-									<el-button type="primary" icon="el-icon-upload2" size="mini" style="margin-top: 10px;margin-left: 3px;">上传</el-button>
 								</div>
 							</el-form>
 						</el-dialog>
@@ -86,28 +106,68 @@
 						<el-table :data="tableData1" stripe border style="width: 100%;margin-top: 8px;">
 							<el-table-column type="index" width="50" align="center">
 							</el-table-column>
-							<el-table-column prop="yjbt" label="意见标题" width="415">
+							<el-table-column prop="ideasTitle" label="意见标题" width="415">
+								<template #default="scope">
+									<a href="#" @click="showChakan(scope.row)">{{scope.row.ideasTitle}}</a>
+								</template>
 							</el-table-column>
-							<el-table-column prop="yjx" label="意见箱">
+							<el-table-column prop="suggest.suggestName" label="意见箱">
 							</el-table-column>
-							<el-table-column prop="glr" label="管理人">
+							<el-table-column prop="emp.empName" label="管理人">
 							</el-table-column>
-							<el-table-column prop="zt" label="状态">
+							<el-table-column prop="state" label="状态">
+								<template #default="scope">
+									<p v-if="scope.row.state==0">待回复</p>
+									<p v-if="scope.row.state==1">已回复</p>
+								</template>
 							</el-table-column>
-							<el-table-column prop="fbr" label="发表人">
+							<el-table-column prop="emp.empName" label="发表人">
 							</el-table-column>
-							<el-table-column prop="time" label="发表时间">
+							<el-table-column prop="timeofpublication" label="发表时间">
 							</el-table-column>
-							<el-table-column prop="hfr" label="回复人">
+							<el-table-column prop="reply" label="回复人">
 							</el-table-column>
-							<el-table-column prop="hftime" label="回复时间">
+							<el-table-column prop="revoverytime" label="回复时间">
 							</el-table-column>
 						</el-table>
 					</div>
 
-					<!-- 分页 -->
-					<div>
+					<el-dialog title="编辑" width="47%" v-model="chakan">
+						<template #footer>
+							<span class="dialog-footer">
+								<el-button style="margin-left: -100px;" type="primary" @click="updateIdeas">删 除</el-button>
+								<el-button @click="chakan=false">关 闭</el-button>
+							</span>
+						</template>
+						<el-form :model="form" label-width="80px" size="mini">
+							<el-form-item label="意见标题 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasTitle" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表人 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.empName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表时间 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.timeofpublication" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoveryname" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复人 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.reply" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复时间 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoverytime" disabled clearable></el-input>
+							</el-form-item>
+						</el-form>
+					</el-dialog>
 
+					<div>
+						<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page="pageInfo.currentPage"
+						 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+						</el-pagination>
 					</div>
 				</div>
 			</el-tab-pane>
@@ -120,11 +180,18 @@
 		defineComponent,
 		ref
 	} from 'vue'
-
+	import qs from "qs";
 	export default {
 		name: "Ideas",
 		data() {
 			return {
+				chakan: false,
+				huifu: false,
+				pageInfo: {
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				// text: "",
 				activeName: 'first',
 				options: [{
@@ -154,21 +221,154 @@
 
 				dialogFormVisible: false,
 				form: {
-					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: ''
+					ideasId: "",
+					empName: "",
+					ideasTitle: "",
+					ideasName: "",
+					state: "",
+					reply: "",
+					revoverytime: "",
+					revoveryname: ""
 				},
-				
+
 				checked: false,
-				
+
 				input: ref(''),
 				input1: ref(''),
 			}
+		},
+		methods: {
+			showEdit(row) {
+				this.form.ideasId = row.ideasId
+				this.form.ideasTitle = row.ideasTitle
+				this.form.empName = row.emp.empName
+				this.form.timeofpublication = row.timeofpublication
+				this.form.ideasName = row.ideasName
+				this.form.reply = row.reply
+				this.form.revoveryname = row.revoveryname
+				this.huifu = true
+			},
+			showChakan(row) {
+				this.form.ideasId = row.ideasId
+				this.form.ideasTitle = row.ideasTitle
+				this.form.empName = row.emp.empName
+				this.form.timeofpublication = row.timeofpublication
+				this.form.ideasName = row.ideasName
+				this.form.revoveryname = row.revoveryname
+				this.form.reply = row.reply
+				this.form.revoverytime = row.revoverytime
+				this.chakan = true
+			},
+			//修改
+			updateIdeas() {
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updateIdeas", this.form)
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData1 = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						var ideas = response.data
+						var row = _this.tableData.filter(i => i.ideasId == ideas.ideasId)[0]
+						row.reply = ideas.reply
+						row.revoveryname = ideas.revoveryname
+						_this.huifu = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+
+			handleCurrentChange1(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData1 = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange1(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						_this.tableData1 = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData1 = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
 		},
 	}
 </script>
