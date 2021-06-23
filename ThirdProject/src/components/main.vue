@@ -22,6 +22,9 @@
 			<p>admin</p>
 			<p>财务部会计</p>
 		</div>
+		<div class="memorandum">
+			<h1>备忘录</h1>
+		</div>
 	</div>
 	<!-- 第三排：规章制度、公告、意见 -->
 	<div style="display: flex; flex-direction: row;">
@@ -108,5 +111,13 @@
 		margin-top: 20px;
 		margin-left: 20px;
 		background-color: #f5f5f5;
+	}
+	/* 我的备忘录 */
+	.memorandum{
+		border: #aaaaff solid 1px ;
+		width:40%;
+		height: 200px;
+		margin-top: -200px;
+		margin-left:750px;
 	}
 </style>

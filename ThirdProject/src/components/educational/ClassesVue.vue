@@ -16,16 +16,8 @@
 			</el-row>
 		</div>
 			
-		<el-dialog title="新增班级" v-model="dialogFormVisible" width="75%">
+		<el-dialog title="新增班级" v-model="dialogFormVisible" width="55%">
 			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
-				<el-descriptions-item>
-				  <template #label>
-					<i class="el-icon-office-building"></i>选择教室
-				  </template>
-				  <el-select v-model="form.classroomId">
-					<el-option v-for="room in classRoom" :value="room.classroomId" :label="room.classroomName"></el-option>
-				  </el-select>
-				</el-descriptions-item>
 				<el-descriptions-item>
 				  <template #label>
 					<i class="el-icon-location-outline"></i>年届管理
@@ -64,14 +56,6 @@
 				  </template>
 				  <el-select v-model="form.userbookId">
 					<el-option v-for="books in book" :value="books.bookId" :label="books.bookname"></el-option>
-				  </el-select>
-				</el-descriptions-item>
-				<el-descriptions-item>
-				  <template #label>
-					<i class="el-icon-office-building"></i>教员老师
-				  </template>
-				  <el-select v-model="form.teacherId">
-					<el-option v-for="emp in empdata" :value="emp.empId" :label="emp.empName"></el-option>
 				  </el-select>
 				</el-descriptions-item>
 				<el-descriptions-item>
@@ -224,10 +208,10 @@
 				</template>
 			</el-descriptions>
 			<p>班级学员</p>
-			<el-table :data="selectById" height="250" border style="width: 100%">
-			    <el-table-column prop="selectById" label="沙" width="180"></el-table-column>
-			    <el-table-column prop="name" label="姓名"  width="180"></el-table-column>
-			    <el-table-column prop="address" label="地址"></el-table-column>
+			<el-table :data="selectStudent" height="250" border style="width: 100%">
+			    <el-table-column prop="selectById" label="编号" width="180"></el-table-column>
+			    <el-table-column prop="studentName" label="姓名"  width="180"></el-table-column>
+			    <el-table-column prop="studentPhone" label="联系电话"></el-table-column>
 			</el-table>
 		</el-dialog>
 		
@@ -320,7 +304,8 @@
 					detailcourseId:""
 				},
 				//根据课程id查询课程详细表序列号为100的数据
-				detailsdata:[] 
+				detailsdata:[],
+				selectStudent:[]
 			}
 		},
 		 setup() {
@@ -379,7 +364,8 @@
 			 	this.form.teacherName=row.emp.teacherName, 
 				//带班老师
 				this.form.empName=row.emp.empName, 
-			 	this.dialogFormsee=true			
+			 	this.dialogFormsee=true	
+				this.selectByClass(row.classesId)
 			 },
 			 //修改班级
 			 updateClass(){
@@ -476,6 +462,7 @@
 			 //根据班级id查询班级详细信息
 			 selectById(row){
 				 const _this=this
+				 this.selectByClass(row.classesId)
 				 this.axios.get("http://localhost:8089/threeproject/selectById/"+row.classesId)
 				 .then(function(response){
 					console.log(response)
@@ -484,6 +471,16 @@
 				 }).catch(function(error){
 					 console.log(error)
 				 })
+			 },
+			 selectByClass(classesId){
+				const _this=this
+				this.axios.get("http://localhost:8089/threeproject/selectByClass/"+classesId)
+				.then(function(response){
+					_this.selectStudent=response.data
+					console.log(response)				
+				}).catch(function(error){
+					console.log(error)				 
+				}) 
 			 }
 		  },
 		  created() {

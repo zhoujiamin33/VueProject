@@ -897,7 +897,6 @@
 								_this.Stutable = response.data.list
 								_this.pageInfo.total = response.data.total
 								console.log(response)
-
 							}).catch(function(error) {
 								console.log(error)
 							})

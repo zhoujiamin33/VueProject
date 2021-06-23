@@ -8,9 +8,11 @@
   "dependencies": {
     "axios": "^0.21.1",
     "element-plus": "^1.0.2-beta.48",
+    "moment": "^2.29.1",
     "qs": "^6.10.1",
     "vue": "^3.0.4",
     "vue-axios": "^3.2.4",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.0.9",
     "vuex": "^4.0.2"
   },
