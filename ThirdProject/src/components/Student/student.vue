@@ -21,7 +21,7 @@
 			</div>
 		</div>
 
-		<el-table :data="Stutable" border @selection-change="handleSelectionChange">
+		<el-table :data="Stutable" style="width: 100%" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 			<el-table-column prop="studentId" label="Id">
 			</el-table-column>
 			<el-table-column type="selection">
@@ -36,14 +36,15 @@
 			</el-table-column>
 			<el-table-column prop="studentState" label="状态">
 				<template v-slot="scope">
-					<p v-if="scope.row.studentState==0">已报名</p>
-					<p v-if="scope.row.studentState==1">未报名</p>
+					<p v-if="scope.row.studentState==0"> 
+					<i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
+					<p v-if="scope.row.studentState==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 				</template>
 			</el-table-column>
 			<el-table-column prop="source.sourceName" label="生源渠道">
 			</el-table-column>
 
-			<el-table-column prop="index" label="操作">
+			<el-table-column prop="index" label="操作"  fixed="right">
 				<template #default="scope">
 					<el-button type="text" @click="bubao(scope.row)">补报</el-button>
 					<!-- <el-button type="text">拍照</el-button> -->
@@ -683,32 +684,6 @@
 				dialogFormVisible3: false, //查看详情
 				dialogFormVisible4: false, //补报
 				dialogFormVisible7: false, //选择班级
-				rules: {
-					studentName: [{
-							required: true,
-							message: '请输入学生姓名',
-							trigger: "blur",
-						},
-						{
-							min: 2,
-							max: 5,
-							message: "长度在2到5个字符",
-							trigger: "blur",
-						},
-					],
-					parentName: [{
-							required: true,
-							message: '请输入家长姓名',
-							trigger: "blur",
-						},
-						{
-							min: 2,
-							max: 5,
-							message: "长度在2到5个字符",
-							trigger: "blur",
-						},
-					]
-				},
 				// 生源渠道表
 				Source: [],
 				register: [], //根据查询出咨询信息
@@ -1199,7 +1174,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					if (_this.addForm.classesId == null || _this.addForm.status == 3) {
+					if (row.classesId==null || row.status == 3||row.status==2) {
 						_this.$message({
 							showClose: true,
 							message: '请选择班级!',
