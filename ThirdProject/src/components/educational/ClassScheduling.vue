@@ -17,10 +17,8 @@
 				  <el-descriptions-item label="教员" >
 				  	  <el-input v-model="form2.empName"  style="width: 150px;align-self: center;"></el-input>		  
 				  </el-descriptions-item>
-				  <el-descriptions-item label="时段">
-				  		<el-select v-model="form.periods" filterable placeholder="请选择时段"  style="width: 200px;" multiple clearable multiple-limit=2>
-				  		    <el-option  v-for="item in Trainingperiods" :label="item.period" :value="item.periodId" style="width: 150px;"></el-option>
-				  		</el-select>		 
+				  <el-descriptions-item label="本周上课次数">
+				  		<el-input v-model="form2.Coursecount"  type="number" style="width: 150px;align-self: center;"></el-input>			  
 				  </el-descriptions-item>
 				  <el-descriptions-item label="课程">
 					  <el-input v-model="form2.courseName" style="width: 150px;align-self: center;"></el-input>
@@ -28,9 +26,11 @@
 				  <el-descriptions-item label="当前进度">
 					  <el-input v-model="form2.detailcourseName"  style="width: 150px;align-self: center;"></el-input>
 				  </el-descriptions-item>
-				  <el-descriptions-item label="本周上课次数">
-				  		<el-input v-model="form2.Coursecount"  type="number" style="width: 150px;align-self: center;"></el-input>			  
-				  </el-descriptions-item>
+				 <el-descriptions-item label="时段">
+				 		<el-select v-model="form.periods" filterable placeholder="请选择时段"  style="width: 200px;" multiple clearable multiple-limit="form2.Cousecount">
+				 		    <el-option  v-for="item in Trainingperiods" :label="item.period" :value="item.periodId" style="width: 150px;"></el-option>
+				 		</el-select>		 
+				 </el-descriptions-item>
 				  <el-descriptions-item label="剩余课时">
 				  		<el-input v-model="form2.shengyuHours"  style="width: 150px;align-self: center;"></el-input>			  
 				  </el-descriptions-item>

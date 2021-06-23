@@ -125,17 +125,13 @@
 	   	 	   	<div style="margin-left:10px;line-height: 40px;">
 	   	 	   		<el-row style="text-align: center;">
 	   	 	   			是否审核：
-	   	 	   			<el-select  v-model="Approval"  placeholder="请选择">
-	   	 	   				<el-option>已审核</el-option><el-option>未审核</el-option>
+	   	 	   			<el-select  v-model="pageInfo.Approval"  placeholder="请选择">
+	   	 	   				<el-option value="0" label="已审核">已审核</el-option><el-option value="1" label="已审核">未审核</el-option>
 	   	 	   			</el-select>
 	   	 	   			补缴日期：
-	   	 	   			<el-date-picker v-model="value2"  type="daterange" align="right"  unlink-panels 
-	   	 	   			      range-separator="至" 
-	   	 	   			      start-placeholder="开始日期"
-	   	 	   			      end-placeholder="结束日期"
-	   	 	   			      :shortcuts="shortcuts">
-	   	 	   			</el-date-picker>
-	   	 	   			<el-button style="margin-left: 20px;">查询</el-button>
+	   	 	   			<el-date-picker v-model="pageInfo.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
+						<el-date-picker v-model="pageInfo.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
+	   	 	   			<el-button style="margin-left: 20px;" @click="selectByContionout">查询</el-button>
 	   	 	   		</el-row>
 	   	 	   	</div>
 	   	 	</div>	
@@ -145,9 +141,9 @@
 	   	 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
 	   	 			<el-table-column fixed prop="outstandingId" label="补缴编号" align="center"> </el-table-column>
 	   	 			<el-table-column  prop="outstandingName" label="单据号" align="center"> </el-table-column>
-	   	 			<el-table-column prop="feesId" label="报班缴费编号" align="center"> </el-table-column>
+	   	 			<!-- <el-table-column prop="feesId" label="报班缴费编号" align="center"> </el-table-column> -->
 	   	 			<el-table-column prop="outstandingDate" label="补缴日期" align="center"> </el-table-column>
-	   	 			<el-table-column prop="address"  label="补缴学员" align="center"> </el-table-column>
+	   	 			<el-table-column prop="entryfees.register.consultant"  label="补缴学员" align="center"> </el-table-column>
 	   	 			<el-table-column prop="alongmoney" label="补缴金额" align="center"> </el-table-column>
 	   	 			<el-table-column prop="accumulated" label="累计欠费" align="center"> </el-table-column>
 	   	 			<el-table-column prop="addname"  label="经办人" align="center"> </el-table-column>
@@ -186,6 +182,7 @@
 
 <script>
 	import qs from 'qs'
+	import moment from "moment"
 	export default{
 		name:"outstanding",
 		data(){
@@ -198,7 +195,10 @@
 				pageInfo2:{
 					currentPage: 1,//标识当前页码
 					pagesize:2,//每页多少条数据
-					total:0
+					total:0,
+					value1:"",
+					value2:"",
+					Approval:"",
 				},
 				select:"",
 				input:"",
@@ -311,11 +311,11 @@
 					console.log(error)
 				})
 			},
-			// 多条件查询
+			// 欠费补缴多条件查询
 			selectbyContion(select,input){
 				const _this=this
 				feeId=this.entryfeeId
-				this.axios.get("http://localhost:8089/threeproject/selectBycontion/"+select+"/"+{input})
+				this.axios.get("http://localhost:8089/threeproject/selectBycontion/"+select+"/"+input)
 				.then(function(response){
 					_this.qianfeidata=response.data.list
 					_this.pageInfo.total=response.data.total
@@ -323,6 +323,23 @@
 					console.log(error)
 				})
 			},
+			//补缴管理的多条件查询
+			selectByContionout(){
+				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
+				this.pageInfo.value2=moment(this.pageInfo.value1).format("YYYY-MM-DD")
+				console.log(this.pageInfo.value1+"value1")
+				console.log(this.pageInfo.value2+"value2")
+				console.log(this.pageInfo.Approval+"Approval")
+				const _this=this
+				this.axios.get("http://localhost:8089/threeproject/selectByContionout/"+this.pageInfo.value1+"/"+this.pageInfo.value2+"/"+this.pageInfo.Approval)
+				.then(function(response){
+					console.log(response)
+					_this.tableData2=response.data
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			
 			// 新增欠费补缴（修改报班缴费的累计欠费,）
 			addoutstanding(){
 				const _this=this

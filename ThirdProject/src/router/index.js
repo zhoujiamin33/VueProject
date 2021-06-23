@@ -17,6 +17,7 @@ import PeriodVue from '../components/educational/PeriodVue.vue'
 import classtype from '../components/educational/classtype.vue'
 import course from '../components/educational/Course.vue'
 import Classplan from '../components/educational/ClassScheduling.vue'
+import Classplan2 from '../components/educational/ClassScheduling2.vue'
 
 // 财务管理
 import entryfees from '../components/finance/EntryFeesVue.vue'
@@ -70,6 +71,7 @@ const routes=[
 	{path:'/',component:mains},
 	{path:'/classes',component:ClassesVue},
 	{path:'/Classplan',component:Classplan},
+	{path:'/Classplan2',component:Classplan2},
 	{path:'/booksmoney',component:booksmoney},
 	{path:'/unit',component:unit},
 	{path:'/mail',component:mail},
