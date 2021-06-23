@@ -4,24 +4,24 @@
 			<div class="mainbody">
 				<div style="margin-right: 320px;display: flex;">
 					<span style="margin-top: 10px;width: 90px;">快速检索：</span>
-					<el-select v-model="select" placeholder="请选择">
-						<el-option label="班级" value="1"></el-option>
-						<el-option label="姓名" value="2"></el-option>
-						<el-option label="学号" value="3"></el-option>
+					<el-select v-model="pageInfo.index" placeholder="请选择">
+						<el-option label="班级" value="班级"></el-option>
+						<el-option label="姓名" value="姓名"></el-option>
+						<el-option label="学号" value="学号"></el-option>
 					</el-select>
 		
-					<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
+					<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable
 						@clear="serchVal">
 					</el-input>
 				</div>
 				<div style="display: flex;">
-					<el-button @click="getstudentList">查询</el-button>
+					<el-button @click="showsupende">查询</el-button>
 					<el-button @click="tgsp">通过审批</el-button>
 					<el-button @click="del">删除</el-button>
 				</div>
 			</div>
 		
-			<el-table :data="SuspendeData" border @selection-change="handleSelectionChange">
+			<el-table :data="SuspendeData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 				<el-table-column prop="suspendeId" label="Id">
 				</el-table-column>
 				<el-table-column type="selection">
@@ -40,8 +40,8 @@
 				</el-table-column>
 				<el-table-column prop="suspendeApproval" label="状态">
 					<template v-slot="scope">
-						<p v-if="scope.row.suspendeApproval==0">未审核</p>
-						<p v-if="scope.row.suspendeApproval==1">已审核</p>
+						<p v-if="scope.row.suspendeApproval==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
+					<p v-if="scope.row.suspendeApproval==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -56,6 +56,7 @@
 	</template>
 	
 	<script>
+		import qs from 'qs'
 		export default {
 			data() {
 				return {
@@ -63,7 +64,8 @@
 					SuspendeData: [],
 					//请求用户列表的参数
 					pageInfo: {
-						query: '',
+						index:'',
+						value: '',
 						currentPage: 1,
 						pagesize: 3,
 						total: 0
@@ -156,6 +158,21 @@
 						}).catch(function(error) {
 							console.log(error)
 						})
+				},
+				// 分页
+				handleCurrentChange(currentPage) {
+					var _this = this
+					this.pageInfo.currentPage = currentPage
+					var ps = qs.stringify(this.pageInfo)
+					console.log(ps)
+					this.showsupende()
+				},
+				handleSizeChange(pagesize) {
+					var _this = this
+					this.pageInfo.pagesize = pagesize
+					var ps = qs.stringify(this.pageInfo)
+					console.log(ps)
+					this.showsupende()
 				},
 				showsupende(){
 					const _this = this;

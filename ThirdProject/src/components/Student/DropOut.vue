@@ -21,7 +21,7 @@
 					</div>
 				</div>
 			
-				<el-table :data="tableData" border @selection-change="handleSelectionChange">
+				<el-table :data="tableData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 					<el-table-column prop="dropId" label="Id">
 					</el-table-column>
 					<el-table-column type="selection">
@@ -46,8 +46,8 @@
 					</el-table-column>
 					<el-table-column prop="jwApproval" label="状态">
 						<template v-slot="scope">
-							<p v-if="scope.row.jwApproval==0">未审核</p>
-							<p v-if="scope.row.jwApproval==1">已审核</p>
+							<p v-if="scope.row.jwApproval==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
+					<p v-if="scope.row.jwApproval==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -62,6 +62,7 @@
 		</template>
 		
 		<script>
+			import qs from 'qs'
 			export default {
 				data() {
 					return {
@@ -180,6 +181,21 @@
 							}).catch(function(error) {
 								console.log(error)
 							})
+					},
+					// 分页
+					handleCurrentChange(currentPage) {
+						var _this = this
+						this.pageInfo.currentPage = currentPage
+						var ps = qs.stringify(this.pageInfo)
+						console.log(ps)
+						this.showDropout()
+					},
+					handleSizeChange(pagesize) {
+						var _this = this
+						this.pageInfo.pagesize = pagesize
+						var ps = qs.stringify(this.pageInfo)
+						console.log(ps)
+						this.showDropout()
 					},
 					showDropout(){
 						const _this = this

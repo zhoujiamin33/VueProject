@@ -133,14 +133,14 @@
 			
 		},
 		created() {
-			const _this = this;
-			this.axios.get("http://localhost:8089/student/findstudent")
-				.then(function(response) {
-					_this.tableData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+			// const _this = this;
+			// this.axios.get("http://localhost:8089/student/findstudent")
+			// 	.then(function(response) {
+			// 		_this.tableData = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
 		}
 	}
 </script>

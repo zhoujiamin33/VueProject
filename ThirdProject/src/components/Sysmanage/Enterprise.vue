@@ -52,12 +52,6 @@
 		<el-form-item label="员工人数:">
 			<el-input v-model="form.empnumber"></el-input>
 		</el-form-item>
-		<el-form-item label="国税号:">
-			<el-input v-model="form.gsh"></el-input>
-		</el-form-item>
-		<el-form-item label="第税号:">
-			<el-input v-model="form.dsh"></el-input>
-		</el-form-item>
 		<el-form-item label="开户银行:">
 			<el-input v-model="form.depositBank"></el-input>
 		</el-form-item>
@@ -94,20 +88,23 @@
 					empnumber: '',
 					depositBank: '',
 					bankNumber: '',
-					enterpriseBrief: '',
-					gsh:'',
-					dsh:''
+					enterpriseBrief: ''
 				}
 			}
 		},
 		methods: {
-			onSubmit() {
-				console.log('submit!');
-			},
+			// onSubmit() {
+			// 	console.log('submit!');
+			// },
 			updateDept() {
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/enterprise", this.form)
 					.then(function(response) {
+						_this.$notify({
+						        title: '成功',
+						        message: '修改一条成功',
+						        type: 'success'
+						      });
 						console.log(response)
 						var enterprise = response.data
 						// _this.DeptData.push(dept)
@@ -133,7 +130,7 @@
 						row.depositBank = enterprise.depositBank
 						row.bankNumber = enterprise.bankNumber
 						row.enterpriseBrief = enterprise.enterpriseBrief
-						console.log("修改成功")
+					
 					}).catch(function(error) {
 						console.log(error)
 					})

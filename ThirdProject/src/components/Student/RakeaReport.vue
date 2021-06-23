@@ -4,24 +4,24 @@
 		<div class="mainbody">
 			<div style="margin-right: 320px;display: flex;">
 				<span style="margin-top: 10px;width: 90px;">快速检索：</span>
-				<el-select v-model="select" placeholder="请选择">
-					<el-option label="课程名称" value="1"></el-option>
-					<el-option label="姓名" value="2"></el-option>
-					<el-option label="学号" value="3"></el-option>
+				<el-select v-model="pageInfo.index" placeholder="请选择">
+					<el-option label="课程名称" value="课程名称"></el-option>
+					<el-option label="姓名" value="姓名"></el-option>
+					<el-option label="学号" value="学号"></el-option>
 				</el-select>
 
-				<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
+				<el-input placeholder="请输入内容" v-model="pageInfo.vlaue" style="width: 100px;" clearable
 					@clear="serchVal">
 				</el-input>
 			</div>
 			<div style="display: flex;">
-				<el-button @click="getstudentList">查询</el-button>
+				<el-button @click="shwosu">查询</el-button>
 				<el-button @click="tgsp()">通过审批</el-button>
 				<el-button @click="qxbb()">取消补报</el-button>
 			</div>
 		</div>
 
-		<el-table :data="tableData" border @selection-change="handleSelectionChange">
+		<el-table :data="tableData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 			<el-table-column prop="supplementaryId" label="Id">
 			</el-table-column>
 			<el-table-column type="selection">
@@ -44,8 +44,8 @@
 			</el-table-column>
 			<el-table-column prop="state" label="状态">
 				<template v-slot="scope">
-					<p v-if="scope.row.state==0">未审核</p>
-					<p v-if="scope.row.state==1">已审核</p>
+					<p v-if="scope.row.state==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
+					<p v-if="scope.row.state==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 				</template>
 
 			</el-table-column>
@@ -156,7 +156,9 @@
 </template>
 
 <script>
+import qs from 'qs'
 	export default {
+		
 		data() {
 			return {
 				select: "",
@@ -165,7 +167,8 @@
 				tableData: [],
 				//请求用户列表的参数
 				pageInfo: {
-					query: '',
+					index:'',
+					value: '',
 					currentPage: 1,
 					pagesize: 3,
 					total: 0
@@ -300,11 +303,27 @@
 						console.log(error)
 					})
 			},
+			// 分页
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.shwosu()
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.shwosu()
+			},
 			shwosu(){
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/findsupplementary")
+				this.axios.get("http://localhost:8089/threeproject/findsupplementary",{params:this.pageInfo})
 					.then(function(response) {
-						_this.tableData = response.data
+						_this.tableData = response.data.list
+						_this.pageInfo.total = response.data.total
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -313,14 +332,7 @@
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findsupplementary",{params:this.pageInfo})
-				.then(function(response) {
-					_this.tableData = response.data.list
-					_this.pageInfo.total = response.data.total
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				}),
+			this.shwosu(),
 				// 查询所有班级
 				this.axios.get("http://localhost:8089/threeproject/findAllClass")
 				.then(function(response) {

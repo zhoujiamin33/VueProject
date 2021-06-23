@@ -24,7 +24,7 @@
 		<el-button >重置</el-button>
 		<el-button >导出</el-button>
 	</div>
-	<el-table :data="tableData" border>
+	<el-table :data="tableData" border :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		<el-table-column prop="empId" label="Id">
 		</el-table-column>
 		<el-table-column type="selection">

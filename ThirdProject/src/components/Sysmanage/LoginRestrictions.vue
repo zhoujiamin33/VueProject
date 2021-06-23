@@ -6,7 +6,7 @@
 	<div style="margin-bottom: 30px;">
 		<el-button @click="open()">取消限制</el-button>
 	</div>
-	<el-table :data="Stutable" border>
+	<el-table :data="Stutable" border :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		<el-table-column prop="studentId" label="Id">
 		</el-table-column>
 		<el-table-column type="selection">
