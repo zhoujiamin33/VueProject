@@ -19,8 +19,8 @@
 	 	</div>
 	</div>	
 		<!-- 表格 -->
-		<div style="position: relative;margin-top: 50px;">
-			<el-table :data="tableData"  border style="width: 100%;margin-left:5px;">
+		<div style="position: relative;margin-top: 50px;" >
+			<el-table :data="tableData"  border style="width: 100%;margin-left:5px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 				<el-table-column fixed  type="selection" align="center"> </el-table-column>
 			    <el-table-column fixed prop="feesId" label="缴费编号" align="center"> </el-table-column>
 				<el-table-column  prop="feesName" label="单据号"  width="200"  align="center"> </el-table-column>
@@ -331,7 +331,6 @@
 				console.log(this.pageInfo.ApprovalState+"abc")
 				this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD");
 				console.log(this.pageInfo.input+"abcdef")
-				console.log(this.pageInfo.value+"date1")
 				console.log(this.pageInfo.value2+"date2")
 				console.log(this.pageInfo.currentPage+"currentPage")
 				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",this.pageInfo)

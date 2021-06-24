@@ -4,8 +4,8 @@
 			<el-tab-pane label="收到的意见" name="first">
 				<div>
 					<div>
-						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -886px;">检索条件：</b>
-						<el-select v-model="value" placeholder="请选择" size="mini" style="width: 370px;">
+						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -826px;">检索条件：</b>
+						<el-select v-model="value" placeholder="请选择" size="mini" style="width: 370px;" clearable>
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</div>
@@ -69,35 +69,35 @@
 			<el-tab-pane label="发出的意见" name="second">
 				<div>
 					<div>
-						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -886px;">检索条件：</b>
-						<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 370px;">
-							<el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -826px;" >检索条件：</b>
+						<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 370px;" @change="chaxunxianshi()" clearable="">
+							<el-option label="全部" value="全部"></el-option>
+							<el-option label="待回复的意见" value="待回复的意见"></el-option>
+							<el-option label="已回复的意见" value="已回复的意见"></el-option>
 						</el-select>
 					</div>
 					<div>
-						<el-button type="primary" @click="dialogFormVisible=true" icon="el-icon-circle-plus" size="mini" style="margin-top: 8px;margin-left: -1252px;">新增</el-button>
+						<el-button type="primary" @click="dialogFormVisible=true" icon="el-icon-circle-plus" size="mini" style="margin-top: 8px;margin-left: -1192px;">新增</el-button>
 
 						<el-dialog title="新增" v-model="dialogFormVisible">
 							<el-form :model="form">
 								<div style="margin-top: -30px;margin-left: -532px;">
-									<el-button size="mini" icon="el-icon-s-order" type="primary">保 存</el-button>
+									<el-button size="mini" icon="el-icon-s-order" type="primary" @click="addIdeas">保 存</el-button>
 									<el-button size="mini" icon="el-icon-error" type="primary" @click="dialogFormVisible = false">关 闭</el-button>
 								</div>
-								<div>
 									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -196px;">选择意见箱：</b>
-									<el-select v-model="value2" placeholder="请选择" size="mini" style="width: 320px;margin-top: 12px;">
-										<el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"></el-option>
+									<el-select v-model="form.suggestId" placeholder="请选择" size="mini" style="width: 320px;margin-top: 12px;">
+										<el-option v-for="item in suggestdata" :key="item.suggestId" :label="item.suggestName" :value="item.suggestId"></el-option>
 									</el-select>
 									<el-checkbox v-model="checked" style="margin-left: 3px;">匿名发表此意见</el-checkbox>
-								</div>
 								<div>
 									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 33px;">意见标题：</b>
-									<el-input placeholder="请输入内容" v-model="input" size="mini" style="width: 660px;margin-top: 8px;">
+									<el-input placeholder="请输入内容" v-model="form.ideasTitle" size="mini" style="width: 660px;margin-top: 8px;">
 									</el-input>
 								</div>
 								<div>
 									<b class="b" style="font-size: 13px;font-weight: 100;margin-left: 33px;">意见内容：</b>
-									<el-input type="textarea" :rows="2" v-model="input" size="mini" style="width: 660px;margin-top: 8px;">
+									<el-input type="textarea" :rows="2" v-model="form.ideasName" size="mini" style="width: 660px;margin-top: 8px;">
 									</el-input>
 								</div>
 							</el-form>
@@ -185,6 +185,7 @@
 		name: "Ideas",
 		data() {
 			return {
+				suggestdata:[],
 				chakan: false,
 				huifu: false,
 				pageInfo: {
@@ -192,7 +193,6 @@
 					pagesize: 2, //每页多少条数据
 					total: 0
 				},
-				// text: "",
 				activeName: 'first',
 				options: [{
 					value: '选项1',
@@ -201,27 +201,20 @@
 					value: '选项2',
 					label: '已回复的意见'
 				}],
-				value: '',
 
 				tableData: [],
-
-				options1: [{
-					value: '选项1',
-					label: '全部'
-				}, {
-					value: '选项2',
-					label: '待回复的意见'
-				}, {
-					value: '选项3',
-					label: '已回复的意见'
-				}],
-				value1: '',
-
+				
+				//发出的意见的查询显示
+				value1: "",
+				
+				
 				tableData1: [],
 
 				dialogFormVisible: false,
 				form: {
 					ideasId: "",
+					suggestId:"",
+					suggestName:"",
 					empName: "",
 					ideasTitle: "",
 					ideasName: "",
@@ -294,6 +287,41 @@
 						console.log(error)
 					})
 			},
+			
+			//增加
+			addIdeas() {
+				const _this = this
+				this.axios.post("http://localhost:8089/threeproject/addIdeas", this.form)
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData1 = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.dialogFormVisible=false
+						_this.form={}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			
+			chaxunxianshi(){
+				
+			},
+			
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
@@ -369,6 +397,14 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+				
+			this.axios.get("http://localhost:8089/threeproject/selectSuggest")
+					.then(function(response) {
+						console.log(response)
+						_this.suggestdata = response.data
+					}).catch(function(error) {
+						console.log(error)
+					})
 		},
 	}
 </script>

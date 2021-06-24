@@ -3,18 +3,18 @@
 	<div class="mian">
 			<div class="mainbody">
 				<div style="margin-right: 320px;display: flex;">
-					<span style="margin-top: 10px;width: 90px;">快速检索：</span>
+					<span style="margin-top: 10px;width: 90px;font-size: 15px;">快速检索：</span>
 					<el-select v-model="pageInfo.index" placeholder="请选择">
 						<el-option label="班级" value="班级"></el-option>
 						<el-option label="姓名" value="姓名"></el-option>
 						<el-option label="学号" value="学号"></el-option>
 					</el-select>
 		
-					<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable
+					<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 120px;" clearable
 						@clear="serchVal">
 					</el-input>
 				</div>
-				<div style="display: flex;">
+				<div style="margin-left: 280px;">
 					<el-button @click="showsupende">查询</el-button>
 					<el-button @click="tgsp">通过审批</el-button>
 					<el-button @click="del">删除</el-button>
@@ -22,23 +22,24 @@
 			</div>
 		
 			<el-table :data="SuspendeData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-				<el-table-column prop="suspendeId" label="Id">
+				<el-table-column type="selection" align="center">
 				</el-table-column>
-				<el-table-column type="selection">
+				<el-table-column prop="suspendeId" label="Id" align="center">
 				</el-table-column>
-				<el-table-column prop="suspendeTime" label="停课日期">
+				
+				<el-table-column prop="suspendeTime" label="停课日期" align="center">
 				</el-table-column>
-				<el-table-column prop="student.studentNumber" label="学号">
+				<el-table-column prop="student.studentNumber" label="学号" align="center">
 				</el-table-column>
-				<el-table-column prop="student.studentName" label="姓名">
+				<el-table-column prop="student.studentName" label="姓名" align="center">
 				</el-table-column>
-				<el-table-column prop="classes.classesName" label="班级名称">
+				<el-table-column prop="classes.classesName" label="班级名称" align="center">
 				</el-table-column>
-				<el-table-column prop="suspendeReason" label="理由">
+				<el-table-column prop="suspendeReason" label="理由" align="center">
 				</el-table-column>
-				<el-table-column prop="suspendeHandler" label="经办人">
+				<el-table-column prop="suspendeHandler" label="经办人" align="center">
 				</el-table-column>
-				<el-table-column prop="suspendeApproval" label="状态">
+				<el-table-column prop="suspendeApproval" label="状态" align="center">
 					<template v-slot="scope">
 						<p v-if="scope.row.suspendeApproval==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
 					<p v-if="scope.row.suspendeApproval==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>

@@ -59,7 +59,9 @@
 		
 	</div>
 	<div>
-		<el-table :data="tableData" border stripe style="width:100%;margin-left:10px;" @selection-change="handleSelectionChange">
+		<el-table :data="tableData" border stripe style="width:100%;margin-left:10px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+
+		@selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" align="center"></el-table-column>
 			<el-table-column prop="classtypeId" label="编号" align="center"></el-table-column>
 		    <el-table-column prop="classtypeName"  label="课类名称"  align="center"></el-table-column>

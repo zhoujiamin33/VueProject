@@ -1,7 +1,7 @@
 <template>
 	<div style="overflow-x: hidden; ">
 		<div >
-			<b style="font-size: 13px;font-weight: 100;margin-left: -720px;">显示方式：</b>
+			<b style="font-size: 13px;font-weight: 100;margin-left: -600px;">显示方式：</b>
 			<el-select v-model="value" placeholder="请选择" size="mini" style="width: 90px;">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			</el-select>
@@ -93,7 +93,7 @@
 			</el-calendar>
 		</div>
 		<div>
-			<div style="position: relative;left: 250px;bottom: 388px;">
+			<div style="position: relative;left: 250px;bottom: 388px;margin-left: 200px;">
 				<b>至今</b>
 				<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 150px;">
 					<el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value"></el-option>

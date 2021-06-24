@@ -3,17 +3,17 @@
 	<div class="mian">
 		<div class="mainbody">
 			<div style="margin-right: 320px;display: flex;">
-				<span style="margin-top: 10px;width: 90px;">快速检索：</span>
+				<span style="margin-top: 10px;width: 90px;font-size: 15px;">快速检索：</span>
 				<el-select v-model="pageInfo.index" placeholder="请选择">
 					<el-option label="姓名" value="Student_Name"></el-option>
 					<el-option label="电话" value="Student_Phone"></el-option>
 				</el-select>
 
-				<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable
+				<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 120px;" clearable
 					@clear="serchVal">
 				</el-input>
 			</div>
-			<div style="display: flex;">
+			<div style="margin-left: 180px;">
 				<el-button @click="selectName">查询</el-button>
 				<el-button @click="shengpi">通过审批</el-button>
 				<el-button @click="open">办理退卡</el-button>
@@ -1215,7 +1215,10 @@
 				const _this=this
 				this.addForm.addname="admin"
 				this.addForm.dropId=dropId
-				this.axios.get("http://localhost:8089/threeproject/insertRefund",this.addForm)
+				console.log(this.addForm.studentId+"abc12")
+				console.log(this.addForm.dropId+"abc")
+				console.log(this.addForm.courseId+"abc")
+				this.axios.post("http://localhost:8089/threeproject/insertRefund",this.addForm)
 				.then(function(response){
 					console.log(response)
 				}).catch(function(error){

@@ -22,17 +22,17 @@
 	  	</div>
 	 </div>	
 		<!-- 表格 -->
-		<div style="position: relative;margin-top: 50px;">
-			<el-table :data="tableData"  border style="width:100%;margin-left:10px;">
+		<div style="position: relative;margin-top: 50px;"  >
+			<el-table :data="tableData"  border style="width:100%;margin-left:10px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 				<el-table-column fixed  type="selection"> </el-table-column>
-			    <el-table-column fixed prop="date" label="缴费编号" width="150"> </el-table-column>
-				<el-table-column  prop="date" label="退费类型" width="150"> </el-table-column>
-			    <el-table-column prop="province" label="回退金额"  width="120"> </el-table-column>
-			    <el-table-column prop="city" label="退费办理人" width="120"> </el-table-column>
-			    <el-table-column prop="address"  label="退费日期"  width="600"> </el-table-column>
-			    <el-table-column prop="zip" label="退费学员" width="120"> </el-table-column>
-				<el-table-column prop="zip" label="退费明细" width="120"> </el-table-column>
-			    <el-table-column fixed="right" label="操作" width="150">
+			    <el-table-column fixed prop="refundId" label="缴费编号" align="center"> </el-table-column>
+				<el-table-column  prop="refundtype" label="退费类型" align="center"> </el-table-column>
+				<el-table-column prop="student.studentName" label="退费学员" align="center"> </el-table-column>
+			    <el-table-column prop="dropMoney" label="回退金额" align="center"> </el-table-column>
+			    <el-table-column prop="addname" label="退费办理人" align="center"> </el-table-column>
+			    <el-table-column prop="addtime"  label="退费日期"  align="center"> </el-table-column>
+			    
+			    <el-table-column fixed="right" label="操作" align="center">
 			      <template #default="scope">
 			        <el-button @click="handleClick(scope.row)" type="text" size="small">审核</el-button>
 			        <el-button type="text" size="small">撤销</el-button>
