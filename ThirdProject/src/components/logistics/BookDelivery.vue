@@ -129,12 +129,6 @@
 	} from 'vue'
 	export default {
 		name: "BookDelivery",
-		// setup() {
-		// 	return {
-		// 		input: ref(''),
-		// 		input1: ref('')
-		// 	}
-		// },
 		data() {
 			return {
 				pageInfo: {
@@ -251,8 +245,6 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-
-
 			},
 			add(row) {
 				const _this = this
