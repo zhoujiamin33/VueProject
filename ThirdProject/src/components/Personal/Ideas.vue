@@ -4,8 +4,8 @@
 			<el-tab-pane label="收到的意见" name="first">
 				<div>
 					<div>
-						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -886px;">检索条件：</b>
-						<el-select v-model="value" placeholder="请选择" size="mini" style="width: 370px;">
+						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -826px;">检索条件：</b>
+						<el-select v-model="value" placeholder="请选择" size="mini" style="width: 370px;" clearable>
 							<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 						</el-select>
 					</div>
@@ -69,15 +69,15 @@
 			<el-tab-pane label="发出的意见" name="second">
 				<div>
 					<div>
-						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -886px;">检索条件：</b>
-						<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 370px;" @change="chaxunxianshi()">
+						<b class="b" style="font-size: 13px;font-weight: 100;margin-left: -826px;" >检索条件：</b>
+						<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 370px;" @change="chaxunxianshi()" clearable="">
 							<el-option label="全部" value="全部"></el-option>
 							<el-option label="待回复的意见" value="待回复的意见"></el-option>
 							<el-option label="已回复的意见" value="已回复的意见"></el-option>
 						</el-select>
 					</div>
 					<div>
-						<el-button type="primary" @click="dialogFormVisible=true" icon="el-icon-circle-plus" size="mini" style="margin-top: 8px;margin-left: -1252px;">新增</el-button>
+						<el-button type="primary" @click="dialogFormVisible=true" icon="el-icon-circle-plus" size="mini" style="margin-top: 8px;margin-left: -1192px;">新增</el-button>
 
 						<el-dialog title="新增" v-model="dialogFormVisible">
 							<el-form :model="form">
@@ -312,9 +312,7 @@
 								console.log(error)
 							})
 						_this.dialogFormVisible=false
-						for (var key in _this.form) {
-							delete _this.form[key]
-						}
+						_this.form={}
 					}).catch(function(error) {
 						console.log(error)
 					})

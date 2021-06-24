@@ -23,8 +23,8 @@
 	 	   	</div>
 	 	</div>	
 	 	<!-- 表格 -->
-	 	<div style="position: relative;margin-top: 50px;">
-	 		<el-table :data="tableData"  border style="width: 100%;margin-left:10px;">
+	 	<div style="position: relative;margin-top: 50px;"  >
+	 		<el-table :data="tableData"  border style="width: 100%;margin-left:10px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 	 			<el-table-column fixed  type="selection"> </el-table-column>
 	 			<el-table-column  prop="feesId" label="报班缴费编号" align="center" > </el-table-column>
 	 			<el-table-column prop="entryfees.register.consultant"  label="补缴学员" align="center"></el-table-column>
@@ -125,18 +125,18 @@
 	   	 	   	<div style="margin-left:10px;line-height: 40px;">
 	   	 	   		<el-row style="text-align: center;">
 	   	 	   			是否审核：
-	   	 	   			<el-select  v-model="pageInfo.Approval"  placeholder="请选择">
+	   	 	   			<el-select  v-model="pageInfo2.Approval"  placeholder="请选择">
 	   	 	   				<el-option value="0" label="已审核">已审核</el-option><el-option value="1" label="已审核">未审核</el-option>
 	   	 	   			</el-select>
 	   	 	   			补缴日期：
-	   	 	   			<el-date-picker v-model="pageInfo.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
-						<el-date-picker v-model="pageInfo.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
+	   	 	   			<el-date-picker v-model="pageInfo2.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
+						<el-date-picker v-model="pageInfo2.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
 	   	 	   			<el-button style="margin-left: 20px;" @click="selectByContionout">查询</el-button>
 	   	 	   		</el-row>
 	   	 	   	</div>
 	   	 	</div>	
 	   	 	<!-- 表格 -->
-	   	 	<div style="position: relative;margin-top: 50px;">
+	   	 	<div style="position: relative;margin-top: 50px;"  :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 	   	 		<el-table :data="tableData2"  border style="width: 100%;margin-left:10px;">
 	   	 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
 	   	 			<el-table-column fixed prop="outstandingId" label="补缴编号" align="center"> </el-table-column>
@@ -325,13 +325,13 @@
 			},
 			//补缴管理的多条件查询
 			selectByContionout(){
-				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
-				this.pageInfo.value2=moment(this.pageInfo.value1).format("YYYY-MM-DD")
-				console.log(this.pageInfo.value1+"value1")
-				console.log(this.pageInfo.value2+"value2")
-				console.log(this.pageInfo.Approval+"Approval")
+				this.pageInfo2.value1=moment(this.pageInfo2.value1).format("YYYY-MM-DD")
+				this.pageInfo2.value2=moment(this.pageInfo2.value2).format("YYYY-MM-DD")
+				console.log(this.pageInfo2.value1+"value1")
+				console.log(this.pageInfo2.value2+"value2")
+				console.log(this.pageInfo2.Approval+"Approval")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByContionout/"+this.pageInfo.value1+"/"+this.pageInfo.value2+"/"+this.pageInfo.Approval)
+				this.axios.get("http://localhost:8089/threeproject/selectByContionout/"+this.pageInfo2.Approval+"/"+this.pageInfo2.value1+"/"+this.pageInfo2.value2)
 				.then(function(response){
 					console.log(response)
 					_this.tableData2=response.data

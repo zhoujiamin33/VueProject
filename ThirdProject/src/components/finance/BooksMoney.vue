@@ -24,8 +24,8 @@
 		  	</div>
 		 </div>	
 		<!-- 表格 -->
-		<div style="position: relative;margin-top: 50px;">
-		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;">
+		<div style="position: relative;margin-top: 50px;"  >
+		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		 		<el-table-column fixed  type="selection"> </el-table-column>
 		 		<el-table-column  prop="expensesName" label="单据号" width="200"> </el-table-column>
 		 	    <el-table-column prop="expensesDate" label="收支日期"  align="center"> </el-table-column>

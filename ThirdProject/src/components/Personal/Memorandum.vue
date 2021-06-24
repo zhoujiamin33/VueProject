@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div>
-			<b style="font-size: 13px;font-weight: 100;margin-left: -1020px;">快速检索：</b>
+			<b style="font-size: 13px;font-weight: 100;margin-left: -8220px;">快速检索：</b>
 			<el-select v-model="value" placeholder="请选择" size="mini" style="width: 85px;margin-left: 3px;">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			</el-select>
