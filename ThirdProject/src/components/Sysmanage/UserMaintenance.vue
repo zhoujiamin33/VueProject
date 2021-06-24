@@ -7,7 +7,7 @@
 
 			</el-select>
 			<span style="margin-top: 10px;width: 90px;">快速检索：</span>
-			<el-select v-model="pageInfo.select1">
+			<el-select v-model="pageInfo.index">
 				<el-option label="用户编码" value="empId"></el-option>
 				<el-option label="姓名" value="Emp_Name"></el-option>
 				<el-option label="性别" value="Emp_Sex"></el-option>
@@ -19,7 +19,7 @@
 
 			</el-select>
 
-			<el-input placeholder="请输入内容" v-model="pageInfo.index" style="width: 100px;" clearable @clear="serchVal">
+			<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable @clear="serchVal">
 
 			</el-input>
 			<el-button @click="findemp_Name"><i class="el-icon-search"></i></el-button>
@@ -217,8 +217,8 @@
 				tableData: [],
 				//请求用户列表的参数
 				pageInfo: {
-					select1: "",//下拉框选择的内容
-					index: '',
+					index: '',//下拉框选择的内容
+					value: '',
 					currentPage: 1,
 					pagesize: 3,
 					total: 0
@@ -475,7 +475,7 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+				this.axios.get("http://localhost:8089/threeproject/findalls", {
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -491,7 +491,7 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+				this.axios.get("http://localhost:8089/threeproject/findalls", {
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -514,9 +514,12 @@
 			findemp_Name(){
 				console.log(this.pageInfo.select1,this.pageInfo.input)
 				const _this = this;
-				this.axios.get("http://localhost:8089/threeproject/findalls",this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findalls", {
+						params: this.pageInfo
+					})
 					.then(function(response) {
-						_this.tableData = response.data
+						_this.tableData = response.data.list
+						_this.pageInfo.total=response.data.total
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -527,16 +530,7 @@
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					_this.tableData = response.data.list
-					_this.pageInfo.total=response.data.total
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				}),
+			this.findemp_Name(),
 				this.axios.get("http://localhost:8089/threeproject/findalldept")
 				.then(function(response) {
 					_this.Data1 = response.data
