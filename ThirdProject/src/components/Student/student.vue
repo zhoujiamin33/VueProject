@@ -22,29 +22,30 @@
 		</div>
 
 		<el-table :data="Stutable" style="width: 100%" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-			<el-table-column prop="studentId" label="Id">
+			<el-table-column type="selection" align="center">
 			</el-table-column>
-			<el-table-column type="selection">
+			<el-table-column prop="studentId" label="Id" align="center">
 			</el-table-column>
-			<el-table-column prop="studytime" label="报名时间">
+		
+			<el-table-column prop="studytime" label="报名时间" align="center">
 			</el-table-column>
-			<el-table-column prop="studentName" label="姓名">
+			<el-table-column prop="studentName" label="姓名" align="center">
 			</el-table-column>
-			<el-table-column prop="address" label="联系地址">
+			<el-table-column prop="address" label="联系地址" align="center">
 			</el-table-column>
-			<el-table-column prop="studentPhone" label="联系电话">
+			<el-table-column prop="studentPhone" label="联系电话" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="状态">
+			<el-table-column prop="studentState" label="状态" align="center">
 				<template v-slot="scope">
 					<p v-if="scope.row.studentState==0"> 
 					<i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
 					<p v-if="scope.row.studentState==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 				</template>
 			</el-table-column>
-			<el-table-column prop="source.sourceName" label="生源渠道">
+			<el-table-column prop="source.sourceName" label="生源渠道" align="center">
 			</el-table-column>
 
-			<el-table-column prop="index" label="操作"  fixed="right">
+			<el-table-column prop="index" label="操作"  fixed="right" align="center">
 				<template #default="scope">
 					<el-button type="text" @click="bubao(scope.row)">补报</el-button>
 					<!-- <el-button type="text">拍照</el-button> -->

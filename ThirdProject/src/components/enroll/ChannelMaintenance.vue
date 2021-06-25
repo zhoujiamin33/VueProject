@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="mianboby">
-			<div class="mianwbk" style="">
+			<div class="mianwbk" style="margin-bottom: 20px;">
 
 				<b>快速索引：</b>
 				<el-select v-model="value" filterable placeholder="请选择">

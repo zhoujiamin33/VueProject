@@ -10,21 +10,13 @@
 				<el-button type="primary" @click="insertScheduling">点击排课</el-button>
 				
 				<!-- 排课设置 -->
-				<el-dropdown @command="handleCommand">
-				  <span class="el-dropdown-link">
-					  <el-button type="primary" style="margin-left:30px;">
-						排课设置<i class="el-icon-arrow-down el-icon--right"></i>
-					  </el-button>
-				  </span>
-				  <template #dropdown>
-				    <el-dropdown-menu>
-				      <el-dropdown-item command="设置教师可用时间" @click="teachertime">教师可用时间</el-dropdown-item>
-				      <el-dropdown-item command="b"></el-dropdown-item>
-				    </el-dropdown-menu>
-				  </template>
-				</el-dropdown>
 				
-				<!-- 教师可用时间弹窗 -->
+				<el-button type="primary" style="margin-left:30px;" @click="dialogform=true">
+						排课设置<i class="el-icon-arrow-down el-icon--right"></i>				
+				</el-button>	  
+			
+				
+				<!-- 可用选择弹窗 -->
 				<el-dialog title="排课设置" v-model="dialogform">
 					<el-form>
 						<el-form-item label="可用教室：">
@@ -51,7 +43,16 @@
 				</el-dialog>
 			</div>
 			<!-- 课程表 -->
-			
+		
+			<el-table  :data="tableData" border style="width: 100%; margin-top: 20px;"
+				:header-cell-style="{background:'#eef1f6',color:'#606266'}">
+				<el-table-column prop="schedulingId" label="编号" align="center"> </el-table-column>
+				<el-table-column prop="classes.classesName" label="班级名称"  width="180"> </el-table-column>
+				<el-table-column prop="classroomId" label="上课教室"> </el-table-column>
+				<el-table-column prop="period.period" label="上课教师"> </el-table-column>
+				<el-table-column prop="address" label="上课时间"> </el-table-column>
+				<el-table-column prop="address" label="上课时长"> </el-table-column>
+			</el-table>
 </template>
 
 <script>
@@ -72,12 +73,13 @@
 					 emps:[],
 					 addname:""
 				 },
-				 dialogform:false,
-				 classroom:[],
-				 props: {
+				dialogform:false,
+				classroom:[],
+				props: {
 				    label: 'name',
 				    children: 'zones'       
-				  }  
+				},
+				tableData:[]
 			}	
 		},
 		methods:{
@@ -147,6 +149,13 @@
 			.then(function(response){
 				console.log(response)
 				_this.Empdata=response.data
+			}).catch(function(error){
+				console.log(error)
+			}),
+			this.axios.get("http://localhost:8089/threeproject/selectAllScheduling")
+			.then(function(response){
+				console.log(response)
+				_this.tableData=response.data
 			}).catch(function(error){
 				console.log(error)
 			})
