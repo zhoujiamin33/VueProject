@@ -169,12 +169,12 @@
 				</el-descriptions-item>
 			</el-descriptions>
 			<el-table border title="预报课程" :data="Supplementary"> 
-				<el-table-column label="课程名称" prop="supplementaryName"></el-table-column>
-				<el-table-column label="课时数" prop="classhours"></el-table-column>
-				<el-table-column label="课程费用" prop="courseMoney"></el-table-column>
-				<el-table-column label="优惠打折" prop="无折扣">无折扣</el-table-column>
-				<el-table-column label="扣课时数" prop="0">0</el-table-column>
-				<el-table-column label="实收费用" prop="courseMoney"></el-table-column>
+				<el-table-column label="课程名称" prop="supplementaryName" align="center"></el-table-column>
+				<el-table-column label="课时数" prop="classhours" align="center"></el-table-column>
+				<el-table-column label="课程费用" prop="courseMoney" align="center"></el-table-column>
+				<el-table-column label="优惠打折" prop="无折扣" align="center">无折扣</el-table-column>
+				<el-table-column label="扣课时数" prop="0" align="center">0</el-table-column>
+				<el-table-column label="实收费用" prop="courseMoney" ></el-table-column>
 				<el-table-column label="操作">
 					<el-button type="text">删除</el-button>
 				</el-table-column>
@@ -348,12 +348,19 @@
 			</el-descriptions>
 			<p>学员报班记录</p>
 			<el-table :data="StudentStatus" border style="width: 100%">
+
 				 <el-table-column
 				      type="index"
 				      width="50">
 				    </el-table-column>
 			
 				<el-table-column prop="classes.classesId" label="班级编号">
+
+				<el-table-column label="Id">
+					{{id+1}}
+				</el-table-column>
+				<el-table-column prop="classes.classesId" label="班级编号" align="center">
+
 					<template v-slot="scope">
 						<p v-if="scope.row.classes.classesId==null">
 							<el-button type="text" @click="showclasses(scope.row)">请选择班级</el-button>
@@ -363,13 +370,25 @@
 						</p>
 					</template>
 				</el-table-column>
+
 				<el-table-column prop="signuptime" label="报班时间">
+
+				<el-table-column prop="classes.classesName" label="班级名称"  align="center">
+					<template v-slot="scope">
+						<p v-if="scope.row.classes.classesId==null">
+						</p>
+						<p v-if="scope.row.classes.classesId!=null">
+							{{this.addForm.classesName}}
+						</p>
+					</template>
 				</el-table-column>
-				<el-table-column prop="course.courseName" label="报班课程">
+				<el-table-column prop="signuptime" label="报班时间"  align="center">
 				</el-table-column>
-				<el-table-column prop="course.courseMoney" label="应收">
+				<el-table-column prop="course.courseName" label="报班课程"  align="center">
 				</el-table-column>
-				<el-table-column prop="status" label="状态">
+				<el-table-column prop="course.courseMoney" label="应收"  align="center">
+				</el-table-column>
+				<el-table-column prop="status" label="状态"  align="center">
 					<template v-slot="scope">
 						<p v-if="scope.row.status==0">待分班</p>
 						<p v-if="scope.row.status==1">已分班</p>
@@ -381,9 +400,9 @@
 						<p v-if="scope.row.status==5">退学审核中</p> -->
 					</template>
 				</el-table-column>
-				<el-table-column prop="beizhu" label="备注">
+				<el-table-column prop="beizhu" label="备注"  align="center">
 				</el-table-column>
-				<el-table-column prop="tk" label="停课/复课">
+				<el-table-column prop="tk" label="停课/复课"  align="center">
 					<template v-slot="scope">
 						<p v-if="scope.row.status==3">
 							<el-button type="text" @click="updatesuspendestate(scope.row)">复课</el-button>
@@ -394,17 +413,17 @@
 					</template>
 
 				</el-table-column>
-				<el-table-column prop="zb" label="转班">
+				<el-table-column prop="zb" label="转班"  align="center">
 					<el-button type="text">转班</el-button>
 				</el-table-column>
-				<el-table-column prop="zb" label="退学">
+				<el-table-column prop="zb" label="退学"  align="center">
 					<template v-slot="scope">
 
 						<el-button type="text" @click="showtuixue(scope.row)">退学</el-button>
 					</template>
 
 				</el-table-column>
-				<el-table-column prop="cz" label="修改">
+				<el-table-column prop="cz" label="修改"  align="center">
 					<el-button type="text"><i class="el-icon-edit"></i></el-button>
 				</el-table-column>
 			</el-table>
@@ -729,6 +748,9 @@
 					intention:'',//复课意向
 					classalreadyon:'',//已上课时
 					absent:''//缺课时
+					// 退费类型
+					refundtype:""
+
 					
 				},
 				form:{
@@ -1222,6 +1244,7 @@
 						_this.Supende = supendentity
 						_this.dialogFormVisible5 = false
 						_this.findclassstuId(supendentity.studentId)
+						_this.Refund(response.data.dropId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1319,6 +1342,7 @@ findstudentstatusId(studentstatusId){
 				console.log(this.addForm.studentId+"abc12")
 				console.log(this.addForm.dropId+"abc")
 				console.log(this.addForm.courseId+"abc")
+				this.form.refundtype="退学退费"
 				this.axios.post("http://localhost:8089/threeproject/insertRefund",this.addForm)
 				.then(function(response){
 					console.log(response)

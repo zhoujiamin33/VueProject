@@ -24,7 +24,13 @@
 		<el-button >重置</el-button>
 		<el-button >删除</el-button>
 	</div>
+
 	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" height="300">
+
+	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" >
+		<el-table-column prop="opjournalId" label="Id">
+		</el-table-column>
+
 		<el-table-column type="selection">
 		</el-table-column>
 		<el-table-column prop="opjournalId" label="Id">

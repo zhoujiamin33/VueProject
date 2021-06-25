@@ -20,12 +20,9 @@
 				<el-dialog title="排课设置" v-model="dialogform">
 					<el-form>
 						<el-form-item label="可用教室：">
-							<!-- <el-checkbox-group v-model="form.classrooms" > -->
 							<el-select v-model="form.classrooms" filterable placeholder="请选择时段"  style="width: 200px;" multiple clearable collapse-tags>
 							   <el-option  v-for="item in classroomdata" :value="item.classroomId" :label="item.classroomName"  style="width: 150px;"></el-option>
-								<!-- <el-checkbox v-for="item in classroomdata" :name="item.classroomId" :value="item.classroomId" :label="item.classroomName"></el-checkbox> -->
 							</el-select>
-							<!-- </el-checkbox-group> -->
 						</el-form-item>
 						<el-form-item label="可用时间：">
 							<el-select v-model="form.periods" filterable placeholder="请选择时段"  style="width: 200px;" multiple clearable collapse-tags>
@@ -101,7 +98,7 @@
 				this.form.addname="admin"
 				console.log(this.form.coursecount+"ddd")
 				console.log(this.form.classrooms+"ddd")
-				
+				console.log(this.form.classlist+"ddd")
 				console.log(this.form.periods+"ddd")
 				console.log(this.form.emps+"ddd")
 				this.axios.post("http://localhost:8089/threeproject/insertSheduling",this.form)

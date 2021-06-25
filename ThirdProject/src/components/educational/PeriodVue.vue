@@ -1,9 +1,8 @@
 <template>
 	<div>
 		<div style=" width:650px;">
-			<el-button type="danger" @click="del(scope.row)" style="margin-left:-460px;margin-bottom:20px">批量删除</el-button>
-			<el-button @click="dialogFormVisible=true" type="primary">新增</el-button>
-			
+			<el-button type="danger" @click="del(scope.row)" style="margin-left:-420px;margin-bottom: 20px;" icon="el-icon-minus">批量删除</el-button>
+			<el-button @click="dialogFormVisible=true" type="primary" icon="el-icon-plus" >新增</el-button>
 			<!-- 新增 -->
 			<el-dialog title="添加培训时段" v-model="dialogFormVisible">
 				<el-form :model="form">
@@ -48,10 +47,10 @@
 		<!-- 表格 -->
 		<div>
 			<el-table :data="trainingperiodData" border style="width:100%;margin-left:10px;">
-				<el-table-column prop="name" type="selection" width="180"> </el-table-column>
-				<el-table-column fixed prop="periodId" label="编号" width="180"> </el-table-column>
-				<el-table-column prop="period" label="培训时段"> </el-table-column>
-				<el-table-column label="操作" width="120">
+				<el-table-column prop="name" type="selection" align="center"> </el-table-column>
+				<el-table-column fixed prop="periodId" label="编号"  align="center"> </el-table-column>
+				<el-table-column prop="period" label="培训时段"  align="center"> </el-table-column>
+				<el-table-column label="操作"  align="center">
 					<template #default="scope">
 						<el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
 						<el-button @click="showEdit(scope.row)" type="text" size="small">编辑</el-button>
@@ -72,6 +71,7 @@
 
 <script>
 	import qs from "qs"
+	import { ElMessage } from 'element-plus'
 	export default {
 		name: "PeriodVue",
 		data() {
@@ -106,19 +106,25 @@
 			//增加
 			addTrainingperiod() {
 				const _this = this
+				this.form.addname="admin"
 				this.axios.post("http://localhost:8089/threeproject/trainingperiod", this.form)
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findPage2",{
-							params:_this.pageInfo
-						})
-						.then(function(response){
-								_this.trainingperiodData=response.data.list
-								_this.pageInfo.total=response.data.total
-							}).catch(function(error) {
-								console.log(error)
-						})
+						// _this.axios.get("http://localhost:8089/threeproject/findPage2",{
+						// 	params:_this.pageInfo
+						// })
+						// .then(function(response){
+						// 		_this.trainingperiodData=response.data.list
+						// 		_this.pageInfo.total=response.data.total
+						// 	}).catch(function(error) {
+						// 		console.log(error)
+						// })
 						_this.dialogFormVisible=false
 						_this.form={}
+						_this.selectAllPeriod()
+						ElMessage.success({
+						   message: '新增成功',
+						   type: 'success'
+						})
 					}).catch(function(error){
 						console.log(error)
 					})
@@ -129,11 +135,16 @@
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/trainingperiod", this.form)
 					.then(function(response) {
-						var trainingperiod = response.data
-						var row = _this.trainingperiodData.filter(t => t.periodId == trainingperiod.periodId)[0]
-						row.period = trainingperiod.period
-						row.addname = trainingperiod.addname
+						// var trainingperiod = response.data
+						// var row = _this.trainingperiodData.filter(t => t.periodId == trainingperiod.periodId)[0]
+						// row.period = trainingperiod.period
+						// row.addname = trainingperiod.addname
 						_this.dialogFormVisible2 = false
+						_this.selectAllPeriod()
+						this.$message({
+						   message: '修改成功',
+						   type: 'success'
+						})
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -149,11 +160,16 @@
 				}).then(() => {
 					_this.axios.delete("http://localhost:8089/threeproject/trainingperiod/" + row.periodId)
 						.then(function(response) {
-							var dept = response.data
-							var rows = _this.trainingperiodData
-								.filter(t => t.periodId != row.periodId)
-							console.log("del rows:%o", rows)
-							_this.trainingperiodData = rows
+							// var dept = response.data
+							// var rows = _this.trainingperiodData
+							// 	.filter(t => t.periodId != row.periodId)
+							// console.log("del rows:%o", rows)
+							// _this.trainingperiodData = rows
+							_this.selectAllPeriod()
+							this.$message({
+							   message: '删除成功',
+							   type: 'success'
+							})
 						}).catch(function(error) {
 							console.log(error)
 						})
@@ -163,6 +179,17 @@
 						message: '取消删除!'
 					});
 				});
+			},
+			selectAllPeriod(){
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				.then(function(response){
+					console.log(response)
+					_this.trainingperiodData=response.data.list
+					_this.pageInfo.total=response.data.total
+				}).catch(function(error){
+					console.log(error)
+				})
 			},
 			handleCurrentChange(currentPage){
 				var _this=this

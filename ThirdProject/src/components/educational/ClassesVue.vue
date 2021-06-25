@@ -2,12 +2,15 @@
 	<div>
 		<div style="margin-left: -815px;">
 			快速检索：
-			<el-select v-model="value" placeholder="请选择" style="margin-top:50px; width: 120px;" clearable>
-				<el-option label="班级名称" value="班级名称"></el-option>
-				<el-option label="班级编号" value="班级编号"></el-option>
-				<el-option label="上课教师" value="上课教师"></el-option>
+			<el-select v-model="pageInfo.value" placeholder="请选择" style="margin-top:50px; width: 120px;" clearable>
+				<el-option label="全部" value="9"></el-option>
+				<el-option label="班级名称" value="2"></el-option>
+				<el-option label="班级编号" value="3"></el-option>
+				<el-option label="上课教师" value="4"></el-option>
+				<el-option label="已开班" value="1"></el-option>
+				<el-option label="未开班" value="0"></el-option>
 			</el-select>
-			<el-input placeholder="请输入内容" v-model="input"  clearable style="width: 230px;" />
+			<el-input placeholder="请输入内容" v-model="pageInfo.input"  clearable style="width: 230px;" />
 		</div>
 		<div>
 			<el-row style="margin-top: -40px;margin-left:1120px;">
@@ -15,7 +18,7 @@
 			    <el-button  type="primary" @click="dialogFormVisible=true">新增</el-button>
 			</el-row>
 		</div>
-			
+		<!-- 新增班级 -->
 		<el-dialog title="新增班级" v-model="dialogFormVisible" width="55%">
 			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
 				<el-descriptions-item>
@@ -222,7 +225,8 @@
 	</div>
 	<!-- 表格 -->
 	<div style="margin-top: 30px;">
-		<el-table :data="tableData" height="300" border style="width:100%;margin-left:10px;">
+		<el-table :data="tableData" border style="width:100%;margin-left:10px;"
+		:header-cell-style="{background:'#eef1f6',color:'#606266'}">
 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
 		    <el-table-column fixed prop="classesNumber" label="班级编号" width="150" align="center"></el-table-column>
 			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
@@ -248,17 +252,39 @@
 		    </el-table-column>
 		</el-table>
 	</div>
+	<!-- 分页 -->
+	<div class="block" style="margin-right:590px;margin-top: 10px;">
+	    <el-pagination
+		  每页大小发生改变时怎么处理
+	      @size-change="handleSizeChange"
+	      @current-change="handleCurrentChange"
+		  当前页码
+	      :current-page="pageInfo.currentPage"
+	      :page-sizes="[3, 5, 7, 10]"
+		  每页数据
+	      :page-size="pageInfo.pagesize"
+	      layout="total, sizes, prev, pager, next, jumper"
+	      :total="pageInfo.total">
+	    </el-pagination>
+	</div> 
 </template>
 
 <script>
+	import qs from 'qs'
 	import { defineComponent, ref } from 'vue'
 	export default  {
 	    name:"ClassesVue",
 		data (){
 			return{
+				pageInfo:{
+					value:"",
+					input:"",
+					currentPage: 1,//标识当前页码
+					pagesize:4,//每页多少条数据
+					total:0
+				},
 				switchvalue:"",
-				value:"",
-				input:"",
+				
 				tableData:[],
 				//年届名称
 				session:"",
@@ -326,6 +352,32 @@
 					console.log(error)
 				}) 
 			 },
+			 handleSizeChange(pagesize) {
+			     var _this=this
+			     this.pageInfo.pagesize=pagesize
+			 	var ps = qs.stringify(this.pageInfo)
+			 	console.log(ps)
+			     this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+			     .then(function(response){
+			     	console.log("-------------------------------------------")
+			     	console.log(response.data)
+			     	_this.tableData=response.data.list
+			     }).catch(function(error){
+			     	console.log(error)
+			     })
+			 },
+			 handleCurrentChange(currentPage) {
+			 	var _this=this
+			 	this.pageInfo.currentPage=currentPage
+			 	var ps = qs.stringify(this.pageInfo)
+			 	this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+			 	.then(function(response){
+			 		console.log(response.data)
+			 		_this.tableData=response.data.list
+			 	}).catch(function(error){
+			 		console.log(error)
+			 	})
+			 },
 			 //新增班级
 			 addClass(){
 				 const _this=this
@@ -382,20 +434,22 @@
 			 // 多条件查询
 			 selectByContion(){
 				const _this=this
-				 this.axios.get("http://localhost:8089/threeproject/selectByContion/"+this.value+"/"+this.input)
+				 this.axios.get("http://localhost:8089/threeproject/selectByContion",{params:this.pageInfo})
 				.then(function(response){
 					console.log(response)
-					_this.tableData=response.data
+					_this.tableData=response.data.list
+					_this.pageInfo.total=response.data.total
 				}).catch(function(error){
 					console.log(error)
 				})
 			 },
 			 selectAll(){
 				 const _this=this
-				 this.axios.get("http://localhost:8089/threeproject/findAllClass")
+				 this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
 				 .then(function(response){
 				 	console.log(response)
-				 	_this.tableData=response.data
+				 	_this.tableData=response.data.list
+				 	_this.pageInfo.total=response.data.total
 				 }).catch(function(error){
 				 	console.log(error)
 				 })
@@ -409,13 +463,8 @@
 				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2)
 				 .then(function(response){
 					 _this.selectByCourseKey100(_this.form2.courseId,_this.form2.classesId)
-					 _this.axios.get("http://localhost:8089/threeproject/findAllClass")
-					 .then(function(response){
-						console.log(response)
-						_this.tableData=response.data
-					 }).catch(function(error){
-						console.log(error)
-					 })
+					 _this.selectAll();
+					
 				 }).catch(function(error){
 				 	console.log(error)
 				 })
@@ -448,13 +497,7 @@
 				this.form2.updatename="admin"
 			 	this.axios.put("http://localhost:8089/threeproject/updateClassesOpen0",this.form2)
 			 	.then(function(response){
-			 		_this.axios.get("http://localhost:8089/threeproject/findAllClass")
-			 		.then(function(response){
-			 			console.log(response)
-			 			_this.tableData=response.data
-			 		}).catch(function(error){
-			 			console.log(error)
-			 		})
+					_this.selectAll()
 			 	}).catch(function(error){
 			 		console.log(error)
 			 	})			 
@@ -485,10 +528,11 @@
 		  },
 		  created() {
 		  	const _this=this
-		  	this.axios.get("http://localhost:8089/threeproject/findAllClass")
+		  	this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
 		  	.then(function(response){
 		  		console.log(response)
-				_this.tableData=response.data
+				_this.tableData=response.data.list
+				_this.pageInfo.total=response.data.total
 		  	}).catch(function(error){
 				console.log(error)
 			}),

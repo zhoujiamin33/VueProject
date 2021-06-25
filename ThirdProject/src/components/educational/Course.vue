@@ -2,8 +2,7 @@
 	<!-- 删除、修改开停设状态 -->
 	<div style="margin-top: 35px;">
 		<el-row style="margin-left:1095px;margin-bottom: 10px;">
-		  <el-button @click="dialogFormVisible=true" type="primary" icon="el-icon-plus">新增</el-button>
-		  
+		  <el-button @click="dialogFormVisible=true" type="primary" icon="el-icon-plus" style="margin-left:120px;">新增</el-button>
 		</el-row>
 		<!-- 新增弹窗 -->
 		<el-dialog title="新增课程" v-model="dialogFormVisible">
@@ -140,16 +139,16 @@
 		<el-table :data="tableData" border style="width:100%;margin-left:5px;" ref="singleTable" highlight-current-row
 		@selection-change="handleSelectionChange">
 		    <el-table-column fixed  type="selection" align="center"> </el-table-column>
-		    <el-table-column fixed prop="courseId" label="编号" width="150" align="center"> </el-table-column>
-		    <el-table-column fixed prop="courseName" label="课程名称" width="150" align="center">
+		    <el-table-column fixed prop="courseId" label="编号"  align="center"> </el-table-column>
+		    <el-table-column fixed prop="courseName" label="课程名称" align="center">
 				<template #default="scope">
 					<a href="#" @click="findDetailCourses(scope.row.courseId)">{{scope.row.courseName}}</a>
 				</template>
 			</el-table-column>
-		    <el-table-column  prop="classtype.classtypeName" label="课程类型" width="150" align="center" > </el-table-column>
-		    <el-table-column prop="classhours" label="课时量"  width="120" align="center"> </el-table-column>
-		    <el-table-column prop="courseMoney" label="费用" width="120" align="center"> </el-table-column>
-		    <el-table-column  fixed="right" prop="courseState"  label="开设状态" width="200" align="center">
+		    <el-table-column  prop="classtype.classtypeName" label="课程类型"  align="center" > </el-table-column>
+		    <el-table-column prop="classhours" label="课时量"   align="center"> </el-table-column>
+		    <el-table-column prop="courseMoney" label="费用" align="center"> </el-table-column>
+		    <el-table-column  fixed="right" prop="courseState"  label="开设状态"  align="center">
 				<template #default="scope">
 					<p v-if="scope.row.courseState==0">
 						<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateCourseState(scope.row)"></el-button>
@@ -159,7 +158,7 @@
 					</p>
 				</template>
 		    </el-table-column>
-			<el-table-column fixed="right" label="操作"  width="100" align="center">
+			<el-table-column fixed="right" label="操作"   align="center">
 				<template #default="scope">
 					<el-button type="text" size="small" @click="setCurrent(scope.row)">编辑</el-button>
 				</template>
@@ -193,12 +192,12 @@ export default{
 			type:"",
 			pageInfo:{
 				currentPage:1,//标识当前页码
-				pagesize:2,//每页多少条数据
+				pagesize:5,//每页多少条数据
 				total:0
 			},
 			pageInfo2:{
 				currentPage:1,//标识当前页码
-				pagesize:2,//每页多少条数据
+				pagesize:5,//每页多少条数据
 				total:0,
 				courseId:""
 			},
@@ -295,6 +294,10 @@ export default{
 				  })
 				_this.dialogFormVisible=false
 				_this.form={}
+				ElMessage.success({
+				   message: '新增成功',
+				   type: 'success'
+				})
 			  }).catch(function(error){
 				  console.log(error)
 			  })
@@ -315,6 +318,10 @@ export default{
 					console.log(response)
 				}).catch(function(error){
 					console.log(error)
+				})
+				ElMessage.success({
+				   message: '修改成功',
+				   type: 'success'
 				})
 			 }).catch(function(error){
 			 	console.log(error)
@@ -354,9 +361,10 @@ export default{
 		 			console.log(error)
 		 		})
 		 		_this.dialogDetailForm=false
-		 		for(var key in _this.detailsForm){
-		 			delete _this.detailsForm[key];
-		 		}
+		 		ElMessage.success({
+		 		   message: '成功新增一条课程详细',
+		 		   type: 'success'
+		 		})
 		 	}).catch(function(error){
 		 		console.log(error)
 		 	}) 		
@@ -384,6 +392,10 @@ export default{
 		  		datas.classhours=course.classhours
 		  		_this.dialogFormVisible2=false
 		  		_this.form={}
+				ElMessage.success({
+				   message: '修改成功',
+				   type: 'success'
+				})
 		  	}).catch(function(error){
 		  		console.log(error)
 		  	})
@@ -399,16 +411,23 @@ export default{
 		  //修改课程详细
 		  updateDetails(){
 			  const _this=this
-			  this.axios.put("http://localhost:8089/threeproject/updateDetails",this.detailsForm)
+			  console.log(this.detailsForm.detailcourseId+"课程详细Id")
+			  this.detailsForm.updatename="admin"
+			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm)
 			  .then(function(response){
-				   var detailcourse=response.data
-				   var row=_this.detailData.filter(d=>d.detailcourseId=detailcourse.detailcourseId)[0]
-				   row.detailcourseName=detailcourse.detailcourseName
-				   row.serial=detailcourse.serial
-				   _this.dialogDetailForm2=false
-				   for(var key in _this.detailsForm){
-				   	delete _this.detailsForm[key];
-				   }
+				  _this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:_this.pageInfo2})
+				  .then(function(response){
+				  	console.log(response)
+				  	_this.detailData=response.data.list
+				  	_this.pageInfo2.total=response.data.total 
+					ElMessage.success({
+					   message: '成功修改一条课程详细',
+					   type: 'success'
+					})
+				  }).catch(function(error){
+				  	console.log(error)
+				  })
+				  _this.dialogDetailForm2=false
 			  }).catch(function(error){
 				  console.log(error)
 			  })
