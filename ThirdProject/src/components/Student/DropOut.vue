@@ -189,31 +189,20 @@
 						this.pageInfo.currentPage = currentPage
 						var ps = qs.stringify(this.pageInfo)
 						console.log(ps)
-						this.showDropout()
+						this.selectName()
 					},
 					handleSizeChange(pagesize) {
 						var _this = this
 						this.pageInfo.pagesize = pagesize
 						var ps = qs.stringify(this.pageInfo)
 						console.log(ps)
-						this.showDropout()
-					},
-					showDropout(){
-						const _this = this
-						this.axios.get("http://localhost:8089/threeproject/finddropout",{params:this.pageInfo})
-							.then(function(response) {
-								_this.tableData = response.data.list
-								_this.pageInfo.total = response.data.total
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
+						this.selectName()
 					}
 					
 				},
 				created() {
 					
-					this.showDropout()
+					this.selectName()
 				}
 			}
 		</script>

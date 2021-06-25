@@ -24,16 +24,17 @@
 		<el-button >重置</el-button>
 		<el-button >删除</el-button>
 	</div>
-	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-		<el-table-column prop="opjournalId" label="Id">
-		</el-table-column>
+	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" height="300">
 		<el-table-column type="selection">
 		</el-table-column>
+		<el-table-column prop="opjournalId" label="Id">
+		</el-table-column>
+		
 		<el-table-column prop="empId" label="用户编码">
 		</el-table-column>
 		<el-table-column prop="emp.empName" label="用户名称">
 		</el-table-column>
-		<el-table-column prop="empSex" label="登录次数">
+		<el-table-column prop="optime" label="操作日期">
 		</el-table-column>
 		<el-table-column prop="opcontent" label="操作模块名称">
 		</el-table-column>
