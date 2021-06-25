@@ -35,8 +35,8 @@
 					<el-dialog title="编辑" width="47%" v-model="huifu">
 						<template #footer>
 							<span class="dialog-footer">
-								<el-button style="margin-left: -100px;" type="primary" @click="updateIdeas">保 存</el-button>
-								<el-button @click="xskd1=false">关 闭</el-button>
+								<el-button style="margin-left: -100px;" type="primary" @click="updateIdeas">确定回复</el-button>
+								<el-button @click="huifu=false">关 闭</el-button>
 							</span>
 						</template>
 						<el-form :model="form" label-width="80px" size="mini">
@@ -108,7 +108,8 @@
 							</el-table-column>
 							<el-table-column prop="ideasTitle" label="意见标题" width="415">
 								<template #default="scope">
-									<a href="#" @click="showChakan(scope.row)">{{scope.row.ideasTitle}}</a>
+									<a href="#" v-if="scope.row.state==1" @click="showChakan(scope.row)">{{scope.row.ideasTitle}}</a>
+									<a href="#" v-if="scope.row.state==0" @click="showXiugai(scope.row)">{{scope.row.ideasTitle}}</a>
 								</template>
 							</el-table-column>
 							<el-table-column prop="suggest.suggestName" label="意见箱">
@@ -135,7 +136,6 @@
 					<el-dialog title="编辑" width="47%" v-model="chakan">
 						<template #footer>
 							<span class="dialog-footer">
-								<el-button style="margin-left: -100px;" type="primary" @click="updateIdeas">删 除</el-button>
 								<el-button @click="chakan=false">关 闭</el-button>
 							</span>
 						</template>
@@ -151,6 +151,41 @@
 							</el-form-item>
 							<el-form-item label="内容 :">
 								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoveryname" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复人 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.reply" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="回复时间 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoverytime" disabled clearable></el-input>
+							</el-form-item>
+						</el-form>
+					</el-dialog>
+					
+					
+					
+					<el-dialog title="编辑" width="47%" v-model="xiugai">
+						<template #footer>
+							<span class="dialog-footer">
+								<el-button  type="primary" @click="updateIdeasneirong">保 存</el-button>
+								<el-button  type="danger" @click="delIdeas">删 除</el-button>
+								<el-button @click="xiugai=false">关 闭</el-button>
+							</span>
+						</template>
+						<el-form :model="form" label-width="80px" size="mini">
+							<el-form-item label="意见标题 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasTitle" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表人 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.empName" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="发表时间 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.timeofpublication" disabled clearable></el-input>
+							</el-form-item>
+							<el-form-item label="内容 :">
+								<el-input style="width: 193px;margin-left: -442px;" v-model="form.ideasName"  clearable></el-input>
 							</el-form-item>
 							<el-form-item label="回复内容 :">
 								<el-input style="width: 193px;margin-left: -442px;" v-model="form.revoveryname" disabled clearable></el-input>
@@ -225,7 +260,7 @@
 				},
 
 				checked: false,
-
+				xiugai:false,
 				input: ref(''),
 				input1: ref(''),
 			}
@@ -252,7 +287,18 @@
 				this.form.revoverytime = row.revoverytime
 				this.chakan = true
 			},
-			//修改
+			showXiugai(row) {
+				this.form.ideasId = row.ideasId
+				this.form.ideasTitle = row.ideasTitle
+				this.form.empName = row.emp.empName
+				this.form.timeofpublication = row.timeofpublication
+				this.form.ideasName = row.ideasName
+				this.form.revoveryname = row.revoveryname
+				this.form.reply = row.reply
+				this.form.revoverytime = row.revoverytime
+				this.xiugai = true
+			},
+			//回复
 			updateIdeas() {
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/updateIdeas", this.form)
@@ -313,6 +359,85 @@
 							})
 						_this.dialogFormVisible=false
 						_this.form={}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			
+			//删除
+			delIdeas() {
+				const _this = this
+				var flag = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.delete("http://localhost:8089/threeproject/delIdeas/" + this.form.ideasId)
+						.then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData1 = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+							_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+									params: _this.pageInfo
+								})
+								.then(function(response) {
+									_this.tableData = response.data.list
+									_this.pageInfo.total = response.data.total
+								}).catch(function(error) {
+									console.log(error)
+								})
+							for (var key in _this.form) {
+								delete _this.form[key]
+							}
+							_this.xiugai = false
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
+			},
+			
+			//修改内容
+			updateIdeasneirong() {
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updateIdeasneirong", this.form)
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagesd", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						_this.axios.get("http://localhost:8089/threeproject/IdeasfindPagefc", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData1 = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						var ideas = response.data
+						var row = _this.tableData.filter(i => i.ideasId == ideas.ideasId)[0]
+						row.ideasName=ideas.ideasName
+						_this.xiugai = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
 					}).catch(function(error) {
 						console.log(error)
 					})

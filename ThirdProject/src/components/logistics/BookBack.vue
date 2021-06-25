@@ -101,7 +101,7 @@
 				</el-table-column>
 				<el-table-column fixed="right" label="操作" width="150" align="center">
 					<template #default="scope">
-						<el-button type="text" size="small" @click="updateBookback(scope.row)">删除</el-button>
+						<el-button type="text" size="small" @click="delBookback(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -216,69 +216,69 @@
 						console.log(error)
 					})
 			},
-			// //删除
-			// delBookback(row) {
-			// 	const _this = this
-			// 	var flag = true
-			// 	this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-			// 		confirmButtonText: '确定',
-			// 		cancelButtonText: '取消',
-			// 		type: 'warning'
-			// 	}).then(() => {
-			// 		_this.axios.delete("http://localhost:8089/threeproject/delBookback/" + row.bookbackId)
-			// 			.then(function(response) {
-			// 				_this.axios.get("http://localhost:8089/threeproject/findPage6", {
-			// 						params: _this.pageInfo
-			// 					})
-			// 					.then(function(response) {
-			// 						_this.tableData = response.data.list
-			// 						_this.pageInfo.total = response.data.total
-			// 					}).catch(function(error) {
-			// 						console.log(error)
-			// 					})
-			// 				var bookback = response.data
-			// 				var rows = _this.tableData
-			// 					.filter(t => t.bookbackId != row.bookbackId)
-			// 				_this.tableData = rows
-			// 				for (var key in _this.form) {
-			// 					delete _this.form[key]
-			// 				}
-			// 			}).catch(function(error) {
-			// 				console.log(error)
-			// 			})
-			// 	}).catch(() => {
-			// 		this.$message({
-			// 			type: 'error',
-			// 			message: '取消删除!'
-			// 		});
-			// 	});
-			// },
-			
-			
-			
-			//修改
-			updateBookback() {
+			//删除
+			delBookback(row) {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateBookback", this.form)
-					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findPage6", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.tableData = response.data.list
-								_this.pageInfo.total = response.data.total
-							}).catch(function(error) {
-								console.log(error)
-							})
-						var bookback = response.data
-						var row = _this.tableData.filter(i => i.bookbackId == bookback.bookbackId)[0]
-						for (var key in _this.form) {
-							delete _this.form[key]
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
+				var flag = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.delete("http://localhost:8089/threeproject/delBookback/" + row.bookbackId)
+						.then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/findPage6", {
+									params: _this.pageInfo
+								})
+								.then(function(response) {
+									_this.tableData = response.data.list
+									_this.pageInfo.total = response.data.total
+								}).catch(function(error) {
+									console.log(error)
+								})
+							var bookback = response.data
+							var rows = _this.tableData
+								.filter(t => t.bookbackId != row.bookbackId)
+							_this.tableData = rows
+							for (var key in _this.form) {
+								delete _this.form[key]
+							}
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
 			},
+			
+			
+			
+			// //修改
+			// updateBookback() {
+			// 	const _this = this
+			// 	this.axios.put("http://localhost:8089/threeproject/updateBookback", this.form)
+			// 		.then(function(response) {
+			// 			_this.axios.get("http://localhost:8089/threeproject/findPage6", {
+			// 					params: _this.pageInfo
+			// 				})
+			// 				.then(function(response) {
+			// 					_this.tableData = response.data.list
+			// 					_this.pageInfo.total = response.data.total
+			// 				}).catch(function(error) {
+			// 					console.log(error)
+			// 				})
+			// 			var bookback = response.data
+			// 			var row = _this.tableData.filter(i => i.bookbackId == bookback.bookbackId)[0]
+			// 			for (var key in _this.form) {
+			// 				delete _this.form[key]
+			// 			}
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			
 			//多条件查询
 			selectBookback() {
