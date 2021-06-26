@@ -661,9 +661,8 @@
 					teacherId: '', //教师
 					status: '', //学员状态表的状态
 
-					classhours:''//课时数
-
 					classhours:'',//课时数
+
 					course:[],
 					//退费管理的新增人
 					addname:"",

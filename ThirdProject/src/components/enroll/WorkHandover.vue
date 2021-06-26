@@ -9,13 +9,10 @@
 				</el-select>
 				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
 				</el-input>
-
 			</div>
-
 			<div style="">
 				<el-button>查询</el-button>
 				<el-button @click="delWork">审批</el-button>
-
 				<div>
 					<el-dialog prop="theoryCenterId" :required="true" title="新增交接信息" v-model="dialogFormVisible">
 
@@ -28,7 +25,6 @@
 								<el-input v-model="ruleForm.name"></el-input>
 							</el-form-item>
 						</el-form>
-
 						<template #footer>
 							<span class="dialog-footer">
 								<el-button type="primary" @click="dialogFormVisible = false">新建并保存</el-button>
@@ -37,11 +33,10 @@
 						</template>
 					</el-dialog>
 				</div>
-
-
 			</div>
 		</div>
 		<div>
+			
 			<el-table ref="multipleTable" :data="WorkDate" tooltip-effect="dark" style=""
 				@selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" 交接编号>
@@ -65,7 +60,12 @@
 					<el-button type="text" @click="reply = true">招生审批</el-button>
 				</el-table-column>
 			</el-table>
-
+			<div>
+				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+					:current-page="pageInfo.currentPage" :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize"
+					layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+				</el-pagination>
+			</div>
 			<!-- 修改 -->
 			<div>
 				<el-dialog prop="theoryCenterId" :required="true" title="修改咨询登记信息" v-model="reply">
@@ -185,10 +185,12 @@
 			</div>
 
 		</div>
+		
 	</div>
 </template>
 
 <script>
+	import qs from "qs"
 	import {
 		defineComponent,
 		ref
@@ -204,6 +206,11 @@
 		},
 		data() {
 			return {
+				pageInfo: {
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				kssy: [{
 					value: '选项1',
 					label: '黄金糕'
@@ -338,16 +345,56 @@
 					});
 				});
 			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.WorkDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.WorkDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}
+			
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
-				.then(function(response) {
-					_this.WorkDate = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+			// this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
+			// 	.then(function(response) {
+			// 		_this.WorkDate = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	}),
+				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.WorkDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
 		}
 
 

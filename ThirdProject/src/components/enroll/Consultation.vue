@@ -142,7 +142,7 @@
 						<p v-if="scope1.row.paystate==2">已缴费</p>
 					</template>
 				</el-table-column>
-				<el-table-column prop="addname" label="接待人" show-overflow-tooltip>
+				<el-table-column prop="emp.empName" label="接待人" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column prop="attentstate" label="状态" width="70px" show-overflow-tooltip>
 					<template v-slot="scope">
@@ -773,6 +773,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
+				
 
 				this.axios.get("http://localhost:8089/threeproject/findCourse")
 				.then(function(response) {
@@ -807,8 +808,8 @@
 		/* 	display: flex;
 		justify-content: space-between;
 		align-content: center; */
-	margin-left: "600px"
-	}
+	/* margin-left: "600px"
+	} */
 
-	*/
+	
 </style>
