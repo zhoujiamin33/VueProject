@@ -33,7 +33,7 @@
 		<el-container>
 			<!-- 侧边栏 -->
 			<el-aside  :width="isCollapse?'65px':'200px'" >
-			<!-- <el-aside width="auto"> -->
+			<!-- <el-aside width="auto"> --> 
 				<!-- <el-scrollbar style="height: 100%;"> -->
 				<el-scrollbar>
 				<!-- 收起导航栏 -->

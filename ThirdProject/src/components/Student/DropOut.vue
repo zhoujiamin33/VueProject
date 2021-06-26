@@ -3,51 +3,52 @@
 		<div class="mian">
 				<div class="mainbody">
 					<div style="margin-right: 320px;display: flex;">
-						<span style="margin-top: 10px;width: 90px;">快速检索：</span>
+						<span style="margin-top: 10px;width: 90px;font-size: 15px;">快速检索：</span>
 						<el-select v-model="pageInfo.index" placeholder="请选择">
 							<el-option label="班级" value="班级"></el-option>
 							<el-option label="姓名" value="姓名"></el-option>
 							<el-option label="学号" value="学号"></el-option>
 						</el-select>
 			
-						<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 100px;" clearable
+						<el-input placeholder="请输入内容" v-model="pageInfo.value" style="width: 120px;" clearable
 							@clear="serchVal">
 						</el-input>
 					</div>
-					<div style="display: flex;">
+					<div style="margin-left:280px;">
 						<el-button @click="selectName">查询</el-button>
 						<el-button @click="tgsp">通过审批</el-button>
 						<el-button @click="del">删除</el-button>
 					</div>
 				</div>
 			
-				<el-table :data="tableData" border @selection-change="handleSelectionChange">
-					<el-table-column prop="dropId" label="Id">
+				<el-table :data="tableData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+					<el-table-column type="selection"  align="center">
 					</el-table-column>
-					<el-table-column type="selection">
+					<el-table-column prop="dropId" label="Id"  align="center">
 					</el-table-column>
-					<el-table-column prop="dropTime" label="退学日期">
+					
+					<el-table-column prop="dropTime" label="退学日期"  align="center">
 					</el-table-column>
-					<el-table-column prop="student.studentNumber" label="学号">
+					<el-table-column prop="student.studentNumber" label="学号" align="center">
 					</el-table-column>
-					<el-table-column prop="student.studentName" label="姓名">
+					<el-table-column prop="student.studentName" label="姓名" align="center">
 					</el-table-column>
-					<el-table-column prop="classes.classesName" label="退班班级">
+					<el-table-column prop="classes.classesName" label="退班班级" align="center">
 					</el-table-column>
-					<el-table-column prop="ispay" label="退费状态">
+					<el-table-column prop="ispay" label="退费状态" align="center">
 						<template v-slot="scope">
 							<p v-if="scope.row.ispay==0">未退费</p>
 							<p v-if="scope.row.ispay==1">已退费</p>
 						</template>
 					</el-table-column>
-					<el-table-column prop="dropReason" label="退回理由">
+					<el-table-column prop="dropReason" label="退回理由" align="center">
 					</el-table-column>
-					<el-table-column prop="dropHandler" label="经办人">
+					<el-table-column prop="dropHandler" label="经办人" align="center">
 					</el-table-column>
-					<el-table-column prop="jwApproval" label="状态">
+					<el-table-column prop="jwApproval" label="状态" align="center">
 						<template v-slot="scope">
-							<p v-if="scope.row.jwApproval==0">未审核</p>
-							<p v-if="scope.row.jwApproval==1">已审核</p>
+							<p v-if="scope.row.jwApproval==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>
+					<p v-if="scope.row.jwApproval==1"><i class=" el-icon-s-custom" style="font-size: 25px; color: red"></i></p>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -62,6 +63,7 @@
 		</template>
 		
 		<script>
+			import qs from 'qs'
 			export default {
 				data() {
 					return {
@@ -181,22 +183,26 @@
 								console.log(error)
 							})
 					},
-					showDropout(){
-						const _this = this
-						this.axios.get("http://localhost:8089/threeproject/finddropout",{params:this.pageInfo})
-							.then(function(response) {
-								_this.tableData = response.data.list
-								_this.pageInfo.total = response.data.total
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
+					// 分页
+					handleCurrentChange(currentPage) {
+						var _this = this
+						this.pageInfo.currentPage = currentPage
+						var ps = qs.stringify(this.pageInfo)
+						console.log(ps)
+						this.selectName()
+					},
+					handleSizeChange(pagesize) {
+						var _this = this
+						this.pageInfo.pagesize = pagesize
+						var ps = qs.stringify(this.pageInfo)
+						console.log(ps)
+						this.selectName()
 					}
 					
 				},
 				created() {
 					
-					this.showDropout()
+					this.selectName()
 				}
 			}
 		</script>

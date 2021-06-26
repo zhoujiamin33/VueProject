@@ -2,10 +2,10 @@
 	<div>
 		<!-- 搜索按钮 -->
 		<div style="margin-top:35px;display: flex;justify-content: space-between">
-		  <el-input placeholder="请输入搜索内容" v-model="pageInfo.searchinput" class="input-with-select" style="width:400px;margin-left:10px;">
-		    <template #append  style="height: 10px;">
-		      <el-button icon="el-icon-search" @click="SelectByName"></el-button>
-		    </template>
+		  <el-input placeholder="请输入内容" v-model="pageInfo.searchinput" class="input-with-select" style="width:320px;height: 20px;margin-left:10px;">
+		     <template #append>
+		        <el-button icon="el-icon-search"  @click="SelectByName">查询</el-button>
+		      </template>
 		  </el-input>
 		  <!-- 新增按钮 -->
 		  <el-row style="margin-bottom: 10px;margin-right:0px;">
@@ -44,7 +44,7 @@
 				<el-form-item label="课类名称" :label-width="formLabelWidth">
 				  <el-input v-model="form.classtypeName" autocomplete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="新增人员" :label-width="formLabelWidth">
+				<el-form-item label="修改人员" :label-width="formLabelWidth">
 				  <el-input v-model="form.addname" autocomplete="off"></el-input>
 				</el-form-item>
 			</div>
@@ -59,18 +59,15 @@
 		
 	</div>
 	<div>
-		<el-table :data="tableData" border stripe style="width:100%;margin-left:10px;" @selection-change="handleSelectionChange">
+		<el-table :data="tableData" border  style="width:100%;margin-left:10px;" 
+		:header-cell-style="{background:'#eef1f6',color:'#606266'}"
+		@selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" align="center"></el-table-column>
 			<el-table-column prop="classtypeId" label="编号" align="center"></el-table-column>
 		    <el-table-column prop="classtypeName"  label="课类名称"  align="center"></el-table-column>
 			<el-table-column fixed="right" label="操作"  width="100">
-				<!-- #:v-slot-->
-				<!-- scope 定义的一个对象的名字 
-				scope.row 当前行-->
 				<template #default="scope">
-					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button> -->
 					<el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
-					<!-- <el-button type="text" size="small" @click="del(scope.row)">删除</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -83,7 +80,7 @@
 	      @current-change="handleCurrentChange"
 		  当前页码
 	      :current-page="pageInfo.currentPage"
-	      :page-sizes="[2, 3, 6, 10]"
+	      :page-sizes="[3, 5, 7, 10]"
 		  每页数据
 	      :page-size="pageInfo.pagesize"
 	      layout="total, sizes, prev, pager, next, jumper"
@@ -104,12 +101,12 @@ export default{
 			pageInfo:{
 				searchinput:"",
 				currentPage: 1,//标识当前页码
-				pagesize:2,//每页多少条数据
+				pagesize:5,//每页多少条数据
 				total:0
 			},
 			tableData:[],
 			form:{
-				classtypeName:"",addname:"",classtypeId:""
+				classtypeName:"",addname:"",classtypeId:"",updatename:""
 			},
 			dialogFormVisible:false,
 			dialogFormVisible2:false,
@@ -125,6 +122,7 @@ export default{
 			}
 			console.log(val)
 		}, 
+		
 		//批量删除
 		cutoff() {
 			// var deletename="默认"
@@ -201,6 +199,7 @@ export default{
 		 // 修改方法
 		 updateType(){
 			 const _this=this
+			 this.updatename="admin"
 			 this.axios.put("http://localhost:8089/threeproject/updateType",this.form)
 			 .then(function(response){
 				 console.log(response)
@@ -230,6 +229,7 @@ export default{
 		  // 新增方法
 		  addType(){
 			  const _this=this
+			  this.addname="admin"
 			  this.axios.post("http://localhost:8089/threeproject/addcoursetype",this.form)
 			  .then(function(response){
 				  _this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo})
@@ -240,11 +240,8 @@ export default{
 				  }).catch(function(error) {
 				  	console.log(error)
 				  })
-				  // console.log(response)
-				  // var classtype=response.data
-				  // _this.tableData.push(classtype)
 				 _this.dialogFormVisible=false
-				 _this.form=[]
+				 _this.form={}
 				 ElMessage.success({
 				    message: '新增成功',
 				    type: 'success'

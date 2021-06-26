@@ -1,15 +1,15 @@
 <template>
 	<div style="overflow-x: hidden; ">
 		<div >
-			<b style="font-size: 13px;font-weight: 100;margin-left: -720px;">显示方式：</b>
+			<b style="font-size: 13px;font-weight: 100;margin-left: -600px;">显示方式：</b>
 			<el-select v-model="value" placeholder="请选择" size="mini" style="width: 90px;">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			</el-select>
 			<el-checkbox v-model="checked" style="margin-left: 5px;">显示工作外时间</el-checkbox>
 			<b style="font-size: 13px;font-weight: 100;margin-left: 60px;">优先级：</b>
-			<img src="../assets/绿.gif">&nbsp;低&nbsp;&nbsp;
-			<img src="../assets/黄.gif">&nbsp;普通&nbsp;&nbsp;
-			<img src="../assets/红.gif">&nbsp;高
+			<img src="../../assets/绿.gif">&nbsp;低&nbsp;&nbsp;
+			<img src="../../assets/黄.gif">&nbsp;普通&nbsp;&nbsp;
+			<img src="../../assets/红.gif">&nbsp;高
 			<el-button type="info" @click="dialogFormVisible=true" plain size="mini" style="color: #000000;position: relative;left: 708px;">新建日程</el-button>
 		</div>
 		<div>
@@ -93,7 +93,7 @@
 			</el-calendar>
 		</div>
 		<div>
-			<div style="position: relative;left: 250px;bottom: 388px;">
+			<div style="position: relative;left: 250px;bottom: 388px;margin-left: 200px;">
 				<b>至今</b>
 				<el-select v-model="value1" placeholder="请选择" size="mini" style="width: 150px;">
 					<el-option v-for="item in options1" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -112,7 +112,7 @@
 					</tr>
 					<tr>
 						<td align="center">
-							<img src="../assets/红.gif">
+							<img src="../../assets/红.gif">
 						</td>
 						<td>
 							<a href="#">

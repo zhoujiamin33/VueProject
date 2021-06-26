@@ -19,7 +19,7 @@
 				</div>
 				
 			
-				<el-table :data="tableData" border>
+				<el-table :data="tableData" border :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 					<el-table-column prop="positionId" label="Id">
 					</el-table-column>
 					<el-table-column prop="positionName" label="职位名称">

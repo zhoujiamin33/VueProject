@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="a">
-			<b class="b" style="font-size: 15px;margin-left: -582px;">快速检索：</b>
+			<b class="b" style="font-size: 15px;margin-left: -540px;">快速检索：</b>
 			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
 				<el-option label="教材名" value="教材名"></el-option>
 				<el-option label="录入人" value="录入人"></el-option>
@@ -129,12 +129,6 @@
 	} from 'vue'
 	export default {
 		name: "BookDelivery",
-		// setup() {
-		// 	return {
-		// 		input: ref(''),
-		// 		input1: ref('')
-		// 	}
-		// },
 		data() {
 			return {
 				pageInfo: {
@@ -251,8 +245,6 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-
-
 			},
 			add(row) {
 				const _this = this

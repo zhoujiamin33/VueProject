@@ -6,26 +6,22 @@
 		  	<div style="margin-left:5px;line-height: 40px;">
 		  		<el-row style="text-align: center;">
 		  			是否审核：
-		  			<el-select  v-model="Approval"  placeholder="请选择">
-		  				<el-option>已审核</el-option><el-option>未审核</el-option>
+		  			<el-select  v-model="pageInfo.Approval"  placeholder="请选择">
+		  				<el-option value="1" label="已审核"></el-option><el-option value="0" label="未审核"></el-option>
 		  			</el-select>
-		  			缴费日期：
-		  			<el-date-picker v-model="value2"  type="daterange" align="right"  unlink-panels 
-		  			      range-separator="至" 
-		  			      start-placeholder="开始日期"
-		  			      end-placeholder="结束日期"
-		  			      :shortcuts="shortcuts">
-		  			</el-date-picker>
+		  			支出日期：
+		  			<el-date-picker v-model="pageInfo.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
+		  			<el-date-picker v-model="pageInfo.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
 					经办人：
-					<el-input  v-model="course" style="width: 150px;"></el-input>
-		  			<el-button style="margin-left: 10px;">查询</el-button>
+					<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
+		  			<el-button style="margin-left: 10px;" @click="selectBycontionBook">查询</el-button>
 					<el-button type="danger" >删除</el-button>
 		  		</el-row>
 		  	</div>
 		 </div>	
 		<!-- 表格 -->
-		<div style="position: relative;margin-top: 50px;">
-		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;">
+		<div style="position: relative;margin-top: 50px;"  >
+		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		 		<el-table-column fixed  type="selection"> </el-table-column>
 		 		<el-table-column  prop="expensesName" label="单据号" width="200"> </el-table-column>
 		 	    <el-table-column prop="expensesDate" label="收支日期"  align="center"> </el-table-column>
@@ -66,19 +62,15 @@
 		    	<div style="margin-left:10px;line-height: 40px;">
 		    		<el-row style="text-align: center;">
 		    			是否审核：
-		    			<el-select  v-model="Approval"  placeholder="请选择">
-		    				<el-option>已审核</el-option><el-option>未审核</el-option>
+		    			<el-select  v-model="pageInfo2.Approval"  placeholder="请选择">
+		    				<el-option value="1" label="已审核"></el-option><el-option value="0" label="未审核"></el-option>
 		    			</el-select>
-		    			缴费日期：
-		    			<el-date-picker v-model="value2"  type="daterange" align="right"  unlink-panels 
-		    			      range-separator="至" 
-		    			      start-placeholder="开始日期"
-		    			      end-placeholder="结束日期"
-		    			      :shortcuts="shortcuts">
-		    			</el-date-picker>
+		    			收入日期：
+		    			<el-date-picker v-model="pageInfo2.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
+		    			<el-date-picker v-model="pageInfo2.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
 		  			经办人：
-		  			<el-input  v-model="course" style="width: 150px;"></el-input>
-		    			<el-button style="margin-left: 10px;">查询</el-button>
+		  			<el-input  v-model="pageInfo2.input" style="width: 150px;"></el-input>
+		    			<el-button style="margin-left: 10px;" @click="selectBycontionBook2">查询</el-button>
 		    			<el-button type="danger" >删除</el-button>
 		    			<el-button type="primary" icon="el-icon-plus" style="margin-left:10px;">新增出库</el-button>
 		    		</el-row>
@@ -126,19 +118,30 @@
 
 <script>
 	import qs from 'qs'
+	
+	import moment from "moment"
 	export default{
 		data(){
 			return {
 				tableData:[],
+				tableData2:[],
 				pageInfo:{
 					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
-					total:0
+					pagesize:4,//每页多少条数据
+					total:0,
+					Approval:"",
+					input:"",
+					value1:"",
+					value2:""
 				},
 				pageInfo2:{
 					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
-					total:0
+					pagesize:4,//每页多少条数据
+					total:0,
+					Approval:"",
+					input:"",
+					value1:"",
+					value2:""
 				},
 				//审核教材入库表单
 				form:{
@@ -151,6 +154,32 @@
 			}
 		},
 		methods:{
+			selectBycontionBook(){
+				const _this=this
+				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
+				this.pageInfo.value2=moment(this.pageInfo.value2).format("YYYY-MM-DD")
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook",{params:this.pageInfo})
+				.then(function(response){
+					console.log(response)
+					_this.tableData=response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			selectBycontionBook2(){
+				const _this=this
+				this.pageInfo2.value1=moment(this.pageInfo2.value1).format("YYYY-MM-DD")
+				this.pageInfo2.value2=moment(this.pageInfo2.value2).format("YYYY-MM-DD")
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook2",{params:this.pageInfo2})
+				.then(function(response){
+					console.log(response)
+					_this.tableData2=response.data.list
+					_this.pageInfo2.total = response.data.total
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
 			handleSizeChange(pagesize) {
 			    var _this=this
 			    this.pageInfo.pagesize=pagesize

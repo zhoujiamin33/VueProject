@@ -4,7 +4,7 @@
 	 	<div style="margin-left:10px;line-height: 40px;">
 	 		<el-row >
 	 			是否审核：
-	 			<el-select  v-model="ApprovalState"  placeholder="请选择" >
+	 			<el-select  v-model="pageInfo.ApprovalState"  placeholder="请选择" >
 	 				<el-option value="1" label="已审核">已审核</el-option>
 					<el-option value="0" label="未审核">未审核</el-option>
 	 			</el-select>
@@ -12,15 +12,15 @@
 	 			  <el-date-picker v-model="value"  align="right" type="date"
 	 			      placeholder="选择日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>
 				<span style="margin-left: 20px;font-size: 15px;">录入人：</span>
-				<el-input  v-model="input" style="width: 150px;"></el-input>
+				<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
 	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:125px;" @click="dialogFormVisible=true">新增报班</el-button>
+				<el-button type="primary" icon="el-icon-plus" style="margin-left:240px;" @click="dialogFormVisible=true">新增报班</el-button>
 	 		</el-row>
 	 	</div>
 	</div>	
 		<!-- 表格 -->
-		<div style="position: relative;margin-top: 50px;">
-			<el-table :data="tableData"  border style="width: 100%;margin-left:5px;">
+		<div style="position: relative;margin-top: 50px;" >
+			<el-table :data="tableData"  border style="width: 100%;margin-left:5px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 				<el-table-column fixed  type="selection" align="center"> </el-table-column>
 			    <el-table-column fixed prop="feesId" label="缴费编号" align="center"> </el-table-column>
 				<el-table-column  prop="feesName" label="单据号"  width="200"  align="center"> </el-table-column>
@@ -110,16 +110,18 @@
 
 <script>
 	import qs from 'qs'
+	import moment from "moment"
 	export default{
 		name:"entryfees",
 		data(){
 			return {
-				ApprovalState:"",value2:"",input:"",value:"",
+				value:"",
 				tableData:[],
 				pageInfo:{
 					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
-					total:0
+					pagesize:4,//每页多少条数据
+					total:0,
+					ApprovalState:"",value2:"",input:"",
 				},
 				dialogFormVisible:false,
 				form:{
@@ -323,16 +325,21 @@
 					console.log(error)
 				})
 			},
+			//多条件查询
 			selectBycontionEntry(){
 				const _this=this
-				console.log(this.ApprovalState+"abc")
-				console.log(this.value2+"abcd")
-				this.value2=new Date(this.value)
-				console.log(this.input+"abcdef")
-				this.axios.get("http://localhost:8089/threeproject/updatepaystate/"+this.ApprovalState+"/"+this.value2+"/"+this.input)
+				console.log(this.pageInfo.ApprovalState+"abc")
+				this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD")
+				// this.pageInfo.value2=this.value.toLocaleString()
+				console.log(this.pageInfo.value2)
+				console.log(this.pageInfo.input+"abcdef")
+				console.log(this.pageInfo.value2+"date2")
+				console.log(this.pageInfo.currentPage+"currentPage")
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",{params:this.pageInfo})
 				.then(function(response) {
 					console.log(response)
-					_this.tableData=response.data
+					_this.tableData=response.data.list
+					_this.pageInfo.total=response.data.total
 				}).catch(function(error) {
 					console.log(error)
 				})

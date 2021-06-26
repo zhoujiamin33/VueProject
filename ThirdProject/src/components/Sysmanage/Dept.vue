@@ -1,62 +1,102 @@
 <template>
-	<div style="float: left;width: 25%;height: 100%;">
-		<span>部门</span>
-
-		<el-tree :data="Data1" :props="defaultProps" @node-click="handleNodeClick"   show-checkbox></el-tree>
-	
-
-	</div>
-	<div style="float:right;width: 74%;height: 100%;">
-		<div style="margin-bottom: 30px;">
-			
-			<el-button @click="AddDept" v-show="!form.show">保存</el-button>
-			<div v-show="form.show">
-			 <el-button @click="show()">新增</el-button>
-			<el-button @click="updatedept">保存</el-button>
-			 <el-button @click="delDept(Data1)">删除</el-button>
+<div style="display: flex;
+margin-bottom: 10px;">
+			<el-button @click="dialogFormVisible=true">新增</el-button>
 			</div>
-			
-		</div>
-			
-			
-				<el-form ref="form" :model="form" label-width="90px" :inline="true" style="width: 100%;text-align: center;margin-top: 50px;">
-				  <el-form-item label="编码:"  style="display: none;">
-				    <el-input v-model="form.deptId" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="部门编码:" required >
-				    <el-input v-model="form.deptSortnumber" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="部门名称:" required style="margin-left: 20px;">
-				    <el-input v-model="form.deptName" style="width: 220px;" ></el-input>
-				  </el-form-item>
-				  <el-form-item label="上级部门:" required>
-				    <el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
-				    	<el-option label="总经理" value="1"></el-option>
-				    	<el-option label="销售部门" value="2"></el-option>
-				    	<el-option label="常规部门" value="3"></el-option>
-				    </el-select>
-				  </el-form-item>
-				  <el-form-item label="部门负责人:" style="margin-left: 20px;">
-				    <el-input v-model="form.positionfzr" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="部门电话:" >
-				    <el-input v-model="form.positionphone" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="部门传真:" style="margin-left: 20px;" >
-				    <el-input v-model="form.positioncz" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="部门类型:" >
-				    <el-select v-model="form.positiontype" placeholder="请选择" style="width: 220px;">
-				    	<el-option label="客服部门" value="1"></el-option>
-				    	<el-option label="销售部门" value="2"></el-option>
+			<el-table :data="Data1" style="width: 100%" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+				<el-table-column prop="deptId" label="Id">
+				</el-table-column>
+				<el-table-column type="selection">
+				</el-table-column>
+				<el-table-column prop="deptSortnumber" label="部门编码">
+				</el-table-column>
+				<el-table-column prop="deptName" label="部门名称">
+				</el-table-column>
+				<el-table-column prop="superiorsDeptId" label="上级部门">
+				</el-table-column>
+				<el-table-column prop="index" label="操作"  fixed="right">
+					<template #default="scope">
+						<el-button type="text" @click="handleNodeClick(scope.row)">修改</el-button>
+						<el-button type="text" @click="delDept(scope.row)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<!-- 新增 -->
+			<el-dialog v-model="dialogFormVisible">
+				<el-descriptions :model="addForm" class="margin-top" title="部门新增" :column="1" :size="size" border>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-mobile-phone"></i>
+							部门编码:
+						</template>
+						    <el-input v-model="form.deptSortnumber" style="width: 220px;"></el-input>
+					</el-descriptions-item>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-location-outline"></i>
+							部门名称:
+						</template>
+					<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
+					</el-descriptions-item>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-tickets"></i>
+							上级部门:
+						</template>
+					<el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
+						<el-option label="总经理" value="1"></el-option>
+						<el-option label="销售部门" value="2"></el-option>
 						<el-option label="常规部门" value="3"></el-option>
-				    </el-select>
-				  </el-form-item>
-				  <el-form-item label="备注:" style="margin-left: 20px;">
-				    <el-input v-model="form.beizhu" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  </el-form>
-				  </div>
+					</el-select>
+					</el-descriptions-item>
+					<el-descriptions-item>
+						<el-button @click="AddDept">确定</el-button>
+						<el-button @click="dialogFormVisible=false">返回</el-button>
+					</el-descriptions-item>
+				</el-descriptions>
+			</el-dialog>
+				<!-- 修改 -->
+				<el-dialog v-model="dialogFormVisible2">
+					<el-descriptions :model="addForm" class="margin-top" title="部门新增" :column="1" :size="size" border>
+						<el-descriptions-item>
+							<template #label>
+								<i class="el-icon-user"></i>
+								编码:
+							</template>
+					<el-input v-model="form.deptId" style="width: 220px;"></el-input>
+						</el-descriptions-item>
+						<el-descriptions-item>
+							<template #label>
+								<i class="el-icon-mobile-phone"></i>
+								部门编码:
+							</template>
+							    <el-input v-model="form.deptSortnumber" style="width: 220px;"></el-input>
+						</el-descriptions-item>
+						<el-descriptions-item>
+							<template #label>
+								<i class="el-icon-location-outline"></i>
+								部门名称:
+							</template>
+						<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
+						</el-descriptions-item>
+						<el-descriptions-item>
+							<template #label>
+								<i class="el-icon-tickets"></i>
+								上级部门:
+							</template>
+						<el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
+							<el-option label="总经理" value="1"></el-option>
+							<el-option label="销售部门" value="2"></el-option>
+							<el-option label="常规部门" value="3"></el-option>
+						</el-select>
+						</el-descriptions-item>
+						<el-descriptions-item>
+							<el-button @click="updatedept">确定</el-button>
+							<el-button @click="dialogFormVisible2=false">返回</el-button>
+						</el-descriptions-item>
+					</el-descriptions>
+				</el-dialog>
+				
 				  
 				 
 </template>
@@ -69,16 +109,11 @@
 					deptId:'',
 					deptSortnumber:'',
 					deptName:'',
-					superiorsDeptId:'',
-					positionfzr:'',
-					positionphone:'',
-					positioncz:'',
-					positiontype:'',
-					beizhu:'',
-					show:false
+					superiorsDeptId:''
 				},
 				Data1: [],
-				
+				dialogFormVisible:false,
+				dialogFormVisible2:false,
         defaultProps: {
           children: 'children',
           label: 'deptName'
@@ -87,33 +122,15 @@
 		},
 		 methods: {
 			  // 点击进入显示该内容
-		      handleNodeClick(Data1) {
-		        this.form.deptSortnumber=Data1.deptSortnumber
-		        this.form.deptName=Data1.deptName
-		        this.form.superiorsDeptId=Data1.superiorsDeptId
-		        this.form.positionfzr=Data1.positionfzr
-		        this.form.positionphone=Data1.positionphone
-		        this.form.positioncz=Data1.positioncz
-		        this.form.positiontype=Data1.positiontype
-		        this.form.beizhu=Data1.beizhu
-				this.form.deptId=Data1.deptId
-				 this.form.show=true
-		      },
-			  show(){
-				 this.form={
-				 	deptId:'',
-				 	deptSortnumber:'',
-				 	deptName:'',
-				 	superiorsDeptId:'',
-				 	positionfzr:'',
-				 	positionphone:'',
-				 	positioncz:'',
-				 	positiontype:'',
-				 	beizhu:'',
-				 	show:false
-				 }
+		      handleNodeClick(row) {
+				this.dialogFormVisible2=true
+		        this.form.deptSortnumber=row.deptSortnumber
+		        this.form.deptName=row.deptName
+		        this.form.superiorsDeptId=row.superiorsDeptId
+				this.form.deptId=row.deptId
 				
-			  },
+		      },
+			
 			  AddDept(){
 				  const _this = this
 				 
@@ -122,15 +139,11 @@
 				  	console.log(response)
 				  	var dept=response.data
 				  	_this.Data1.push(dept)
+					_this.dialogFormVisible=false
 				_this.form={
 					deptSortnumber:'',
 					deptName:'',
-					superiorsDeptId:'',
-					positionfzr:'',
-					positionphone:'',
-					positioncz:'',
-					positiontype:'',
-					beizhu:''
+					superiorsDeptId:''
 				}
 				  }).catch(function(error) {
 				  	console.log(error)
@@ -147,22 +160,12 @@
 				    	row.deptSortnumber=dept.deptSortnumber
 				    	row.deptName=dept.deptName
 				    	row.superiorsDeptId=dept.superiorsDeptId
-				    	row.positionfzr=dept.positionfzr
-				    	row.positionphone=dept.positionphone
-				    	row.positioncz=dept.positioncz
-				    	row.positiontype=dept.positiontype
-				    	row.beizhu=dept.beizhu
 						row.deptId=dept.deptId
+						_this.dialogFormVisible2=false
 				  _this.form={
-					  
 				  	deptSortnumber:'',
 				  	deptName:'',
-				  	superiorsDeptId:'',
-				  	positionfzr:'',
-				  	positionphone:'',
-				  	positioncz:'',
-				  	positiontype:'',
-				  	beizhu:''
+				  	superiorsDeptId:''
 				  }
 				    }).catch(function(error) {
 				    	console.log(error)
@@ -189,11 +192,6 @@
 													deptSortnumber:'',
 													deptName:'',
 													superiorsDeptId:'',
-													positionfzr:'',
-													positionphone:'',
-													positioncz:'',
-													positiontype:'',
-													beizhu:''
 												}
 											_this.axios.get("http://localhost:8089/threeproject/findalldept")
 												.then(function(response) {

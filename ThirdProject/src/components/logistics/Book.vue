@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-button @click="dialogFormVisible=true" style="float: right;">新增</el-button>
+		<el-button @click="dialogFormVisible=true" style="float: right;margin-bottom: 20px;">新增</el-button>
 		<el-table :data="tableData" border>
 			<el-table-column fixed prop="bookId" label="教材编号"> </el-table-column>
 			<el-table-column prop="kuang" type="selection"> </el-table-column>

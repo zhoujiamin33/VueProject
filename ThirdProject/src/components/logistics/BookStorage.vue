@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="a">
-			<b class="b" style="font-size: 15px;margin-left: -512px;">快速检索：</b>
+			<b class="b" style="font-size: 15px;margin-left: -480px;">快速检索：</b>
 			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
 				<el-option label="教材名" value="教材名"></el-option>
 				<el-option label="入库人" value="入库人"></el-option>
@@ -47,10 +47,6 @@
 						<el-input style="width: 300px;margin-left: -148px;" v-model="form.storagecount" placeholder="" clearable></el-input>
 						<b style="font-weight: 100;">本</b>
 					</el-form-item>
-<!-- 					<el-form-item label="入库时间 :" style="margin-left: 170px;">
-						<el-date-picker v-model="form.storagetime" type="date" placeholder="选择日期" style="width: 300px;margin-left: -160px;">
-						</el-date-picker>
-					</el-form-item> -->
 					<el-form-item size="large">
 						<el-button type="primary" style="margin-left: -100px;" @click="updateBookstorage">更新</el-button>
 						<el-button @click="xgrk=false">关闭</el-button>

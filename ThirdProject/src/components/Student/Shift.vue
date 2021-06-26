@@ -3,7 +3,7 @@
 <div class="mian">
 		<div class="mainbody">
 			<div style="margin-right: 320px;display: flex;">
-			<span style="margin-top: 10px;width: 90px;">快速检索：</span>
+			<span style="margin-top: 10px;width: 90px;font-size: 15px;">快速检索：</span>
 				<el-select v-model="select" placeholder="请选择">
 					<el-option label="姓名" value="1"></el-option>
 					<el-option label="学号" value="2"></el-option>
@@ -11,11 +11,11 @@
 					<el-option label="转入班" value="4"></el-option>
 				</el-select>
 	
-				<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 100px;" clearable
+				<el-input placeholder="请输入内容" v-model="pageInfo.query" style="width: 120px;" clearable
 					@clear="serchVal">
 				</el-input>
 			</div>
-			<div style="display: flex;">
+			<div style="margin-left:260px;">
 				<el-button @click="getstudentList">查询</el-button>
 				<el-button @click="tgsp()">通过审批</el-button>
 				<el-button @click="qxzb()">取消转班</el-button>
@@ -23,31 +23,32 @@
 		</div>
 	
 		<el-table :data="tableData" border>
-			<el-table-column prop="studentId" label="Id">
+			<el-table-column type="selection" align="center">
 			</el-table-column>
-			<el-table-column type="selection">
+			<el-table-column prop="studentId" label="Id"  align="center">
 			</el-table-column>
-			<el-table-column prop="studytime" label="补报日期">
+			
+			<el-table-column prop="studytime" label="补报日期" align="center">
 			</el-table-column>
-			<el-table-column prop="studentName" label="姓名">
+			<el-table-column prop="studentName" label="姓名" align="center">
 			</el-table-column>
-			<el-table-column prop="address" label="课程名称">
+			<el-table-column prop="address" label="课程名称" align="center">
 			</el-table-column>
-			<el-table-column prop="studentPhone" label="课程费用">
+			<el-table-column prop="studentPhone" label="课程费用" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="实际收费">
+			<el-table-column prop="studentState" label="实际收费" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="扣课实数">
+			<el-table-column prop="studentState" label="扣课实数" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="备注">
+			<el-table-column prop="studentState" label="备注" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="课程顾问">
+			<el-table-column prop="studentState" label="课程顾问" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="录入人">
+			<el-table-column prop="studentState" label="录入人" align="center">
 			</el-table-column>
-			<el-table-column prop="studentState" label="状态">
+			<el-table-column prop="studentState" label="状态" align="center">
 			</el-table-column>
-			<el-table-column prop="index" label="操作">
+			<el-table-column prop="index" label="操作" align="center">
 				<!-- <template #default="scope">
 					<el-button type="text">补报</el-button>
 					<el-button type="text" @click="dialogFormupdate= true">修改</el-button>
@@ -133,14 +134,14 @@
 			
 		},
 		created() {
-			const _this = this;
-			this.axios.get("http://localhost:8089/student/findstudent")
-				.then(function(response) {
-					_this.tableData = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+			// const _this = this;
+			// this.axios.get("http://localhost:8089/student/findstudent")
+			// 	.then(function(response) {
+			// 		_this.tableData = response.data
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	})
 		}
 	}
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="a">
-			<b class="b" style="font-size: 15px;margin-left: -582px;">快速检索：</b>
+			<b class="b" style="font-size: 15px;margin-left: -540px;">快速检索：</b>
 			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
 				<el-option label="教材名" value="教材名"></el-option>
 				<el-option label="经办人" value="经办人"></el-option>
@@ -138,7 +138,8 @@
 					backmoney: "",
 					returnnumber: "",
 					empId: "",
-					empName: ""
+					empName: "",
+					timeliness: ""
 				},
 				tableData1: [],
 				tableData: [],
@@ -253,6 +254,32 @@
 				});
 			},
 			
+			
+			
+			// //修改
+			// updateBookback() {
+			// 	const _this = this
+			// 	this.axios.put("http://localhost:8089/threeproject/updateBookback", this.form)
+			// 		.then(function(response) {
+			// 			_this.axios.get("http://localhost:8089/threeproject/findPage6", {
+			// 					params: _this.pageInfo
+			// 				})
+			// 				.then(function(response) {
+			// 					_this.tableData = response.data.list
+			// 					_this.pageInfo.total = response.data.total
+			// 				}).catch(function(error) {
+			// 					console.log(error)
+			// 				})
+			// 			var bookback = response.data
+			// 			var row = _this.tableData.filter(i => i.bookbackId == bookback.bookbackId)[0]
+			// 			for (var key in _this.form) {
+			// 				delete _this.form[key]
+			// 			}
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
+			
 			//多条件查询
 			selectBookback() {
 				const _this = this
@@ -307,7 +334,6 @@
 				get: function() {
 					let sum = 0;
 					this.tableData1.forEach((item) => {
-						//遍历prodAllPrice这个字段，并累加
 						sum += item.course.backmoney;
 					})
 					return sum
