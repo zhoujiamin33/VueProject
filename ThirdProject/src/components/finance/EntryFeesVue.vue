@@ -14,7 +14,7 @@
 				<span style="margin-left: 20px;font-size: 15px;">录入人：</span>
 				<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
 	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:125px;" @click="dialogFormVisible=true">新增报班</el-button>
+				<el-button type="primary" icon="el-icon-plus" style="margin-left:240px;" @click="dialogFormVisible=true">新增报班</el-button>
 	 		</el-row>
 	 	</div>
 	</div>	
@@ -329,11 +329,13 @@
 			selectBycontionEntry(){
 				const _this=this
 				console.log(this.pageInfo.ApprovalState+"abc")
-				this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD");
+				this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD")
+				// this.pageInfo.value2=this.value.toLocaleString()
+				console.log(this.pageInfo.value2)
 				console.log(this.pageInfo.input+"abcdef")
 				console.log(this.pageInfo.value2+"date2")
 				console.log(this.pageInfo.currentPage+"currentPage")
-				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",{params:this.pageInfo})
 				.then(function(response) {
 					console.log(response)
 					_this.tableData=response.data.list

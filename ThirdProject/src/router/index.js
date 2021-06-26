@@ -35,6 +35,8 @@ import book from '../components/logistics/Book.vue'
 import schoolterm from '../components/basicData/SchoolTerm.vue'
 import yearmangement from '../components/basicData/YearManagement.vue'
 import usersetting from '../components/basicData/UserSettings.vue'
+import report from '../components/basicData/report.vue'
+
 
 
 //招生管理
@@ -98,6 +100,9 @@ const routes=[
 	{path:'/schoolterm', component:schoolterm},
 	{path:'/yearmangement',component:yearmangement},
 	{path:'/usersetting',component:usersetting},
+	{path:'/report',component:report},
+
+	
 	{path:'/returnmoney',component:returnmoney},
 	{path:'/classtype',component:classtype},
 	{path:'/course',component:course},

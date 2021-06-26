@@ -22,23 +22,14 @@
 			</div>
 		
 			<el-table :data="SuspendeData" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
-				<el-table-column type="selection" align="center">
-				</el-table-column>
-				<el-table-column prop="suspendeId" label="Id" align="center">
-				</el-table-column>
-				
-				<el-table-column prop="suspendeTime" label="停课日期" align="center">
-				</el-table-column>
-				<el-table-column prop="student.studentNumber" label="学号" align="center">
-				</el-table-column>
-				<el-table-column prop="student.studentName" label="姓名" align="center">
-				</el-table-column>
-				<el-table-column prop="classes.classesName" label="班级名称" align="center">
-				</el-table-column>
-				<el-table-column prop="suspendeReason" label="理由" align="center">
-				</el-table-column>
-				<el-table-column prop="suspendeHandler" label="经办人" align="center">
-				</el-table-column>
+				<el-table-column type="selection" align="center"></el-table-column>
+				<el-table-column prop="suspendeId" label="Id" align="center"></el-table-column>
+				<el-table-column prop="suspendeTime" label="停课日期" align="center"></el-table-column>
+				<el-table-column prop="student.studentNumber" label="学号" align="center"></el-table-column>
+				<el-table-column prop="student.studentName" label="姓名" align="center"></el-table-column>
+				<el-table-column prop="classes.classesName" label="班级名称" align="center"></el-table-column>
+				<el-table-column prop="suspendeReason" label="理由" align="center"></el-table-column>
+				<el-table-column prop="suspendeHandler" label="经办人" align="center"></el-table-column>
 				<el-table-column prop="suspendeApproval" label="状态" align="center">
 					<template v-slot="scope">
 						<p v-if="scope.row.suspendeApproval==0"><i class=" el-icon-s-custom" style="font-size: 25px; "></i></p>

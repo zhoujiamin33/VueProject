@@ -48,15 +48,16 @@
 		
 	</div>
 	<div>
-		<el-table :data="tableData" border stripe style="width:100%;margin-left:5px;margin-top:40px;">
-		    <el-table-column  label="教室名"  width="180">
+		<el-table :data="tableData" border stripe style="width:100%;margin-left:5px;margin-top:40px;"
+		:header-cell-style="{background:'#eef1f6',color:'#606266'}">
+		    <el-table-column  label="教室名" align="center" >
 				<template #default="scope">
 					<a href="#" @click="showEdit(scope.row)" >{{scope.row.classroomName}}</a>
 					
 				</template>
 			</el-table-column>
-		    <el-table-column prop="cacacity" label="容纳量"> </el-table-column>
-			<el-table-column fixed="right" label="操作"  width="100">
+		    <el-table-column prop="cacacity" label="容纳量" align="center"> </el-table-column>
+			<el-table-column fixed="right" label="操作"  width="100"  align="center">
 				<template #default="scope">
 					<el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
 					<el-button type="text" size="small" @click="dialogFormVisible=true">新增</el-button>
@@ -89,7 +90,7 @@ export default{
 		return{
 			PageInfo:{
 				currentPage: 1,//标识当前页码
-				pagesize:2,//每页多少条数据
+				pagesize:5,//每页多少条数据
 				total:0
 			},
 			tableData:[],
@@ -141,6 +142,7 @@ export default{
 					console.log(error)
 				})
 		 		_this.dialogFormVisible=false
+				_this.form={}
 		 	}).catch(function(error){
 		 		console.log(error)
 		 	})

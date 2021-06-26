@@ -114,45 +114,44 @@
 		</div>
 
 		<div>
-			<el-table ref="multipleTable" height="400px" border style="margin-top: 20px;"
-			:data="ConsultationDate" tooltip-effect="dark"
+			<el-table ref="multipleTable" :data="ConsultationDate" tooltip-effect="dark"
 				style="width: 100%;margin-left: ;" @selection-change="handleSelectionChange" :before-close="cls">
-				<el-table-column type="selection" width="45"  align="center">
+				<el-table-column type="selection" width="45">
 				</el-table-column>
-				<el-table-column prop="registerId" label="Id" width="50"  align="center">
+				<el-table-column prop="registerId" label="Id" width="50">
 				</el-table-column>
-				<el-table-column prop="planreturnvisit" label="咨询日期" width="110"  align="center">
+				<el-table-column prop="planreturnvisit" label="咨询日期" width="110">
 				</el-table-column>
-				<el-table-column prop="consultant" label="咨询人" width="90px"  align="center" show-overflow-tooltip>
+				<el-table-column prop="consultant" label="咨询人" width="90px" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="sex" label="性別" width="50px" show-overflow-tooltip  align="center">
+				<el-table-column prop="sex" label="性別" width="50px" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="consultcontent" label="咨询内容" width="170px"  align="center" show-overflow-tooltip>
+				<el-table-column prop="consultcontent" label="咨询内容" width="170px" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="phone" label="联系电话" show-overflow-tooltip width="110px"  align="center">
+				<el-table-column prop="phone" label="联系电话" show-overflow-tooltip width="110px">
 				</el-table-column>
-				<el-table-column prop="course.courseName" label="咨询课程" show-overflow-tooltip  align="center">
+				<el-table-column prop="course.courseName" label="咨询课程" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="source.sourceName" label="生源渠道" show-overflow-tooltip width="110px"  align="center">
+				<el-table-column prop="source.sourceName" label="生源渠道" show-overflow-tooltip width="110px">
 				</el-table-column>
-				<el-table-column prop="" label="回访次数" show-overflow-tooltip  align="center">
+				<el-table-column prop="" label="回访次数" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="paystate" label="缴费状态" show-overflow-tooltip  align="center">
+				<el-table-column prop="paystate" label="缴费状态" show-overflow-tooltip>
 					<template v-slot="scope1">
 						<p v-if="scope1.row.paystate==0">未缴费</p>
 						<p v-if="scope1.row.paystate==2">已缴费</p>
 					</template>
 				</el-table-column>
-				<el-table-column prop="addname" label="接待人" show-overflow-tooltip  align="center">
+				<el-table-column prop="emp.empName" label="接待人" show-overflow-tooltip>
 				</el-table-column>
-				<el-table-column prop="attentstate" label="状态" width="70px" show-overflow-tooltip  align="center">
+				<el-table-column prop="attentstate" label="状态" width="70px" show-overflow-tooltip>
 					<template v-slot="scope">
 						<p v-if="scope.row.attentstate==0">有意向</p>
 						<p v-if="scope.row.attentstate==1">无意向</p>
 						<p v-if="scope.row.attentstate==2">已就读</p>
 					</template>
 				</el-table-column>
-				<el-table-column fixed="right" label="操作" width="130"  align="center">
+				<el-table-column fixed="right" label="操作" width="130">
 					<template #default="scope">
 						<el-button type="text" @click="shengpi">审批</el-button>
 						<el-button type="text" @click="showEdit(scope.row)" >修改</el-button>
@@ -245,7 +244,7 @@
 					<template #footer>
 						<span class="dialog-footer">
 							<el-button type="primary" @click="updateRegister()">保存</el-button>
-							<el-button @click="dialogFormVisible2=false">取 消</el-button>
+							<el-button>取 消</el-button>
 						</span>
 					</template>
 				</el-dialog>
@@ -346,7 +345,7 @@
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button type="primary" @click="addReturnvisit">保存</el-button>
-						<el-button @click="dialogFormVisible3 = false">取 消</el-button>
+						<el-button @click="modify = false">取 消</el-button>
 					</span>
 				</template>
 			</el-dialog>
@@ -774,6 +773,7 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
+				
 
 				this.axios.get("http://localhost:8089/threeproject/findCourse")
 				.then(function(response) {
@@ -808,8 +808,8 @@
 		/* 	display: flex;
 		justify-content: space-between;
 		align-content: center; */
-	margin-left: "600px"
-	}
+	/* margin-left: "600px"
+	} */
 
-	*/
+	
 </style>
