@@ -1,125 +1,44 @@
-import { createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import {
+	createRouter,
+	createWebHashHistory,
+	createWebHistory
+} from 'vue-router'
 
 import login from '../components/Login.vue'
-import MainVue from '../components/MainVue.vue'
-import mains from '../components/main.vue'
+import Home from '../components/Home.vue'
+import DefaultMain from '../components/main.vue'
+import store from "../store/index.js"
+import { storeKey } from 'vuex'
+import { t } from 'element-plus/lib/locale'
 
-// 个人办公
-import mail from '../components/Personal/Mail.vue'
-import daillog from '../components/Personal/DailLog.vue'
-import ideas from '../components/Personal/Ideas.vue'
-import memorandum from '../components/Personal/Memorandum.vue'
-
-// 教务管理
-import ClassesVue from '../components/educational/ClassesVue.vue'
-import ClassRoomVue from '../components/educational/ClassRoomVue.vue'
-import PeriodVue from '../components/educational/PeriodVue.vue'
-import classtype from '../components/educational/classtype.vue'
-import course from '../components/educational/Course.vue'
-import Classplan from '../components/educational/ClassScheduling.vue'
-// import Classplan2 from '../components/educational/ClassScheduling2.vue'
-
-// 财务管理
-import entryfees from '../components/finance/EntryFeesVue.vue'
-import outstanding from '../components/finance/OutstandingVue.vue'
-import returnmoney from '../components/finance/returnsmoney.vue'
-import booksmoney from '../components/finance/BooksMoney.vue'
-
-// 教材管理
-import bookstorage from '../components/logistics/BookStorage.vue'
-import bookdelivery from '../components/logistics/BookDelivery.vue'
-import bookreturn from '../components/logistics/BookBack.vue'
-import book from '../components/logistics/Book.vue'
-
-//基础资料
-import schoolterm from '../components/basicData/SchoolTerm.vue'
-import yearmangement from '../components/basicData/YearManagement.vue'
-import usersetting from '../components/basicData/UserSettings.vue'
-import report from '../components/basicData/report.vue'
-
-
-
-//招生管理
-import consultaion from '../components/enroll/Consultation.vue'
-import workhandover from '../components/enroll/WorkHandover.vue'
-import FAQ from '../components/enroll/FAQinterlocution.vue'
-import channelmaintenance from '../components/enroll/ChannelMaintenance.vue'
-
-// 学员管理
-import student from '../components/Student/student.vue'
-import suspende from '../components/Student/Suspende.vue'
-import rakeareport from '../components/Student/RakeaReport.vue'
-import shift from '../components/Student/Shift.vue'
-import dropout from '../components/Student/DropOut.vue'
-
-// 系统管理
-import enterprise from '../components/Sysmanage/Enterprise.vue'
-import dept from '../components/Sysmanage/Dept.vue'
-import position from '../components/Sysmanage/Position.vue'
-import userpwd from '../components/Sysmanage/UserMaintenance.vue'
-import loginlog from '../components/Sysmanage/LoginJournal.vue'
-import module from '../components/Sysmanage/ModuleManagement.vue'
-import addRestrictions from '../components/Sysmanage/LoginRestrictions.vue'
-
-// 行政管理
-import notice from '../components/Administration/Announcements.vue'
-import AnnouncementType from '../components/Administration/AnnouncementType.vue'
-import system from '../components/Administration/System.vue'
-import unit from '../components/Administration/Unit.vue'
-import unittype from '../components/Administration/UnitType.vue'
-import suggest from '../components/Administration/Suggest.vue'
+const modules =
+	import.meta.glob('../components/**/*.vue');
+import {
+	createStore
+} from 'vuex'
 
 const routes=[
-	{path:'/',component:mains},
-	{path:'/classes',component:ClassesVue},
-	{path:'/Classplan',component:Classplan},
-	// {path:'/Classplan2',component:Classplan2},
-	{path:'/booksmoney',component:booksmoney},
-	{path:'/unit',component:unit},
-	{path:'/mail',component:mail},
-	{path:'/daillog',component:daillog},
-	{path:'/ideas',component:ideas},
-	{path:'/memorandum',component:memorandum},
-	{path:'/system',component:system},
-	{path:'/bookreturn',component:bookreturn},
-	{path:'/notice',component:notice},
-	{path:'/addRestrictions',component:addRestrictions},
-	{path:'/module',component:module},
-	{path:'/loginlog',component:loginlog},
-	{path:'/userpwd',component:userpwd},
-	{path:'/position',component:position},
-	{path:'/dept',component:dept},
-	{path:'/enterprise',component:enterprise},
-	{path:'/main',component:MainVue},
-	{path:'/classroom',component:ClassRoomVue},
-	{path:'/period',component:PeriodVue},
-	{path:'/entryfees',component:entryfees},
-	{path:'/outstanding',component:outstanding},
-	{path:'/bookstorage',component:bookstorage},
-	{path:'/bookdelivery', component:bookdelivery},
-	{path:'/schoolterm', component:schoolterm},
-	{path:'/yearmangement',component:yearmangement},
-	{path:'/usersetting',component:usersetting},
-	{path:'/report',component:report},
+	{
+		path:'/login',
+		name:'login',
+		component:login
+	},
+	{
+		path:'/HomeView',
+		name:'HomeView',
+		component:Home,
+		children:[
+			{
+				path:'/subjectView',
+				name:'subjectView',
+				meta: {
+					title: '系统首页'
+				},
+				component:DefaultMain
+			}
+		]
+	}
 
-	
-	{path:'/returnmoney',component:returnmoney},
-	{path:'/classtype',component:classtype},
-	{path:'/course',component:course},
-	{path:'/consultaion',component:consultaion},
-	{path:'/workhandover',component:workhandover},
-	{path:'/faq',component:FAQ},
-	{path:'/student',component:student},
-	{path:'/suspende',component:suspende},
-	{path:'/rakeareport',component:rakeareport},
-	{path:'/shift',component:shift},
-	{path:'/dropout',component:dropout},
-	{path:'/channelmaintenance',component:channelmaintenance},
-	{path:'/suggest',component:suggest},
-	{path:'/unittype',component:unittype},
-	{path:'/AnnouncementType',component:AnnouncementType},
-	{path:'/book',component:book},
-	
 ]
 
 // 路由管理器
@@ -128,4 +47,60 @@ const router=createRouter({
 	routes
 	// routes:routes
 })
+
+export function rout(){
+	console.log("aa")
+	// const rightList = JSON.parse(sessionStorage.getItem('menulist'))
+	// const currentRouter = router.options.routes
+	const state = JSON.parse(sessionStorage.getItem('state'));
+	for (var i = 0; i <  state.updateUserInfo.menus.length; i++) {
+		let chm =state.updateUserInfo.menus[i].asideChildren
+			for (var k = 0; k < chm.length; k++) {
+				if (chm[k].url != null)  {
+					let cpath = '../components/' + chm[k].componentPath
+					const rouc = {
+						path: chm[k].url,
+						name: chm[k].componentName,
+						component: modules[`${cpath}`]
+					}
+					router.addRoute("HomeView", rouc)
+				}
+		}
+	}
+	//_this.$store.commit("setrightList", response.data.data.menus);
+	// console.log(rightList)
+	//router.addRoute("Errors", Errors)
+}
+
+//全局前置守卫，可用作前端权限验证的简单实现
+router.beforeEach(function(to, from, next) {
+	console.log("in main.js to:" + to.path + "  from:" + from.path)
+	const state = JSON.parse(sessionStorage.getItem('state'));
+	console.log("+++++++++++=")
+	console.log(state)
+	if ((to.name !== 'login' && state == null) || (to.name !== 'login' && !state.updateUserInfo.isValidate)) {
+		console.log("跳至登录")
+		console.log("state=%o", state)
+		next({
+			name: 'login'
+		})
+	} else {
+		//console.log("modules=%o", modules)
+		console.log("state===%o",state)
+		if (sessionStorage.getItem('refresh') == "true" && state.updateUserInfo.menus!=null ) {
+			console.log("---------------------------------------------------")
+			rout(); 
+			sessionStorage.setItem("refresh", "false")
+			next({
+				path: to.path
+			})
+			return
+		}
+		next()
+		
+	}
+	
+})
+
+
 export default router
