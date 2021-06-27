@@ -383,8 +383,6 @@
 						<p v-if="scope.row.status==5">退学审核中</p> -->
 					</template>
 				</el-table-column>
-				<el-table-column prop="beizhu" label="备注">
-				</el-table-column>
 				<el-table-column prop="tk" label="停课/复课">
 					<template v-slot="scope">
 						<p v-if="scope.row.status==3">
@@ -396,9 +394,7 @@
 					</template>
 
 				</el-table-column>
-				<el-table-column prop="zb" label="转班">
-					<el-button type="text">转班</el-button>
-				</el-table-column>
+			
 				<el-table-column prop="zb" label="退学">
 					<template v-slot="scope">
 
@@ -585,8 +581,8 @@
 					</template>
 
 					<el-select v-model="addForm.intention">
-						<el-option label="跟班" value="0">跟班</el-option>
-						<el-option label="转班" value="1">转班</el-option>
+						<el-option label="转班" value="0">转班</el-option>
+						<el-option label="跟班" value="1">跟班</el-option>
 					</el-select>
 				</el-descriptions-item>
 				<el-descriptions-item>
@@ -813,11 +809,12 @@
 				this.Backform.absent = this.addForm.absent
 				this.Backform.courseId = this.addForm.courseId
 				this.Backform.studentstatusId=this.addForm.studentstatusId
+				console.log("vv"+this.Backform.studentstatusId)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Addback" ,{params:this.Backform})
+				this.axios.post("http://localhost:8089/threeproject/Addback" ,this.Backform,{params:this.Backform})
 					.then(function(response) {
 						var back=response.data
-						// _this.findclassstuId(back.studentId)
+						_this.findclassstuId(_this.Backform.studentId)
 
 
 					}).catch(function(error) {
@@ -1097,6 +1094,7 @@
 				this.addForm.studentNumber = row.studentNumber
 				this.addForm.studytime = row.studytime
 				this.addForm.registerId = row.registerId
+				this.addForm.classesId = row.classesId
 				this.dialogFormVisible3 = true
 			},
 			findClassId(classesId) {
@@ -1112,7 +1110,6 @@
 						_this.addForm.detailcourseName = _this.Classes.detailcourse.detailcourseName
 						console.log("班级名称1：" + _this.addForm.detailcourseId)
 						_this.addForm.starteddate = _this.Classes.starteddate
-
 						_this.addForm.enddate = _this.Classes.enddate
 						// _this.addForm.empName=response.data.emp.empName
 						console.log(response)
@@ -1240,7 +1237,13 @@
 							message: '请选择班级!',
 							type: 'error'
 						});
-					} else {
+					} else if (_this.addForm.status == 2) {
+						_this.$message({
+							showClose: true,
+							message: '该学员已退学!',
+							type: 'error'
+						});
+					}else {
 						console.log("fff" + row)
 						_this.addForm.studentstatusId = row.studentstatusId
 						_this.addForm.classesId = row.classesId
@@ -1287,15 +1290,18 @@
 					this.addForm.studentstatusId = row.studentstatusId
 					this.addForm.suspendeId = row.suspendeId
 					this.addForm.studentstatusId = row.studentstatusId
-					this.findClassId(this.addForm.classesId)
 					this.addForm.absent = 2
+					this.findClassId(this.addForm.classesId)
 					this.dialogFormVisible8 = true
 				}
 				
 			},
 			findstudentstatusId(studentstatusId) {
+				
+				this.addForm.studentstatusId=studentstatusId
+				console.log("l"+this.addForm.studentstatusId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findstudentstatusId/" + studentstatusId)
+				this.axios.get("http://localhost:8089/threeproject/findstudentstatusId" ,{params:this.addForm} )
 					.then(function(response) {
 						_this.StudentStatus = response.data
 						console.log(response)
@@ -1361,11 +1367,11 @@
 				const _this = this
 				this.axios.post("http://localhost:8089/threeproject/Adddropout",this.Droportform)
 					.then(function(response) {
-						// var supendentity = response.data
+						var supendentity = response.data
 					_this.axios.put("http://localhost:8089/threeproject/updatetuixue/" +_this.Droportform.studentstatusId)
 						.then(function(response) {
 							var back=response.data
-							_this.findclassstuId(back.studentId)
+							_this.findclassstuId(supendentity.studentId)
 							console.log(response)
 						}).catch(function(error) {
 							console.log(error)

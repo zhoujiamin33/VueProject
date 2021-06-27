@@ -44,7 +44,7 @@
 	import {
 		ElMessage
 	} from 'element-plus'
-	// import {rout} from '../router/index.js';
+	import {rout} from '../router/index.js';
 	export default {
 		props: {
 			muted: {
