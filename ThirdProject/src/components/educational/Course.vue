@@ -232,7 +232,13 @@ export default{
 		     this.pageInfo.pagesize=pagesize
 		 	var ps = qs.stringify(this.pageInfo)
 		 	console.log(ps)
-		     this.axios.get("http://localhost:8089/threeproject/findcourse",{params:this.pageInfo})
+		     this.axios.get("http://localhost:8089/threeproject/findcourse",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		     .then(function(response){
 		     	console.log("-------------------------------------------")
 		     	console.log(response.data)
@@ -245,7 +251,13 @@ export default{
 		 	var _this=this
 		 	this.pageInfo.currentPage=currentPage
 		 	var ps = qs.stringify(this.pageInfo)
-		 	this.axios.get("http://localhost:8089/threeproject/findcourse",{params:this.pageInfo})
+		 	this.axios.get("http://localhost:8089/threeproject/findcourse",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 	.then(function(response){
 		 		console.log(response.data)
 		 		_this.tableData=response.data.list
@@ -258,7 +270,13 @@ export default{
 		     this.pageInfo2.pagesize=pagesize
 		 	var ps = qs.stringify(this.pageInfo2)
 		 	console.log(ps)
-		     this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:this.pageInfo2})
+		     this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+				    params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		     .then(function(response){
 		     	console.log("-------------------------------------------")
 		     	console.log(response.data)
@@ -271,7 +289,13 @@ export default{
 		 	var _this=this
 		 	this.pageInfo2.currentPage=currentPage
 		 	var ps = qs.stringify(this.pageInfo2)
-		 	this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:this.pageInfo2})
+		 	this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+				    params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 	.then(function(response){
 		 		console.log(response.data)
 		 		_this.detailData=response.data.list
@@ -282,9 +306,20 @@ export default{
 		 //新增弹窗取消不了
 		  addCourse(){
 			  const _this=this
-			  this.axios.post("http://localhost:8089/threeproject/addCourse",this.form)
+			  this.axios.post("http://localhost:8089/threeproject/addCourse",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			  .then(function(response){
-				  _this.axios.get("http://localhost:8089/threeproject/findcourse",{params:_this.pageInfo})
+				  _this.axios.get("http://localhost:8089/threeproject/findcourse",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				  .then(function(response){
 					  console.log(response)
 					  _this.tableData=response.data.list
@@ -309,9 +344,20 @@ export default{
 			  this.form2.updatename= "admin"
 			  this.form2.courseId=row.courseId
 			 const _this=this
-			 this.axios.put("http://localhost:8089/threeproject/updateCourseState",this.form2)
+			 this.axios.put("http://localhost:8089/threeproject/updateCourseState",this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			 .then(function(response){
-				_this.axios.get("http://localhost:8089/threeproject/findcourse",{params:_this.pageInfo})
+				_this.axios.get("http://localhost:8089/threeproject/findcourse",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					_this.tableData=response.data.list
 					_this.pageInfo.total=response.data.total 
@@ -334,7 +380,13 @@ export default{
 			  const _this=this
 			  this.pageInfo2.courseId=courseId
 			  console.log(this.pageInfo2)
-			  this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:this.pageInfo2})
+			  this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+				    params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			  .then(function(response){
 			  	_this.detailData=response.data.list
 			  	_this.pageInfo2.total=response.data.total
@@ -350,9 +402,20 @@ export default{
 		 	console.log(this.detailData)
 		 	console.log(this.detailsForm)
 			this.detailsForm.addname="Tsm管理员"
-		 	this.axios.post("http://localhost:8089/threeproject/addDetails",this.detailsForm)
+		 	this.axios.post("http://localhost:8089/threeproject/addDetails",this.detailsForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 	.then(function(response){
-		 		_this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:_this.pageInfo2})
+		 		_this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+					params:_this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 		.then(function(response){
 		 			console.log(response)
 		 			_this.detailData=response.data.list
@@ -382,7 +445,12 @@ export default{
 		  //修改课程
 		  updateCourse(){
 		  	const _this=this
-		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form)
+		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		  	.then(function(response){
 		  		console.log(response)
 		  		var course=response.data
@@ -413,9 +481,20 @@ export default{
 			  const _this=this
 			  console.log(this.detailsForm.detailcourseId+"课程详细Id")
 			  this.detailsForm.updatename="admin"
-			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm)
+			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			  .then(function(response){
-				  _this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{params:_this.pageInfo2})
+				  _this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+					params:_this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				  .then(function(response){
 				  	console.log(response)
 				  	_this.detailData=response.data.list
@@ -435,14 +514,25 @@ export default{
 	    },
 		created() {
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/findcoursetype")
+			this.axios.get("http://localhost:8089/threeproject/findcoursetype",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				_this.typedata=response.data
 				console.log(response)
 			}).catch(function(error){
 				console.log(error)
 			}),
-			this.axios.get("http://localhost:8089/threeproject/findcourse",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/findcourse",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				_this.tableData=response.data.list
 				_this.pageInfo.total=response.data.total 

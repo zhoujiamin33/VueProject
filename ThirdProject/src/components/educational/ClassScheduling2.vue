@@ -101,7 +101,12 @@
 				console.log(this.form.classlist+"ddd")
 				console.log(this.form.periods+"ddd")
 				console.log(this.form.emps+"ddd")
-				this.axios.post("http://localhost:8089/threeproject/insertSheduling",this.form)
+				this.axios.post("http://localhost:8089/threeproject/insertSheduling",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 				}).catch(function(error){
@@ -118,7 +123,12 @@
 		created() {
 			const _this=this
 			//查询所有已开班的班级
-			this.axios.get("http://localhost:8089/threeproject/selectOpen")
+			this.axios.get("http://localhost:8089/threeproject/selectOpen",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				_this.classesdata=response.data
 				console.log(response)
@@ -126,7 +136,12 @@
 				console.log(error)
 			}),
 			//查询所有教室
-			this.axios.get("http://localhost:8089/threeproject/findAllClassRoom")
+			this.axios.get("http://localhost:8089/threeproject/findAllClassRoom",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.classroomdata=response.data
@@ -134,7 +149,12 @@
 				console.log(error)
 			}),
 			//查询所有时段
-			this.axios.get("http://localhost:8089/threeproject/findTrainingperiods")
+			this.axios.get("http://localhost:8089/threeproject/findTrainingperiods",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.periodData=response.data
@@ -142,14 +162,24 @@
 				console.log(error)
 			})
 			//查询所有教师
-			this.axios.get("http://localhost:8089/threeproject/findEmp")
+			this.axios.get("http://localhost:8089/threeproject/findEmp",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.Empdata=response.data
 			}).catch(function(error){
 				console.log(error)
 			}),
-			this.axios.get("http://localhost:8089/threeproject/selectAllScheduling")
+			this.axios.get("http://localhost:8089/threeproject/selectAllScheduling",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.tableData=response.data

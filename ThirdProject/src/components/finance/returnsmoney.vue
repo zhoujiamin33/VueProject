@@ -85,7 +85,13 @@
 				const _this=this
 				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
 				this.pageInfo.value2=moment(this.pageInfo.value2).format("YYYY-MM-DD")
-				this.axios.get("http://localhost:8089/threeproject/selectByContionRefund",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectByContionRefund",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData=response.data.list
@@ -99,7 +105,13 @@
 			    this.pageInfo.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:this.pageInfo})
+			    this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -112,7 +124,13 @@
 				var _this=this
 				this.pageInfo.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData=response.data.list
@@ -124,10 +142,21 @@
 			updateapproval(row){
 				const _this=this
 				console.log(row.refundId)
-				this.axios.put("http://localhost:8089/threeproject/updateapprovalrefund",row)
+				this.axios.put("http://localhost:8089/threeproject/updateapprovalrefund",row{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
-					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -143,10 +172,21 @@
 				const _this=this
 				console.log(row.refundId)
 				
-				this.axios.put("http://localhost:8089/threeproject/updateRevokeapprovalrefund",row)
+				this.axios.put("http://localhost:8089/threeproject/updateRevokeapprovalrefund",row{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
-					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -160,10 +200,21 @@
 			},
 			deleterefund(row){
 				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/deleterefund",row)
+				this.axios.put("http://localhost:8089/threeproject/deleterefund",row{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
-					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -178,7 +229,13 @@
 		},
 		created(){
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/selectAllRefund",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.tableData=response.data.list

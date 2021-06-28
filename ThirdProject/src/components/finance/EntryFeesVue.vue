@@ -134,6 +134,8 @@
 				coursedata:[],
 				// 修改缴费状态时传咨询登记id
 				registerId:"",
+				//课程Id
+					courseId:"",
 				//日期
 				disabledDate(time) {
 				    return time.getTime() > Date.now()
@@ -164,7 +166,13 @@
 			    this.pageInfo.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:this.pageInfo})
+			    this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -177,7 +185,13 @@
 				var _this=this
 				this.pageInfo.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData=response.data.list
@@ -192,9 +206,20 @@
 				console.log(this.form.registerId)
 				this.form.feesaccumulated=this.coursedata.courseMoney-this.form.feesAdvance
 				console.log(this.form.feesaccumulated+"asadsa")
-				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.form)
+				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:_this.pageInfo,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						_this.tableData=response.data.list
 						_this.pageInfo.total = response.data.total
@@ -215,10 +240,21 @@
 			updateapproval(row){
 				const _this=this
 				console.log(row.feesId)
-				this.axios.put("http://localhost:8089/threeproject/updateapproval",row)
+				this.axios.put("http://localhost:8089/threeproject/updateapproval",row,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
-					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:_this.pageInfo,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						// var entryfees=response.data
@@ -235,10 +271,21 @@
 			updateRevokeapproval(row){
 				const _this=this
 				console.log(row.feesId)
-				this.axios.put("http://localhost:8089/threeproject/updateRevokeapproval",row)
+				this.axios.put("http://localhost:8089/threeproject/updateRevokeapproval",row,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
-					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:_this.pageInfo,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						// var entryfees=response.data
@@ -259,9 +306,20 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(()=>{
-						_this.axios.put("http://localhost:8089/threeproject/deleteEntryfees",row)
-						.then(function(response){
-							_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
+						_this.axios.put("http://localhost:8089/threeproject/deleteEntryfees",row,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response){
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:_this.pageInfo,			
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 							.then(function(response) {
 								console.log(response)
 								// var entryfees=response.data
@@ -290,12 +348,22 @@
 			selectByregisterId(registerId){
 				this.form.registerId=registerId
 				console.log("0000"+registerId)
-				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByregisterId/"+this.form.registerId)
+				this.axios.get("http://localhost:8089/threeproject/selectByregisterId?registerId="+this.form.registerId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response)
 					_this.registerdata=response.data
-					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId/"+_this.registerdata.courseId)
+					_this.courseId=response.data.registerId
+					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=",_this.courseId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response){
 						console.log(response)
 						console.log("1111:"+_this.registerdata.courseId)
@@ -311,9 +379,20 @@
 			updatepaystate(registerId){
 				this.registerId=registerId
 				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/updatepaystate/"+this.registerId)
+				this.axios.put("http://localhost:8089/threeproject/updatepaystate?registerId="+this.registerId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -335,7 +414,13 @@
 				console.log(this.pageInfo.input+"abcdef")
 				console.log(this.pageInfo.value2+"date2")
 				console.log(this.pageInfo.currentPage+"currentPage")
-				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionEntry",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response)
 					_this.tableData=response.data.list
@@ -347,7 +432,13 @@
 		},
 		created() {
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/findEntryFees",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response) {
 				console.log(response)
 				_this.tableData=response.data.list
@@ -355,7 +446,12 @@
 			}).catch(function(error) {
 				console.log(error)
 			}),
-			this.axios.get("http://localhost:8089/threeproject/selectAttentState")
+			this.axios.get("http://localhost:8089/threeproject/selectAttentState",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response) {
 				console.log(response)
 				_this.regAttentState=response.data

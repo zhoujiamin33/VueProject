@@ -109,7 +109,12 @@
 			//根据班级id查询班级详细课程进度
 			selectClassesdetails(classesId){
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectById/"+classesId)
+				this.axios.get("http://localhost:8089/threeproject/selectById?classesId="+classesId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.form2.DetailCourse=response.data
@@ -141,10 +146,20 @@
 						});
 					} else {
 						_this.form.addname="admin"
-						_this.axios.post("http://localhost:8089/threeproject/insertSheduling",_this.form)
+						_this.axios.post("http://localhost:8089/threeproject/insertSheduling",_this.form),{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}
 						.then(function(response){
 							console.log(response)
-							_this.axios.get("http://localhost:8089/threeproject/selectAllScheduling")
+							_this.axios.get("http://localhost:8089/threeproject/selectAllScheduling",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 							.then(function(response){
 								console.log(response)
 								_this.tableData=response.data
