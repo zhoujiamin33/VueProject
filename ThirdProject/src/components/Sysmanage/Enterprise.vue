@@ -1,7 +1,7 @@
 <template>
 	<el-button style="margin-bottom: 30px;" @click="updateDept">保存</el-button>
 	<el-form ref="form" :model="form" label-width="90px" style="display: contents;">
-		<el-form-item label="企业编码:" >
+		<el-form-item label="企业编码:">
 			<el-input v-model="form.enterpriseId" disabled></el-input>
 		</el-form-item>
 		<el-form-item label="企业品牌:" required>
@@ -101,14 +101,14 @@
 				this.axios.put("http://localhost:8089/threeproject/enterprise", this.form)
 					.then(function(response) {
 						_this.$notify({
-						        title: '成功',
-						        message: '修改一条成功',
-						        type: 'success'
-						      });
+							title: '成功',
+							message: '修改一条成功',
+							type: 'success'
+						});
 						console.log(response)
 						var enterprise = response.data
 						// _this.DeptData.push(dept)
-						var row = _this.form.filter(d=>d.enterpriseId==enterprise.enterpriseId)[0]
+						var row = _this.form.filter(d => d.enterpriseId == enterprise.enterpriseId)[0]
 						console.log(row)
 						row.enclosureBrand = enterprise.enclosureBrand
 						row.enterpriseName = enterprise.enterpriseName
@@ -130,7 +130,7 @@
 						row.depositBank = enterprise.depositBank
 						row.bankNumber = enterprise.bankNumber
 						row.enterpriseBrief = enterprise.enterpriseBrief
-					
+
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -138,7 +138,11 @@
 		},
 		created() {
 			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findenterprise")
+			this.axios.get("http://localhost:8089/threeproject/findenterprise",{ headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}})
+
 				.then(function(response) {
 					_this.form = response.data
 					console.log(response)

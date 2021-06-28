@@ -26,16 +26,14 @@
 	</div>
 
 	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" height="300">
-
+	</el-table>
 	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" >
 		<el-table-column prop="opjournalId" label="Id">
 		</el-table-column>
-
 		<el-table-column type="selection">
 		</el-table-column>
 		<el-table-column prop="opjournalId" label="Id">
 		</el-table-column>
-		
 		<el-table-column prop="empId" label="用户编码">
 		</el-table-column>
 		<el-table-column prop="emp.empName" label="用户名称">
