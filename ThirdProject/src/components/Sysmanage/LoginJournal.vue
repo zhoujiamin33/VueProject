@@ -24,9 +24,9 @@
 		<el-button >重置</el-button>
 		<el-button >删除</el-button>
 	</div>
-
+<!-- 
 	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" height="300">
-
+</el-table> -->
 	<el-table :data="Opjournal" border :header-cell-style="{background:'#eef1f6',color:'#606266'}" >
 		<el-table-column prop="opjournalId" label="Id">
 		</el-table-column>
@@ -62,8 +62,13 @@
 			}
 		},
 		created(){
-			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findopjournal")
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findopjournal",{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 				.then(function(response) {
 					_this.Opjournal = response.data
 					_this.Emp=_this.Opjournal.emp

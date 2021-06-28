@@ -992,29 +992,6 @@
 				});
 			},
 
-			// 新增学员
-			Addstudent() {
-				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/student", this.addForm)
-					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findstudent", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.Stutable = response.data.list
-								_this.pageInfo.total = response.data.total
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
-						var student = response.data
-						_this.Stutable.push(student)
-						_this.dialogFormVisible = false
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
 			//修改学员
 			editstu(row) {
 				console.log("修改学员：" + row)
@@ -1035,18 +1012,9 @@
 			},
 			Updatestu() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/student", this.addForm)
+				this.axios.put("http://localhost:8089/threeproject/updatestudent", this.addForm)
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/selectAllclass", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.Stutable = response.data.list
-								_this.pageInfo.total = response.data.total
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
+						_this.selectName()
 						console.log(response.data)
 
 						_this.dialogFormVisible2 = false
@@ -1061,19 +1029,9 @@
 				this.addForm.deletename = deletename
 				console.log(this.addForm.studentId, this.addForm.deletename)
 				const _this = this;
-				this.axios.put("http://localhost:8089/threeproject/student/" + this.addForm.studentId + "/" + this.addForm
-						.deletename)
+				this.axios.put("http://localhost:8089/threeproject/delstudent" ,{params:this.addForm})
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findstudent", {
-								params: _this.pageInfo
-							})
-							.then(function(response) {
-								_this.Stutable = response.data.list
-								_this.pageInfo.total = response.data.total
-								console.log(response)
-							}).catch(function(error) {
-								console.log(error)
-							})
+						_this.selectName()
 
 					}).catch(function(error) {
 						console.log(error)
@@ -1128,10 +1086,10 @@
 			// 			console.log(error)
 			// 		})
 			// },
-			// 根据学员编号查询学员记录和班级
+			// 根据学员编号查询学员记录和班级:在学员状态表中
 			findclassstuId(studentId) {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findstuclass/" + studentId)
+				this.axios.get("http://localhost:8089/threeproject/findstuclass?studentId=" + studentId)
 					.then(function(response) {
 						_this.StudentStatus = response.data
 						console.log(response)
@@ -1140,18 +1098,18 @@
 					})
 			},
 
-			Addstudentstatus(studentId, classesId) {
-				this.StudentStatus.studentId = studentId
-				this.StudentStatus.classesId = classesId
-				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/addstudentstatus", this.StudentStatus)
-					.then(function(response) {
-						_this.StudentStatus = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
+			// Addstudentstatus(studentId, classesId) {
+			// 	this.StudentStatus.studentId = studentId
+			// 	this.StudentStatus.classesId = classesId
+			// 	const _this = this
+			// 	this.axios.post("http://localhost:8089/threeproject/addstudentstatus", this.StudentStatus)
+			// 		.then(function(response) {
+			// 			_this.StudentStatus = response.data
+			// 			console.log(response)
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			//补报按钮
 			bubao(row) {
 				this.addForm.sourceName = row.sourceName
@@ -1203,7 +1161,7 @@
 						});
 					} else {
 						var studentId = _this.chektable.map(item => item.studentId).join()
-						this.axios.get("http://localhost:8089/threeproject/findstudentId/" + studentId)
+						this.axios.get("http://localhost:8089/threeproject/findstudentId?studentId=" + studentId)
 							.then(function(response) {
 								_this.Stustate = response.data
 								_this.selectName()
@@ -1296,19 +1254,19 @@
 				}
 				
 			},
-			findstudentstatusId(studentstatusId) {
+			// findstudentstatusId(studentstatusId) {
 				
-				this.addForm.studentstatusId=studentstatusId
-				console.log("l"+this.addForm.studentstatusId)
-				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findstudentstatusId" ,{params:this.addForm} )
-					.then(function(response) {
-						_this.StudentStatus = response.data
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
+			// 	this.addForm.studentstatusId=studentstatusId
+			// 	console.log("l"+this.addForm.studentstatusId)
+			// 	const _this = this
+			// 	this.axios.get("http://localhost:8089/threeproject/findstudentstatusId" ,{params:this.addForm} )
+			// 		.then(function(response) {
+			// 			_this.StudentStatus = response.data
+			// 			console.log(response)
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			//退学：学员状态表中的状态改为5（退学审核中）；并新增一条退学表（根据学员编号新增）
 			showtuixue(row) {
 				const _this = this
@@ -1368,7 +1326,7 @@
 				this.axios.post("http://localhost:8089/threeproject/Adddropout",this.Droportform)
 					.then(function(response) {
 						var supendentity = response.data
-					_this.axios.put("http://localhost:8089/threeproject/updatetuixue/" +_this.Droportform.studentstatusId)
+					_this.axios.put("http://localhost:8089/threeproject/updatetuixue?studentstatusId=" +_this.Droportform.studentstatusId)
 						.then(function(response) {
 							var back=response.data
 							_this.findclassstuId(supendentity.studentId)
@@ -1377,7 +1335,7 @@
 							console.log(error)
 						})
 						
-						// _this.Refund(response.data.dropId)
+						_this.Refund(response.data.dropId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)

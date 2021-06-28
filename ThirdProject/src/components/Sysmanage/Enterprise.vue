@@ -137,14 +137,22 @@
 			}
 		},
 		created() {
+		
+			console.log("----------------------------------")
 			const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findenterprise")
-				.then(function(response) {
-					_this.form = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+						console.log(_this.$store.getters.token)
+						this.axios.get("http://localhost:8089/threeproject/findenterprise", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form = response.data.data
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
+				
 		}
 	}
 </script>

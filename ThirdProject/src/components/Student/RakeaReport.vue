@@ -271,7 +271,7 @@ import qs from 'qs'
 			updatesupplementarystate(supplementaryId) {
 				console.log("---" + supplementaryId)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate/" + supplementaryId)
+				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate?supplementaryId=" + supplementaryId)
 					.then(function(response) {
 						_this.shwosu()
 					}).catch(function(error) {
@@ -281,7 +281,7 @@ import qs from 'qs'
 			updatesupplementarystate0(supplementaryId) {
 				console.log("---" + supplementaryId)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate0/" + supplementaryId)
+				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate0?supplementaryId=" + supplementaryId)
 					.then(function(response) {
 						_this.shwosu()
 					}).catch(function(error) {
@@ -290,7 +290,7 @@ import qs from 'qs'
 			},
 			findcourseId(courseId) {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findcourseId/" + courseId)
+				this.axios.get("http://localhost:8089/threeproject/findcourseId?courseId=" + courseId)
 					.then(function(response) {
 						_this.Classes = response.data
 						_this.addForm.classesId = _this.Classes.classesId

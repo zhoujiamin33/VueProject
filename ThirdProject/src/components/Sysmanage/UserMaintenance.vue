@@ -1,5 +1,5 @@
 <template>
-	<!-- 职位 -->
+	<!-- 用户-->
 	<div class="mian">
 		<div class="mainbody" style="width: 100%;">
 			<span style="margin-top: 10px;width: 90px;">所属部门：</span>
