@@ -95,7 +95,7 @@
 			},
 			insertScheduling(){
 				const _this=this
-				this.form.addname="admin"
+				this.form.addname=this.$store.state.updateUserInfo.username
 				console.log(this.form.coursecount+"ddd")
 				console.log(this.form.classrooms+"ddd")
 				console.log(this.form.classlist+"ddd")

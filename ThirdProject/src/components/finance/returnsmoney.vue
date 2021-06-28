@@ -76,6 +76,10 @@
 					value1:"",
 					value2:"",
 					input:"",
+				},
+				ApprovalForm:{
+					updatename:"",
+					refundId:""
 				}
 			}
 		},
@@ -142,7 +146,9 @@
 			updateapproval(row){
 				const _this=this
 				console.log(row.refundId)
-				this.axios.put("http://localhost:8089/threeproject/updateapprovalrefund",row{
+				this.ApprovalForm=row.refundId
+				this.ApprovalForm=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateapprovalrefund",this.ApprovalForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -171,8 +177,9 @@
 			updateRevokeapproval(row){
 				const _this=this
 				console.log(row.refundId)
-				
-				this.axios.put("http://localhost:8089/threeproject/updateRevokeapprovalrefund",row{
+				this.ApprovalForm=row.refundId
+				this.ApprovalForm=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateRevokeapprovalrefund",this.ApprovalForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -200,7 +207,9 @@
 			},
 			deleterefund(row){
 				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/deleterefund",row{
+				this.ApprovalForm=row.refundId
+				this.ApprovalForm=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/deleterefund",this.ApprovalForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token

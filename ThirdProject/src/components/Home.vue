@@ -50,7 +50,7 @@
 						unique-opened>
 
 						<!-- 侧边栏内容 -->
-						<el-submenu :key="menu.id" v-for="menu in logninfo.menus">
+						<el-submenu :index="menu.id" v-for="menu in logninfo.menus">
 							<template #title>
 								<span>{{ menu.menuName }}</span>
 							</template>

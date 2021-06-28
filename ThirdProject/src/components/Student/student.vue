@@ -866,9 +866,27 @@
 						_this.AddDetailsupplementary(response.data.supplementaryId)
 						_this.dialogFormVisible4 = false
 						_this.findsupplementary()
+						_this.insertReportEntry(_this.supplementaryform)
 					}).catch(function(error) {
 						console.log(error)
 					})
+			},
+			//财务新增补报
+			insertReportEntry(){
+				const _this=this
+				this.supplementaryform.addname=this.$store.state.userInfo.userName;
+				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.supplementaryform,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response){
+					console.log(response)
+					_this.reportForm={}
+				}).catch(function(error){
+					console.log(error)
+				})
 			},
 			AddDetailsupplementary(supplementaryId) {
 				this.supplementaryform.supplementaryId = supplementaryId

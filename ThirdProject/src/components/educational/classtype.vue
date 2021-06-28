@@ -222,7 +222,7 @@ export default{
 		 // 修改方法
 		 updateType(){
 			 const _this=this
-			 this.updatename="admin"
+			 this.updatename=this.$store.state.updateUserInfo.username
 			 this.axios.put("http://localhost:8089/threeproject/updateType",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -257,7 +257,7 @@ export default{
 		  // 新增方法
 		  addType(){
 			  const _this=this
-			  this.addname="admin"
+			  this.addname=this.$store.state.updateUserInfo.username
 			  this.axios.post("http://localhost:8089/threeproject/addcoursetype",this.form,{
 					headers: {
 						'content-type': 'application/json',

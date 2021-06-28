@@ -182,7 +182,7 @@
 
 <script>
 	import qs from 'qs'
-	import moment from "moment"
+	// import moment from "moment"
 	export default{
 		name:"outstanding",
 		data(){
@@ -240,6 +240,12 @@
 				form3:{
 					feesId:"",
 					Fees_Accumulated:""
+				},
+				PutDeleteForm:{
+					feesId:"",
+					updatename:"",
+					approvalname:"",
+					revokeappname:""
 				}
 			}
 		},
@@ -346,7 +352,7 @@
 			selectbyContion(select,input){
 				const _this=this
 				feeId=this.entryfeeId
-				this.axios.get("http://localhost:8089/threeproject/selectBycontion",this.selectkey{
+				this.axios.get("http://localhost:8089/threeproject/selectBycontion",this.selectkey,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -391,7 +397,7 @@
 				this.form2.alongmoney=this.form.AlongMoney
 				//累计欠费----//补缴金额
 				this.form2.accumulated=this.form.feesaccumulated-this.form.AlongMoney
-				this.form2.addname=this.form.addname
+				this.form2.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/insertoutstanding",this.form2,{
 					headers: {
 						'content-type': 'application/json',
@@ -446,8 +452,8 @@
 			//审核
 			updateapproval(row){
 				const _this=this
-				row.approvalname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateApprovalState",row,{
+				this.PutDeleteForm.approvalname=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateApprovalState",this.PutDeleteForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -475,8 +481,8 @@
 			// 撤销审核
 			updateRevokeapproval(row){
 				const _this=this
-				row.revokeappname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateReApprovalState",row,{
+				this.PutDeleteForm.revokeappname=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateReApprovalState",this.PutDeleteForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -504,8 +510,8 @@
 			// 删除
 			deleteoutstanding(row){
 				const _this=this
-				row.deletename="admin"
-				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",row)
+				this.PutDeleteForm.updatename=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",this.PutDeleteForm)
 				.then(function(response){
 					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
 					params:_this.pageInfo,

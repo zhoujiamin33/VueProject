@@ -272,7 +272,7 @@
 			updateApproval(row){
 				const _this=this
 				this.form.expensesId=row.expensesId
-				this.form.approvalname="admin"
+				this.form.approvalname=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -333,7 +333,7 @@
 				// }
 				const _this=this
 				this.form.expensesId=row.expensesId
-				this.form.updatename="admin"
+				this.form.updatename=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -363,7 +363,7 @@
 			updateReApproval(row){
 				const _this=this
 				this.form.expensesId=row.expensesId
-				this.form.revokeappname="admin"
+				this.form.revokeappname=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateReApproval",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -393,7 +393,7 @@
 			updateApprovalincome(row){
 				const _this=this
 				this.form.warehouseincomeId=row.warehouseincomeId
-				this.form.approvalname="admin"
+				this.form.approvalname=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateApprovalincome",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -423,7 +423,7 @@
 			updateReApprovalincome(row){
 				const _this=this
 				this.form.warehouseincomeId=row.warehouseincomeId
-				this.form.revokeappname="admin"
+				this.form.revokeappname=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateReApprovalincome",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -468,7 +468,7 @@
 				console.log(error)
 			}),
 			this.axios.get("http://localhost:8089/threeproject/selectAllincome",{
-					params:_this.pageInfo2
+					params:_this.pageInfo2,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
