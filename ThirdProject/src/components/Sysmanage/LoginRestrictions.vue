@@ -137,7 +137,7 @@
 			},
 			xz(ids) {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateyxz/" + ids)
+				this.axios.put("http://localhost:8089/threeproject/updateyxz?empId=" + ids)
 					.then(function(response) {
 						_this.selectweixz()
 						_this.selectyixz()
