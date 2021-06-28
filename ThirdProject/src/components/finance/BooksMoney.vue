@@ -158,7 +158,13 @@
 				const _this=this
 				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
 				this.pageInfo.value2=moment(this.pageInfo.value2).format("YYYY-MM-DD")
-				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData=response.data.list
@@ -171,7 +177,13 @@
 				const _this=this
 				this.pageInfo2.value1=moment(this.pageInfo2.value1).format("YYYY-MM-DD")
 				this.pageInfo2.value2=moment(this.pageInfo2.value2).format("YYYY-MM-DD")
-				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook2",{params:this.pageInfo2})
+				this.axios.get("http://localhost:8089/threeproject/selectBycontionBook2",{
+					params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData2=response.data.list
@@ -185,7 +197,13 @@
 			    this.pageInfo.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -198,7 +216,13 @@
 				var _this=this
 				this.pageInfo.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData=response.data.list
@@ -211,7 +235,13 @@
 			    this.pageInfo2.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo2})
+			    this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -224,7 +254,13 @@
 				var _this=this
 				this.pageInfo2.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo2})
+				this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData=response.data.list
@@ -237,9 +273,20 @@
 				const _this=this
 				this.form.expensesId=row.expensesId
 				this.form.approvalname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -287,9 +334,20 @@
 				const _this=this
 				this.form.expensesId=row.expensesId
 				this.form.updatename="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateApproval",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -306,9 +364,20 @@
 				const _this=this
 				this.form.expensesId=row.expensesId
 				this.form.revokeappname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateReApproval",this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateReApproval",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:_this.pageInfo,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData=response.data.list
@@ -325,9 +394,20 @@
 				const _this=this
 				this.form.warehouseincomeId=row.warehouseincomeId
 				this.form.approvalname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateApprovalincome",this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateApprovalincome",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:_this.pageInfo2})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{
+					params:_this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -344,9 +424,20 @@
 				const _this=this
 				this.form.warehouseincomeId=row.warehouseincomeId
 				this.form.revokeappname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateReApprovalincome",this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateReApprovalincome",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
-					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:_this.pageInfo2})
+					_this.axios.get("http://localhost:8089/threeproject/selectAllincome",{
+					params:_this.pageInfo2,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -362,7 +453,13 @@
 		},
 		created() {
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/selectAllStorage",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response) {
 				console.log(response)
 				_this.tableData=response.data.list
@@ -370,7 +467,13 @@
 			}).catch(function(error) {
 				console.log(error)
 			}),
-			this.axios.get("http://localhost:8089/threeproject/selectAllincome",{params:this.pageInfo2})
+			this.axios.get("http://localhost:8089/threeproject/selectAllincome",{
+					params:_this.pageInfo2
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response) {
 				console.log(response)
 				_this.tableData2=response.data.list

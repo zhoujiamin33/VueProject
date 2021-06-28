@@ -344,7 +344,12 @@
 			 selectCourse(classtypeId){
 				const _this=this
 				classtypeId=this.form.classtype
-				this.axios.get("http://localhost:8089/threeproject/selectByCourseTypeId/"+classtypeId)
+				this.axios.get("http://localhost:8089/threeproject/selectByCourseTypeId?classtypeId="+classtypeId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 					console.log(response)
 					_this.course=response.data
@@ -357,7 +362,14 @@
 			     this.pageInfo.pagesize=pagesize
 			 	var ps = qs.stringify(this.pageInfo)
 			 	console.log(ps)
-			     this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+			     this.axios.get("http://localhost:8089/threeproject/findAllClass",{
+					params:this.pageInfo
+					},{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			     .then(function(response){
 			     	console.log("-------------------------------------------")
 			     	console.log(response.data)
@@ -370,7 +382,13 @@
 			 	var _this=this
 			 	this.pageInfo.currentPage=currentPage
 			 	var ps = qs.stringify(this.pageInfo)
-			 	this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+			 	this.axios.get("http://localhost:8089/threeproject/findAllClass",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			 	.then(function(response){
 			 		console.log(response.data)
 			 		_this.tableData=response.data.list
@@ -383,7 +401,12 @@
 				 const _this=this
 				 this.form.classesName=this.session+this.semester+this.form.classtype
 				 console.log(this.form)
-				 this.axios.post("http://localhost:8089/threeproject/insertClass",this.form)
+				 this.axios.post("http://localhost:8089/threeproject/insertClass",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				 .then(function(response){
 					_this.selectAll()
 					_this.dialogFormVisible=false
@@ -422,7 +445,12 @@
 			 //修改班级
 			 updateClass(){
 				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/updateClass",this.formEdit)
+				this.axios.put("http://localhost:8089/threeproject/updateClass",this.formEdit,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.selectAll()
@@ -434,7 +462,13 @@
 			 // 多条件查询
 			 selectByContion(){
 				const _this=this
-				 this.axios.get("http://localhost:8089/threeproject/selectByContion",{params:this.pageInfo})
+				 this.axios.get("http://localhost:8089/threeproject/selectByContion",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData=response.data.list
@@ -445,7 +479,13 @@
 			 },
 			 selectAll(){
 				 const _this=this
-				 this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+				 this.axios.get("http://localhost:8089/threeproject/findAllClass",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				 .then(function(response){
 				 	console.log(response)
 				 	_this.tableData=response.data.list
@@ -460,7 +500,12 @@
 				 this.form2.classesId=row.classesId
 				 this.form2.updatename="admin"
 				 this.form2.courseId=row.courseId
-				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2)
+				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				 .then(function(response){
 					 _this.selectByCourseKey100(_this.form2.courseId,_this.form2.classesId)
 					 _this.selectAll();
@@ -472,14 +517,24 @@
 			 //根据课程id查询课程详细表序列号为100的数据
 			 selectByCourseKey100(courseid,classesId){
 				 const _this=this
-				 this.axios.get("http://localhost:8089/threeproject/selectByCourseKey100/"+courseid)
+				 this.axios.get("http://localhost:8089/threeproject/selectByCourseKey100?courseid="+courseid,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				 .then(function(response){
 					 console.log(response)
 					 _this.detailsdata=response.data
 					 //把课程详细表序列号为100的数据赋值给刚刚新增的班级
 					 _this.form3.classesId=classesId
 					 _this.form3.detailcourseId=response.data.detailcourseId
-					 _this.axios.put("http://localhost:8089/threeproject/updateDetails",_this.form3)
+					 _this.axios.put("http://localhost:8089/threeproject/updateDetails",_this.form3,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					 .then(function(response){
 						 console.log(response)
 					 }).catch(function(error){
@@ -495,7 +550,12 @@
 			 	const _this=this
 				this.form2.classesId=row.classesId
 				this.form2.updatename="admin"
-			 	this.axios.put("http://localhost:8089/threeproject/updateClassesOpen0",this.form2)
+			 	this.axios.put("http://localhost:8089/threeproject/updateClassesOpen0",this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			 	.then(function(response){
 					_this.selectAll()
 			 	}).catch(function(error){
@@ -506,7 +566,12 @@
 			 selectById(row){
 				 const _this=this
 				 this.selectByClass(row.classesId)
-				 this.axios.get("http://localhost:8089/threeproject/selectById/"+row.classesId)
+				 this.axios.get("http://localhost:8089/threeproject/selectById?classesId="+row.classesId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				 .then(function(response){
 					console.log(response)
 					_this.selectById=response.data
@@ -517,7 +582,12 @@
 			 },
 			 selectByClass(classesId){
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByClass/"+classesId)
+				this.axios.get("http://localhost:8089/threeproject/selectByClass?classesId="+classesId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					_this.selectStudent=response.data
 					console.log(response)				
@@ -528,7 +598,13 @@
 		  },
 		  created() {
 		  	const _this=this
-		  	this.axios.get("http://localhost:8089/threeproject/findAllClass",{params:this.pageInfo})
+		  	this.axios.get("http://localhost:8089/threeproject/findAllClass",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		  	.then(function(response){
 		  		console.log(response)
 				_this.tableData=response.data.list
@@ -537,7 +613,12 @@
 				console.log(error)
 			}),
 			// 年届
-			this.axios.get("http://localhost:8089/threeproject/findyear")
+			this.axios.get("http://localhost:8089/threeproject/findyear",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.yeardata=response.data
@@ -545,7 +626,12 @@
 				console.log(error)
 			}),
 			// 学期
-			this.axios.get("http://localhost:8089/threeproject/findSemester")
+			this.axios.get("http://localhost:8089/threeproject/findSemester",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.schoolterm=response.data
@@ -553,7 +639,12 @@
 				console.log(error)
 			}),
 			// 课类
-			this.axios.get("http://localhost:8089/threeproject/findClassType")
+			this.axios.get("http://localhost:8089/threeproject/findClassType",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.coursetype=response.data
@@ -561,7 +652,12 @@
 				console.log(error)
 			}),
 			// 使用教材
-			this.axios.get("http://localhost:8089/threeproject/selectAllBook")
+			this.axios.get("http://localhost:8089/threeproject/selectAllBook",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.book=response.data
@@ -569,7 +665,12 @@
 				console.log(error)
 			}),
 			//查询所有教室
-			this.axios.get("http://localhost:8089/threeproject/findAllClassRoom")
+			this.axios.get("http://localhost:8089/threeproject/findAllClassRoom",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.classRoom=response.data
@@ -577,7 +678,12 @@
 				console.log(error)
 			})
 			//查询教师
-			this.axios.get("http://localhost:8089/threeproject/findEmp")
+			this.axios.get("http://localhost:8089/threeproject/findEmp",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 				console.log(response)
 				_this.empdata=response.data
