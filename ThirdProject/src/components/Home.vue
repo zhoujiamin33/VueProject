@@ -10,8 +10,7 @@
 			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #ffffff;">
 				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
 				<i class="el-icon-full-screen"
-					style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;"
-					@click=""></i>
+					style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;"></i>
 				<div class="photo" style="width:150px;text-align: center;">
 					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
 					<div style="margin-top: -70px;width: 270px;">
@@ -50,7 +49,7 @@
 						unique-opened>
 
 						<!-- 侧边栏内容 -->
-						<el-submenu :index="menu.id" v-for="menu in logninfo.menus">
+						<el-submenu :key="menu.id" :index="menu.id" v-for="menu in logninfo.menus">
 							<template #title>
 								<span>{{ menu.menuName }}</span>
 							</template>

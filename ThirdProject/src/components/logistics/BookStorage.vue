@@ -2,11 +2,11 @@
 	<div>
 		<div class="a">
 			<b class="b" style="font-size: 15px;margin-left: -480px;">快速检索：</b>
-			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
+			<el-select style="margin-bottom: 8px;" v-model="pageInfo.value" placeholder="请选择">
 				<el-option label="教材名" value="教材名"></el-option>
 				<el-option label="入库人" value="入库人"></el-option>
 			</el-select>
-			<el-input style="width: 180px;" v-model="input" placeholder="请输入内容" clearable></el-input>
+			<el-input style="width: 180px;" v-model="pageInfo.input" placeholder="请输入内容" clearable></el-input>
 			<el-button style="float:right;margin-left: 10px;">导出</el-button>
 			<el-button style="float:right">删除</el-button>
 			<el-button style="float:right" @click="jcrk = true">教材入库</el-button>
@@ -28,7 +28,7 @@
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer" style="position: absolute;left: 300px;top: 180px;">
-						<el-button  type="primary" @click="addBookstorage">保 存</el-button>
+						<el-button type="primary" @click="addBookstorage">保 存</el-button>
 						<el-button @click="jcrk=false">关 闭</el-button>
 					</span>
 				</template>
@@ -36,9 +36,10 @@
 
 			<!-- 修改 -->
 			<el-dialog title="修改入库" v-model="xgrk">
-				<el-form :model="form" label-width="80px" size="mini" >
+				<el-form :model="form" label-width="80px" size="mini">
 					<el-form-item label="教材名称 :" style="margin-left: 170px;">
-						<el-select style="margin-left: -160px;width: 300px;" v-model="form.bookId" placeholder="请选择" autocomplete="off" disabled>
+						<el-select style="margin-left: -160px;width: 300px;" v-model="form.bookId" placeholder="请选择" autocomplete="off"
+						 disabled>
 							<el-option v-for="item in bookdata" :key="item.value" :label="item.bookname" :value="item.bookId">
 							</el-option>
 						</el-select>
@@ -55,7 +56,7 @@
 			</el-dialog>
 
 
-			
+
 		</div>
 		<div>
 			<el-table :data="tableData" stripe border style="width: 100%">
@@ -84,7 +85,7 @@
 				<el-table-column fixed="right" label="操作" width="150" align="center">
 					<template #default="scope">
 						<el-button type="text" size="small" @click="showEdit(scope.row)">修改入库</el-button>
-						<el-button type="text" size="small" @click="delBookstorage(scope.row)">删除入库</el-button>
+						<el-button type="text" size="small" @click="deleteByPrimaryKey(scope.row)">删除入库</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -110,11 +111,13 @@
 			return {
 				bookdata: [],
 				pageInfo: {
+					value: "",
+					input: "",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
 				},
-				value: '',
+
 				tableData: [],
 				jcrk: false,
 				form: {
@@ -125,16 +128,15 @@
 					//storagetime: "",
 					totalprice: "",
 					//教材入库支出表的入库数量
-					refundCount:"",
+					refundCount: "",
 					//教材入库支出表的新增人员
-					addname:""
+					addname: ""
 				},
 
 				disabledDate(time) {
 					return time.getTime() > Date.now()
 				},
 				xgrk: false,
-				input: "",
 				zjkc: false,
 			}
 		},
@@ -149,9 +151,18 @@
 			//增加
 			addBookstorage() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/addBookstorage", this.form)
+				this.axios.post("http://localhost:8089/threeproject/addBookstorage", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findPage1", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -170,22 +181,32 @@
 					})
 			},
 			//新增教材支出表数据
-			insertExpenditure(mbookstorageId){
-				const _this=this
-				this.form.mbookstorageId=mbookstorageId
-				this.form.refundCount=this.form.storagecount
-				this.form.addname="admin"
-				this.axios.post("http://localhost:8089/threeproject/insertExpenditure",this.form)
-				.then(function(response){
-					console.log(response)
-				}).catch(function(error){
-					console.log(error)
-				})
+			insertExpenditure(mbookstorageId) {
+				const _this = this
+				this.form.mbookstorageId = mbookstorageId
+				this.form.refundCount = this.form.storagecount
+				this.form.addname = "admin"
+				this.axios.post("http://localhost:8089/threeproject/insertExpenditure", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			//修改
 			updateBookstorage() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateBookstorage", this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateBookstorage", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						var bookstorage = response.data
 						var book = response.data
@@ -201,46 +222,56 @@
 						console.log(error)
 					})
 			},
-			
+
 			//多条件查询
 			selectBookstorage() {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectBookstorage/"+this.value+"/"+this.input)
+				this.axios.get("http://localhost:8089/threeproject/selectBookstorage", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
-						_this.tableData = response.data
+						_this.tableData = response.data.list
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 
-			//删除
-			delBookstorage(row) {
+
+			deleteByPrimaryKey(row) {
 				const _this = this
-				var flag = true
+				var flag = true // eslint-disable-line no-unused-vars
 				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.delete("http://localhost:8089/threeproject/delBookstorage/" + row.mbookstorageId)
+					console.log(row);
+					_this.axios.put("http://localhost:8089/threeproject/deleteByPrimaryKey", row, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							_this.axios.get("http://localhost:8089/threeproject/findPage1", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
 									params: _this.pageInfo
 								})
-								.then(function(response) {
-									_this.tableData = response.data.list
-									_this.pageInfo.total = response.data.total
-								}).catch(function(error) {
-									console.log(error)
-								})
-							var bookstorage = response.data
+						.then(function(response) {
+							console.log(response)
 							var rows = _this.tableData
-								.filter(t => t.mbookstorageId != row.mbookstorageId)
+								.filter(a => a.mbookstorageId != row.mbookstorageId)
 							_this.tableData = rows
-							for (var key in _this.form) {
-								delete _this.form[key]
-							}
+							_this.pageInfo.total = _this.pageInfo.total - 1
 						}).catch(function(error) {
 							console.log(error)
 						})
@@ -250,13 +281,19 @@
 						message: '取消删除!'
 					});
 				});
+			})
 			},
+
 
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPage1", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -271,6 +308,10 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPage1", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -284,6 +325,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/threeproject/findPage1", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -293,7 +338,12 @@
 					console.log(error)
 				}),
 
-				this.axios.get("http://localhost:8089/threeproject/selectAllBook")
+				this.axios.get("http://localhost:8089/threeproject/selectAllBook", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					console.log(response)
 					_this.bookdata = response.data

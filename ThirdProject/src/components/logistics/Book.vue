@@ -19,23 +19,23 @@
 		</el-table>
 		<el-dialog title="添加教材" v-model="dialogFormVisible">
 			<el-form :model="form">
-				<el-form-item label="教材名称" :label-width="formLabelWidth">
-					<el-input v-model="form.bookname" autocomplete="off"></el-input>
+				<el-form-item label="教材名称: " style="margin-left: 200px;">
+					<el-input v-model="form.bookname" style="margin-left: -200px;"></el-input>
 				</el-form-item>
-				<el-form-item label="库存" :label-width="formLabelWidth">
-					<el-input v-model="form.deliverycount" autocomplete="off"></el-input>
+				<el-form-item label="库存: " style="margin-left: 228px;">
+					<el-input v-model="form.deliverycount" style="margin-left: -200px;"></el-input>
 				</el-form-item>
-				<el-form-item label="教材售价" :label-width="formLabelWidth">
-					<el-input v-model="form.booksprice" autocomplete="off"></el-input>
+				<el-form-item label="教材售价: " style="margin-left: 200px;">
+					<el-input v-model="form.booksprice" style="margin-left: -200px;"></el-input>
 				</el-form-item>
-				<el-form-item label="教材进价" :label-width="formLabelWidth">
-					<el-input v-model="form.bookjprice" autocomplete="off"></el-input>
+				<el-form-item label="教材进价: " style="margin-left: 200px;">
+					<el-input v-model="form.bookjprice" style="margin-left: -200px;"></el-input>
 				</el-form-item>
-				<el-form-item label="安全库存" :label-width="formLabelWidth">
-					<el-input v-model="form.safestock" autocomplete="off"></el-input>
+				<el-form-item label="安全库存: " style="margin-left: 200px;">
+					<el-input v-model="form.safestock" style="margin-left: -200px;"></el-input>
 				</el-form-item>
-				<el-form-item label="出版社" :label-width="formLabelWidth">
-					<el-input v-model="form.press" autocomplete="off"></el-input>
+				<el-form-item label="出版社: " style="margin-left: 215px;">
+					<el-input v-model="form.press" style="margin-left: -200px;"></el-input>
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -81,6 +81,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPage3", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -95,6 +99,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPage3", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -106,9 +114,18 @@
 			//增加
 			addBook() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/addBook", this.form)
+				this.axios.post("http://localhost:8089/threeproject/addBook", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findPage3", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -129,6 +146,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/threeproject/findPage3", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {

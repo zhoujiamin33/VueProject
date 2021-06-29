@@ -2,11 +2,11 @@
 	<div>
 		<div class="a">
 			<b class="b" style="font-size: 15px;margin-left: -540px;">快速检索：</b>
-			<el-select style="margin-bottom: 8px;" v-model="value" placeholder="请选择">
+			<el-select style="margin-bottom: 8px;" v-model="pageInfo.value" placeholder="请选择">
 				<el-option label="教材名" value="教材名"></el-option>
 				<el-option label="经办人" value="经办人"></el-option>
 			</el-select>
-			<el-input style="width: 180px;" v-model="input" placeholder="请输入内容" clearable></el-input>
+			<el-input style="width: 180px;" v-model="pageInfo.input" placeholder="请输入内容" clearable></el-input>
 			<el-button style="float:right;margin-left: 10px;">删除</el-button>
 			<el-button style="float:right" @click="thkd=true">退回开单</el-button>
 			<el-button style="float:right" @click="selectBookback">查询</el-button>
@@ -55,15 +55,16 @@
 			<el-dialog title="选择教材" width="47%" v-model="thkd1">
 				<el-form :model="form1" label-width="80px" size="mini">
 					<el-form-item label="退回教材 :">
-						<el-select style="margin-left: -442px;width: 193px;" v-model="form1.book.bookId" placeholder="请选择" autocomplete="off" @change="selectbooksprice()">
+						<el-select style="margin-left: -442px;width: 193px;" v-model="form1.book.bookId" placeholder="请选择" autocomplete="off"
+						 @change="selectbooksprice()">
 							<el-option v-for="item in bookdata" :key="item.bookId" :label="item.bookname" :value="item.bookId" />
 						</el-select>
 					</el-form-item>
 					<el-form-item label="教材售价 :">
-						<el-input style="width: 193px;margin-left: -442px;" disabled v-model="bookdata.booksprice" clearable></el-input>
+						<el-input style="width: 298px;margin-left: -336px;" disabled v-model="bookdata.booksprice" clearable></el-input>
 					</el-form-item>
 					<el-form-item label="退回数量 :">
-						<el-input style="width: 193px;margin-left: -442px;" v-model="form1.course.backcount" clearable></el-input>
+						<el-input style="width: 298px;margin-left: -336px;" v-model="form1.course.backcount" clearable></el-input>
 					</el-form-item>
 
 				</el-form>
@@ -144,9 +145,10 @@
 				tableData1: [],
 				tableData: [],
 				receipts: 0,
-				value: "",
-				input:"",
+				
 				pageInfo: {
+					value: "",
+					input: "",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
@@ -179,7 +181,12 @@
 			},
 			selectbooksprice() {
 				var _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectbooksprice/" + this.form1.book.bookId)
+				this.axios.get("http://localhost:8089/threeproject/selectbooksprice?bookId=" + this.form1.book.bookId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -193,6 +200,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPage6", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -207,6 +218,10 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPage6", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -225,9 +240,18 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.delete("http://localhost:8089/threeproject/delBookback/" + row.bookbackId)
+					_this.axios.delete("http://localhost:8089/threeproject/delBookback?bookbackId=" + row.bookbackId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token,
+							}
+						})
 						.then(function(response) {
 							_this.axios.get("http://localhost:8089/threeproject/findPage6", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
 									params: _this.pageInfo
 								})
 								.then(function(response) {
@@ -253,9 +277,9 @@
 					});
 				});
 			},
-			
-			
-			
+
+
+
 			// //修改
 			// updateBookback() {
 			// 	const _this = this
@@ -279,22 +303,34 @@
 			// 			console.log(error)
 			// 		})
 			// },
-			
+
 			//多条件查询
 			selectBookback() {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectBookback/"+this.value+"/"+this.input)
+				this.axios.get("http://localhost:8089/threeproject/selectBookback", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
 					.then(function(response) {
 						console.log(response)
-						_this.tableData = response.data
+						_this.tableData = response.data.list
+						_this.pageInfo.total=response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
-			
+
 			selectAllBooks() {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectAllBook")
+				this.axios.get("http://localhost:8089/threeproject/selectAllBook", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						_this.bookdata = response.data
@@ -308,9 +344,18 @@
 				this.form.bookId = this.form1.book.bookId
 				this.form.backcount = this.form1.course.backcount
 				this.form.backmoney = this.bookdata.booksprice * this.form1.course.backcount
-				this.axios.post("http://localhost:8089/threeproject/addBookback", this.form)
+				this.axios.post("http://localhost:8089/threeproject/addBookback", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findPage6", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -347,6 +392,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/threeproject/findPage6", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
