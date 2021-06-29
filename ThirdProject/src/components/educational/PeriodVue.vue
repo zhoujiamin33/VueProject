@@ -9,9 +9,9 @@
 					<el-form-item label="培训时段" :label-width="formLabelWidth">
 						<el-input v-model="form.period" autocomplete="off"></el-input>
 					</el-form-item>
-					<el-form-item label="新增人" :label-width="formLabelWidth">
+					<!-- <el-form-item label="新增人" :label-width="formLabelWidth">
 						<el-input v-model="form.addname" autocomplete="off"></el-input>
-					</el-form-item>
+					</el-form-item> -->
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
@@ -88,7 +88,8 @@
 				form: {
 					periodId: "",
 					period: "",
-					addname: ""
+					addname: "",
+					updatename:""
 				}
 			}
 		},
@@ -106,8 +107,13 @@
 			//增加
 			addTrainingperiod() {
 				const _this = this
-				this.form.addname="admin"
-				this.axios.post("http://localhost:8089/threeproject/trainingperiod", this.form)
+				this.form.addname=this.$store.state.updateUserInfo.username
+				this.axios.post("http://localhost:8089/threeproject/trainingperiod", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						// _this.axios.get("http://localhost:8089/threeproject/findPage2",{
 						// 	params:_this.pageInfo
@@ -133,7 +139,13 @@
 			//修改
 			updateTrainingperiod() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/trainingperiod", this.form)
+				this.form=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/trainingperiod", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						// var trainingperiod = response.data
 						// var row = _this.trainingperiodData.filter(t => t.periodId == trainingperiod.periodId)[0]
@@ -158,7 +170,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					_this.axios.delete("http://localhost:8089/threeproject/trainingperiod/" + row.periodId)
+					_this.axios.delete("http://localhost:8089/threeproject/trainingperiod?periodId=" + row.periodId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 						.then(function(response) {
 							// var dept = response.data
 							// var rows = _this.trainingperiodData
@@ -182,7 +199,13 @@
 			},
 			selectAllPeriod(){
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.trainingperiodData=response.data.list
@@ -195,7 +218,13 @@
 				var _this=this
 				this.pageInfo.currentPage=currentPage
 				var ps=qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.trainingperiodData=response.data.list
@@ -208,7 +237,13 @@
 				this.pageInfo.pagesize=pagesize
 				var ps=qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/findPage2",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.trainingperiodData=response.data.list
@@ -219,7 +254,13 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findPage2",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/findPage2",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.trainingperiodData=response.data.list

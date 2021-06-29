@@ -7,7 +7,7 @@
 				<el-avatar src="./public/logo.381d6a3e.png" style="margin-top: 10px;margin-left:10px;"></el-avatar>
 				<h3 style="color:#ffffff ;width: 200px;margin-top: -70px;margin-left:65px;">卓越培训系统</h3>
 			</div>
-			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #bababa;">
+			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #ffffff;">
 				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
 				   <i class="el-icon-full-screen"
 				   style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;" @click=""></i>
@@ -37,9 +37,9 @@
 				<!-- <el-scrollbar style="height: 100%;"> -->
 				<el-scrollbar>
 				<!-- 收起导航栏 -->
-				<div style="color: #fff; background-color:#e8eaee; 
+				<div style="color: #fff; background-color:#ffffff; 
 					cursor: pointer;"  :class="{'web-top-close-nav':isCollapse}">
-					<i style="font-size: 30px; color: #303133;" class="open-close-nav" :class="{'el-icon-s-fold':!isCollapse,'el-icon-s-unfold':isCollapse}"
+					<i style="font-size: 30px; color: #ffffff;" class="open-close-nav" :class="{'el-icon-s-fold':!isCollapse,'el-icon-s-unfold':isCollapse}"
 						@click="openCloseNav"></i>
 				</div>		
 				<el-menu default-active="2" background-color="#dcdee1" text-color="#fff"
@@ -183,7 +183,7 @@
 		margin-right: 20px;
 	}
 	.el-header {
-		background-color:#333333;
+		background-color: #ffffff;
 		font-size: 20px;
 		line-height: 60px;
 		font-size: 22px;
@@ -192,7 +192,7 @@
 		vertical-align: middle;
 	}
 	.el-aside {
-		background-color: #dcdee1;
+		background-color: #ffffff;
 		display: block;
 		overflow-y: scroll;
 		height:650px;

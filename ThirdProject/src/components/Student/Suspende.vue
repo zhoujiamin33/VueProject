@@ -132,7 +132,7 @@
 				//审批
 				updateapproval(suspendeId){
 					const _this = this;
-					this.axios.put("http://localhost:8089/threeproject/updateapproval/"+suspendeId)
+					this.axios.put("http://localhost:8089/threeproject/updateapprovalsu?suspendeId="+suspendeId)
 						.then(function(response) {
 							_this.showsupende()
 							console.log(response)
@@ -143,7 +143,7 @@
 				//删除
 				delsuspend(suspendeId){
 					const _this = this;
-					this.axios.put("http://localhost:8089/threeproject/delsuspend/"+suspendeId)
+					this.axios.put("http://localhost:8089/threeproject/delsuspend?suspendeId="+suspendeId)
 						.then(function(response) {
 							_this.showsupende()
 							console.log(response)

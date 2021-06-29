@@ -1,5 +1,5 @@
 <template>
-	<!-- 职位 -->
+	<!-- 用户-->
 	<div class="mian">
 		<div class="mainbody" style="width: 100%;">
 			<span style="margin-top: 10px;width: 90px;">所属部门：</span>
@@ -336,7 +336,7 @@
 				// this.addForm.deletename=deletename
 				console.log("aaaaaaa"+this.addForm.empId,this.addForm.workersstate)
 				const _this = this;
-				this.axios.put("http://localhost:8089/threeproject/updatestate/"+workersstate+"/"+empId)
+				this.axios.put("http://localhost:8089/threeproject/updatestat?eworkersstate="+workersstate+"?empId="+empId)
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
 								params: _this.pageInfo
@@ -388,7 +388,7 @@
 				// this.addForm.deletename=deletename
 				console.log(this.addForm.empId)
 				const _this = this;
-				this.axios.put("http://localhost:8089/threeproject/deltimelimeness/"+this.addForm.empId)
+				this.axios.put("http://localhost:8089/threeproject/deltimelimeness?empId="+this.addForm.empId)
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
 								params: _this.pageInfo
@@ -408,7 +408,7 @@
 			AddEmp() {
 				console.log(this.addForm)
 				const _this = this;
-				this.axios.post("http://localhost:8089/threeproject/emp", this.addForm)
+				this.axios.post("http://localhost:8089/threeproject/addemp", this.addForm)
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
 								params: _this.pageInfo
@@ -436,7 +436,7 @@
 			//修改
 			updateEmp() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/emp", this.addForm)
+				this.axios.put("http://localhost:8089/threeproject/updateemp", this.addForm)
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
 								params: _this.pageInfo
@@ -503,13 +503,7 @@
 					})
 			},
 			//多条件模糊查询
-			findemp(){
-				if(this.select=='Emp_Name'){
-					this.findemp_Name()
-				}else {
-					console.log("无结果")
-				}
-			},
+		
 			//查询名称
 			findemp_Name(){
 				console.log(this.pageInfo.select1,this.pageInfo.input)

@@ -134,7 +134,7 @@ margin-bottom: 10px;">
 			  AddDept(){
 				  const _this = this
 				 
-				  this.axios.post("http://localhost:8089/threeproject/dept", this.form)
+				  this.axios.post("http://localhost:8089/threeproject/adddept", this.form)
 				  .then(function(response) {
 				  	console.log(response)
 				  	var dept=response.data
@@ -152,7 +152,7 @@ margin-bottom: 10px;">
 			 
 			  updatedept(){
 				  const _this = this
-				    this.axios.put("http://localhost:8089/threeproject/dept", this.form)
+				    this.axios.put("http://localhost:8089/threeproject/updatedept", this.form)
 				    .then(function(response) {
 				    	console.log(response)
 				    	var dept=response.data
@@ -180,7 +180,7 @@ margin-bottom: 10px;">
 			  				          cancelButtonText: '取消',
 			  				          type: 'warning'
 			  				        }).then(() => {
-			  							_this.axios.put("http://localhost:8089/threeproject/dept/"+_this.form.deptId)
+			  							_this.axios.put("http://localhost:8089/threeproject/deldept?deptId="+_this.form.deptId)
 			  								.then(function(response) {
 			  									var dept = response.data
 			  									var rows = _this.Data1

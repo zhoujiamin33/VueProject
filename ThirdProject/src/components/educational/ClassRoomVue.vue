@@ -95,7 +95,7 @@ export default{
 			},
 			tableData:[],
 			form:{
-				classroomId:"", classroomName:"",cacacity:""
+				classroomId:"", classroomName:"",cacacity:"",addname:"",updatename:""
 			},
 			dialogFormVisible:false,
 			dialogFormVisible2:false
@@ -107,7 +107,13 @@ export default{
 	         this.PageInfo.pagesize=pagesize
 	     	var ps = qs.stringify(this.PageInfo)
 	     	console.log(ps)
-	         this.axios.get("http://localhost:8089/threeproject/findClassroom",{params:this.PageInfo})
+	         this.axios.get("http://localhost:8089/threeproject/findClassroom",{
+					params:this.PageInfo,	
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 	         .then(function(response){
 	         	console.log("-------------------------------------------")
 	         	console.log(response.data)
@@ -120,7 +126,13 @@ export default{
 	     	var _this=this
 	     	this.PageInfo.currentPage=currentPage
 	     	var ps = qs.stringify(this.PageInfo)
-	     	this.axios.get("http://localhost:8089/threeproject/findClassroom",{params:this.PageInfo})
+	     	this.axios.get("http://localhost:8089/threeproject/findClassroom",{
+					params:this.PageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 	     	.then(function(response){
 	     		console.log(response.data)
 	     		_this.tableData=response.data.list
@@ -131,9 +143,21 @@ export default{
 		 // 新增方法
 		 addRoom(){
 		 	const _this=this
-		 	this.axios.post("http://localhost:8089/threeproject/addClassRoom",this.form)
+			this.form.addname=this.$store.state.updateUserInfo.username
+		 	this.axios.post("http://localhost:8089/threeproject/addClassRoom",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 	.then(function(response){
-				_this.axios.get("http://localhost:8089/threeproject/findClassroom",{params:_this.PageInfo})
+				_this.axios.get("http://localhost:8089/threeproject/findClassroom",{
+					params:_this.PageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData=response.data.list
@@ -155,7 +179,13 @@ export default{
 		 },
 		 updateRoom(){
 		 	const _this=this
-		 	this.axios.put("http://localhost:8089/threeproject/updateClassRoom",this.form)
+			this.form.updatename=this.$store.state.updateUserInfo.username
+		 	this.axios.put("http://localhost:8089/threeproject/updateClassRoom",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		 	.then(function(response){
 		 		var classroom=response.data
 				var datas=_this.tableData.filter(d=>d.classroomId==classroom.classroomId)[0]
@@ -169,7 +199,13 @@ export default{
 	    },
 		created() {
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/findClassroom",{params:this.PageInfo})
+			this.axios.get("http://localhost:8089/threeproject/findClassroom",{
+					params:this.PageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.tableData=response.data.list
