@@ -15,7 +15,7 @@
 		<div>
 			<el-row style="margin-top: -40px;margin-left:1120px;">
 				<el-button @click="selectByContion">查询</el-button>
-			    <el-button  type="primary" @click="dialogFormVisible=true">新增</el-button>
+			    <el-button  type="primary" @click="dialogFormVisible=true" style="margin-left:35px;">新增</el-button>
 			</el-row>
 		</div>
 		<!-- 新增班级 -->
@@ -212,7 +212,7 @@
 			</el-descriptions>
 			<p>班级学员</p>
 			<el-table :data="selectStudent" height="250" border style="width: 100%">
-			    <el-table-column prop="selectById" label="编号" width="180"></el-table-column>
+			    <el-table-column type="index" label="编号" width="180"></el-table-column>
 			    <el-table-column prop="studentName" label="姓名"  width="180"></el-table-column>
 			    <el-table-column prop="studentPhone" label="联系电话"></el-table-column>
 			</el-table>
@@ -228,12 +228,11 @@
 		<el-table :data="tableData" border style="width:100%;margin-left:10px;"
 		:header-cell-style="{background:'#eef1f6',color:'#606266'}">
 			<el-table-column fixed  type="selection" align="center"> </el-table-column>
-		    <el-table-column fixed prop="classesNumber" label="班级编号" width="150" align="center"></el-table-column>
-			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
-		    <el-table-column prop="starteddate" label="培训期限"  width="200" align="center"></el-table-column>
-		    <el-table-column prop="emp.empName"  label="任课老师"  width="150" align="center"> </el-table-column>
-		    <el-table-column prop="zip" label="班级人数" width="120" align="center"> </el-table-column>
-			<el-table-column prop="zip" label="开班状态" width="200" align="center">
+		    <el-table-column fixed prop="classesNumber" label="班级编号"  align="center"></el-table-column>
+			<el-table-column  prop="classesName" label="班级名称"  align="center"></el-table-column>
+		    <el-table-column prop="starteddate" label="培训期限"   align="center"></el-table-column>
+		    <el-table-column prop="emp.empName"  label="任课老师"   align="center"> </el-table-column>
+			<el-table-column prop="zip" label="开班状态" align="center">
 				<template v-slot="scope">
 					<p v-if="scope.row.classesOpen==0">
 						<el-button type="warning" icon="el-icon-more-outline" circle size="mini" @click="updateClassesOpen1(scope.row)"></el-button>
@@ -402,7 +401,7 @@
 				 const _this=this
 				 this.form.classesName=this.session+this.semester+this.form.classtype
 				 console.log(this.form)
-				 this.addname=this.$store.state.updateUserInfo.username
+				 this.form.addname=this.$store.state.updateUserInfo.username
 				 this.axios.post("http://localhost:8089/threeproject/insertClass",this.form,{
 					headers: {
 						'content-type': 'application/json',

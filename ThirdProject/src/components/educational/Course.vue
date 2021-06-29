@@ -5,7 +5,7 @@
 		  <el-button @click="dialogFormVisible=true" type="primary" icon="el-icon-plus" style="margin-left:120px;">新增</el-button>
 		</el-row>
 		<!-- 新增弹窗 -->
-		<el-dialog title="新增课程" v-model="dialogFormVisible">
+		<el-dialog title="新增课程" v-model="dialogFormVisible" width="59%">
 		  <el-form :model="form">
 		    <div >
 				<div style="display: flex; justify-content: space-between;">
@@ -14,17 +14,17 @@
 						  <el-option v-for="item in typedata" :value="item.classtypeId" :label="item.classtypeName"></el-option>
 					  </el-select>
 					</el-form-item>
-					<el-form-item label="课程名称" >
-					  <el-input v-model="form.courseName" autocomplete="off"></el-input>
+					<el-form-item label="课程名称">
+					  <el-input v-model="form.courseName" autocomplete="off"  style="margin-right:10px;"></el-input>
 					</el-form-item>
 				</div>
 				<div style="display: flex; justify-content: space-between;">
 					<el-form-item label="课时" 
 					 :rules="[{ type: 'number', message: '年龄必须为数字值'}]">
-					  <el-input v-model="form.classhours" autocomplete="off"></el-input>节
+					  <el-input v-model="form.classhours" autocomplete="off" style="margin-left:20px;"></el-input>节
 					</el-form-item>
 					<el-form-item label="费用" >
-					  <el-input v-model="form.courseMoney" autocomplete="off"></el-input>元
+					  <el-input v-model="form.courseMoney" autocomplete="off" ></el-input>元
 					</el-form-item>
 				</div>
 			</div>
@@ -304,7 +304,7 @@ export default{
 		 		console.log(error)
 		 	})
 		 },
-		 //新增弹窗取消不了
+		 //新增课程
 		  addCourse(){
 			  const _this=this
 			  this.form.addname=this.$store.state.updateUserInfo.username
@@ -524,7 +524,7 @@ export default{
 		  },
 		  //修改课程详细
 		  updateDetails(){
-			  const _this=this.$store.state.userInfo.username
+			  const _this=this
 			  console.log(this.detailsForm.detailcourseId+"课程详细Id")
 			  this.detailsForm.updatename=this.$store.state.updateUserInfo.username
 			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm,{

@@ -295,7 +295,7 @@
 					</div>
 					<div style="display: flex; justify-content: space-between;">
 						<el-form-item label="回访次数 :" prop="receptionist">
-							<el-input disabled v-model="" style="width:220px"></el-input>
+							<el-input disabled v-model="form.consultcontent" style="width:220px"></el-input>
 						</el-form-item>
 						<el-form-item label="咨询内容 :" prop="handovertime">
 							<el-input disabled v-model="form.consultcontent" style="width:220px"></el-input>

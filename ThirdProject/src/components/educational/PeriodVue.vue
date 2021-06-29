@@ -175,13 +175,7 @@
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
-				})
-						.then(function(response) {
-							// var dept = response.data
-							// var rows = _this.trainingperiodData
-							// 	.filter(t => t.periodId != row.periodId)
-							// console.log("del rows:%o", rows)
-							// _this.trainingperiodData = rows
+				}).then(function(response) {
 							_this.selectAllPeriod()
 							this.$message({
 							   message: '删除成功',

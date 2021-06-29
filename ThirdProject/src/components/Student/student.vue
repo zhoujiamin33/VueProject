@@ -262,6 +262,20 @@
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
+						<i class="el-icon-office-building"></i>
+						预交金额:
+					</template>
+					<el-input v-model="supplementaryform.feesAdvance" placeholder="请选择预交金额"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-office-building"></i>
+						实收金额:
+					</template>
+					<el-input v-model="supplementaryform.receipts" placeholder="请选择预交金额"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
 						<i class="el-icon-tickets"></i>
 						课程顾问:
 					</template>
@@ -744,6 +758,16 @@
 					detailcourseId: '', //详细课程编号
 					courseId: '' //课程id
 				},
+				//财务复课退费表单
+				Backform2: {
+					backId:"",
+					studentId: '',
+					classesId: '',
+					suspendeId: '', //停课编号
+					detailcourseId: '', //详细课程编号
+					courseId: '' ,//课程id
+					addname:""
+				},
 				// 退学
 				Droportform:{
 					studentstatusId: '', //学员状态id
@@ -794,7 +818,17 @@
 					courseMoney: '', //应收费用
 					detailsupplementaryName: '',
 					classhours: '',
-					studentId: ''
+					studentId: '',
+					feesAdvance:0,
+					receipts:""
+				},
+				//财务补报
+				reportForm:{
+					courseMoney:"",
+					feesType:"",
+					feesAdvance:"",
+					addname:"",
+					receipts:""
 				}
 			}
 
@@ -822,12 +856,36 @@
 					.then(function(response) {
 						console.log("------------停课开始")
 						_this.findclassstuId(_this.Backform.studentId)
-
-
+						if(_this.Backform.intention==1){
+							_this.insertBackRefund(response.data.backId)
+						}
 					}).catch(function(error) {
 						console.log(error)
 					})
 				this.dialogFormVisible8 = false
+			},
+			//财务新增复课退费
+			insertBackRefund(backId){
+				const _this = this
+				this.Backform2.backId=backId
+				console.log(this.Backform2.backId+"qwqw")
+				this.Backform2.studentId = this.Backform.studentId
+				this.Backform2.classesId = this.Backform.classesId
+				this.Backform2.detailcourseId = this.Backform.detailcourseId
+				this.Backform2.suspendeId = this.Backform.suspendeId
+				this.Backform2.courseId = this.Backform.courseId
+				this.Backform2.addname=this.$store.state.updateUserInfo.username
+				this.axios.post("http://localhost:8089/threeproject/insertRefund", this.Backform2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+					.then(function(response) {
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			// 获取课类的编号
 			findclasstypeId(classtypeId) {
@@ -891,10 +949,11 @@
 				})
 					.then(function(response) {
 						console.log("------------开始补报")
+						_this.insertReportEntry()
 						_this.AddDetailsupplementary(response.data.supplementaryId)
 						_this.dialogFormVisible4 = false
 						// _this.findsupplementary()
-						_this.insertReportEntry(_this.supplementaryform)
+						
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -902,8 +961,11 @@
 			//财务新增补报
 			insertReportEntry(){
 				const _this=this
-				this.supplementaryform.addname=this.$store.state.userInfo.userName;
-				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.supplementaryform,{
+				this.reportForm.courseMoney=this.supplementaryform.courseMoney
+				this.reportForm.feesType=this.supplementaryform.payment
+				this.reportForm.feesAdvance=this.supplementaryform.feesAdvance
+				this.reportForm.addname=this.$store.state.updateUserInfo.username
+				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.reportForm,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -1103,6 +1165,7 @@
 				console.log("-----------"+studentId)
 				this.addForm.studentId = studentId
 				this.addForm.deletename ="哈哈"
+				this.addForm.deletename =this.$store.state.updateUserInfo.username
 				console.log(this.addForm.studentId, this.addForm.deletename)
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/delstudent" ,
@@ -1478,7 +1541,7 @@
 			//财务部（退学、退费）
 			Refund(dropId) {
 				const _this = this
-				this.addForm.addname = "admin"
+				this.addForm.addname = this.$store.state.updateUserInfo.username
 				this.addForm.dropId = dropId
 				console.log(this.addForm.studentId + "abc12")
 				console.log(this.addForm.dropId + "abc")
@@ -1548,10 +1611,10 @@
 						_this.Classes = response.data
 						// _this.form.classes=_this.Classes
 						// _this.form.classes.classesId = _this.Classes.classesId
-						 console.log("班级名称1：" + _this.Classes.emp)
+						 // console.log("班级名称1：" + _this.Classes.emp)
 						_this.addForm.classesName = _this.Classes.classesName
 						_this.addForm.teacherId = _this.Classes.teacherId
-						_this.addForm.teacherNmae = _this.Classes.emp.teacherNmae
+						_this.addForm.teacherName = _this.Classes.emp.teacherName
 						_this.addForm.empName = _this.Classes.emp.empName
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
@@ -1619,8 +1682,7 @@
 					console.log(error)
 				}),
 				// 查询所有班级
-				this.axios.get("http://localhost:8089/threeproject/findAllClass",
-				{
+				this.axios.get("http://localhost:8089/threeproject/findAllClass",{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
