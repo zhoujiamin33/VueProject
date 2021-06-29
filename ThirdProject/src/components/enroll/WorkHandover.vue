@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div>
-			
+
 			<el-table ref="multipleTable" :data="WorkDate" tooltip-effect="dark" style=""
 				@selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55" 交接编号>
@@ -185,7 +185,7 @@
 			</div>
 
 		</div>
-		
+
 	</div>
 </template>
 
@@ -320,11 +320,20 @@
 					_this.multipleSelection.forEach(item => {
 						console.log(item)
 						this.axios.put("http://localhost:8089/threeproject//Spzszt/" + item
-								.memorandumattachmentId)
+								.memorandumattachmentId, {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
 							.then(function(response) {
 								_this.axios.get(
-										"http://localhost:8089/threeproject/findAllMemorandumattachment"
-										)
+										"http://localhost:8089/threeproject/findAllMemorandumattachment", {
+											headers: {
+												'content-type': 'application/json',
+												'jwtAuth': _this.$store.getters.token
+											},
+										})
 									.then(function(response) {
 										_this.WorkDate = response.data
 										console.log(response)
@@ -350,6 +359,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -365,6 +378,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -374,7 +391,7 @@
 						console.log(error)
 					})
 			}
-			
+
 		},
 		created() {
 			const _this = this
@@ -385,16 +402,20 @@
 			// 	}).catch(function(error) {
 			// 		console.log(error)
 			// 	}),
-				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response)
-						_this.WorkDate = response.data.list
-						_this.pageInfo.total = response.data.total
-					}).catch(function(error) {
-						console.log(error)
-					})
+			this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.WorkDate = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
 		}
 
 

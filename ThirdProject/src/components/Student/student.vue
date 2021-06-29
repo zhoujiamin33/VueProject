@@ -812,7 +812,7 @@
 				this.Backform.studentstatusId=this.addForm.studentstatusId
 				console.log("vv"+this.Backform.studentstatusId)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Addback" ,this.Backform,{params:this.Backform},
+				this.axios.post("http://localhost:8089/threeproject/Addback?studentstatusId=" +this.Backform.studentstatusId,this.Backform,
 				{
 					headers: {
 						'content-type': 'application/json',
@@ -820,7 +820,7 @@
 					}
 				})
 					.then(function(response) {
-						var back=response.data
+						console.log("------------停课开始")
 						_this.findclassstuId(_this.Backform.studentId)
 
 
@@ -833,7 +833,7 @@
 			findclasstypeId(classtypeId) {
 				console.log("kkk" + classtypeId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findclasstypeId/" + classtypeId,
+				this.axios.get("http://localhost:8089/threeproject/findclasstypeId?classtypeId=" + classtypeId,
 				{
 					headers: {
 						'content-type': 'application/json',
@@ -859,10 +859,11 @@
 					}
 				})
 					.then(function(response) {
+						console.log("-----------课程")
 						_this.Course = response.data
 						_this.addForm.classhours = _this.Course.classhours
 						_this.addForm.courseMoney = _this.Course.courseMoney
-						console.log(_this.form.course.courseMoney)
+						console.log(_this.addForm.courseMoney)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -889,9 +890,10 @@
 					}
 				})
 					.then(function(response) {
+						console.log("------------开始补报")
 						_this.AddDetailsupplementary(response.data.supplementaryId)
 						_this.dialogFormVisible4 = false
-						_this.findsupplementary()
+						// _this.findsupplementary()
 						_this.insertReportEntry(_this.supplementaryform)
 					}).catch(function(error) {
 						console.log(error)
@@ -959,7 +961,6 @@
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findName", {
 						params: this.pageInfo,
-						
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -1037,10 +1038,12 @@
 							type: 'error'
 						});
 					} else {
+						
 						var ids = _this.chektable.map(item => item.studentId).join()
+						console.log("+++++++++++++++"+ids)
 						// _this.chektable.forEach(item => {
 						// 	console.log(item.studentId)
-						_this.delstudent(ids, "cc")
+						_this.delstudent(ids)
 						// });
 						_this.$message({
 							type: 'success',
@@ -1094,11 +1097,12 @@
 					})
 			},
 			//删除
-			delstudent(studentId, deletename) {
+			delstudent(studentId) {
+				console.log("-----------"+studentId)
 				this.addForm.studentId = studentId
-				this.addForm.deletename = deletename
+				this.addForm.deletename =this.$store.state.userInfo.userName
 				console.log(this.addForm.studentId, this.addForm.deletename)
-				const _this = this;
+				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/delstudent" ,{params:this.addForm},
 				{
 					headers: {
@@ -1107,6 +1111,7 @@
 					}
 				})
 					.then(function(response) {
+						console.log("==============开始删除")
 						_this.selectName()
 
 					}).catch(function(error) {
@@ -1219,7 +1224,6 @@
 				this.addForm.classes = row.classes
 				this.addForm.studentNumber = row.studentNumber
 				this.addForm.studytime = row.studytime
-
 				this.dialogFormVisible4 = true
 			},
 			// 分页
@@ -1331,7 +1335,7 @@
 						var supendentity = response.data
 						_this.Supende = supendentity
 						_this.dialogFormVisible5 = false
-						_this.findclassstuId(supendentity.studentId)
+						_this.findclassstuId(_this.addForm.studentId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1427,7 +1431,7 @@
 				console.log("fghjk"+this.Droportform.dropReason)
 				
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Adddropout",this.Droportform,
+				this.axios.post("http://localhost:8089/threeproject/Adddropout?studentstatusId="+this.Droportform.studentstatusId,this.Droportform,
 				{
 					headers: {
 						'content-type': 'application/json',
@@ -1435,8 +1439,8 @@
 					}
 				})
 					.then(function(response) {
-						var supendentity = response.data
-						_this.updatestudentstatusId(_this.Droportform.studentstatusId,_this.Droportform.studentId)
+						console.log("45678345678开始退学")
+						_this.findclassstuId(_this.Droportform.studentId)
 						_this.Refund(response.data.dropId)
 						console.log(response)
 					}).catch(function(error) {
@@ -1536,20 +1540,21 @@
 				})
 					.then(function(response) {
 						_this.Classes = response.data
-						console.log(response)
 						// _this.form.classes=_this.Classes
 						// _this.form.classes.classesId = _this.Classes.classesId
+						 console.log("班级名称1：" + _this.Classes.emp)
 						_this.addForm.classesName = _this.Classes.classesName
-						_this.addForm.teacherNmae = _this.Classes.emp.teacherId
+						_this.addForm.teacherId = _this.Classes.teacherId
+						_this.addForm.teacherNmae = _this.Classes.emp.teacherNmae
 						_this.addForm.empName = _this.Classes.emp.empName
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
 						_this.addForm.detailcourseId = _this.Classes.detailcourseId
 						 _this.addForm.detailcourseName = _this.Classes.detailcourse.detailcourseName
 						 _this.addForm.whendetails=_this.Classes.whendetails
-						 console.log("班级名称1：" + _this.addForm.detailcourseName)
+						
 						console.log("kk" + _this.addForm.classesName + _this.addForm.starteddate)
-						console.log(response)
+						// console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -1617,7 +1622,7 @@
 				})
 				.then(function(response) {
 					_this.Classes = response.data
-					console.log(response)
+					// console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
@@ -1631,7 +1636,8 @@
 					}
 				})
 				.then(function(response) {
-					_this.classType = response.data.data
+					console.log("----------------开始查询课类")
+					_this.classType = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)

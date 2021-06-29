@@ -97,10 +97,18 @@
 			},
 			addSession() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Session", this.form)
-				
+				this.axios.post("http://localhost:8089/threeproject/Session", this.form, {headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+						}
+					})
+
 					.then(function(response) {
 						_this.axios.get("http://localhost:8089/threeproject/findPageSession", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -112,7 +120,7 @@
 							})
 						console.log(response)
 						var session = response.data
-						
+
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];
@@ -122,10 +130,15 @@
 						console.log(error)
 					})
 			},
-			
+
 			updateSession() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/Session", this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateSession", this.form,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						var session = response.data
 						console.log("session:%o", session)
@@ -150,6 +163,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPageSession", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -165,6 +182,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPageSession", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -185,6 +206,10 @@
 			// 		console.log(error)
 			// 	})
 			this.axios.get("http://localhost:8089/threeproject/findPageSession", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -204,6 +229,7 @@
 		justify-content: flex-end;
 		/* align-content: center; */
 	}
+
 	/* .el-table th>.cell {
 	    display: inline-block;
 	    box-sizing: border-box;
