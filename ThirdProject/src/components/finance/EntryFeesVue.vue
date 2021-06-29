@@ -15,6 +15,7 @@
 				<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
 	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
 				<el-button type="primary" icon="el-icon-plus" style="margin-left:240px;" @click="dialogFormVisible=true">新增报班</el-button>
+				<el-button type="primary" icon="el-icon-plus" style="margin-left:20px;" @click="dialogFormbubao=true">补报缴费</el-button>
 	 		</el-row>
 	 	</div>
 	</div>	
@@ -104,8 +105,50 @@
 		      <el-button type="primary" @click="addEntryFees">保存并新建</el-button>
 		    </span>
 		  </template>
-		</el-dialog>
 		
+		
+		</el-dialog>
+		<!-- 新增补报缴费 -->
+		<!-- 		<el-dialog title=" 新增补报缴费" v-model="dialogFormbubao">
+				  <el-form :model="form">
+				    <div>
+						<div style="display: flex;justify-content: space-between;">
+							 <el-form-item label="补报人" > 
+							  <el-select v-model="reportForm.supplementaryId" @change="selectByreport(reportForm.supplementaryId)">
+								  <el-option v-for="item in rekereport" :value="item.supplementaryId" :label="item.student.studentName"></el-option>
+							  </el-select>
+						</el-form-item> 
+						<el-form-item label="应收金额" v-model="reportForm.feesReceivable">
+							  <el-input v-model="coursedata2.courseMoney"></el-input>
+						</el-form-item>
+						</div>
+						<div style="display: flex;justify-content: space-between;">
+							<div>
+								<el-form-item label="缴费方式"  style="width:80px">
+								  <el-select v-model="reportForm.payment" class="typeselect">
+									  <el-option value="0" label="全额缴费">全额缴费</el-option>
+									  <el-option value="1" label="预交缴费">预交缴费</el-option>
+								  </el-select>
+								</el-form-item>
+								<el-form-item label="预交金额"   style="width:80px">
+								  <el-input v-model="reportForm.feesAdvance" style="width:80px"/>
+								</el-form-item>
+							</div>
+							<div>
+								<el-form-item label="实收金额">
+								  <el-input v-model="reportForm.receipts"></el-input>
+								</el-form-item>
+							</div>
+						</div>
+					</div>
+				  </el-form>
+				  <template #footer>
+				    <span class="dialog-footer">
+				      <el-button @click="dialogFormbubao = false">取 消</el-button>
+				      <el-button type="primary" @click="insertReportEntry">保存并新建</el-button>
+				    </span>
+				  </template>
+				</el-dialog> -->
 </template>
 
 <script>
@@ -123,15 +166,21 @@
 					total:0,
 					ApprovalState:"",value2:"",input:"",
 				},
-				dialogFormVisible:false,
+				dialogFormVisible:false,//报班缴费
+				dialogFormbubao:false,//补报缴费
+				rekereport:[],
+				reportForm:{
+					supplementaryId:"",feesReceivable:"",payment:"",feesAdvance:"",receipts:"",addname:""
+				},
 				form:{
-					registerId:"",feesReceivable:"",feesType:"",feesAdvance:"",receipts:"",feesaccumulated:""
+					registerId:"",feesReceivable:"",feesType:"",feesAdvance:"",receipts:"",feesaccumulated:"",addname:""
 				},
 				//查询咨询状态为有意向的学员的信息
 				regAttentState:[],
 				//根据id查询咨询登记表中的信息
 				registerdata:[],
 				coursedata:[],
+				coursedata2:[],
 				// 修改缴费状态时传咨询登记id
 				registerId:"",
 				//课程Id
@@ -202,6 +251,7 @@
 			//新增报班缴费
 			addEntryFees(){
 				const _this=this
+				this.form.addname=this.$store.state.updateUserInfo.username
 				this.form.feesReceivable=this.coursedata.courseMoney
 				console.log(this.form.registerId)
 				this.form.feesaccumulated=this.coursedata.courseMoney-this.form.feesAdvance
@@ -358,6 +408,7 @@
 					console.log(response)
 					_this.registerdata=response.data
 					_this.courseId=response.data.registerId
+					console.log(_this.courseId+"xixixix")
 					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=",_this.courseId,{
 					headers: {
 						'content-type': 'application/json',
@@ -366,8 +417,8 @@
 				})
 					.then(function(response){
 						console.log(response)
-						console.log("1111:"+_this.registerdata.courseId)
 						_this.coursedata=response.data
+						console.log("1111:"+response.data.courseId)
 					}).catch(function(error){
 						console.log(error)
 					})
@@ -428,6 +479,69 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
+			},
+			
+			// 根据补报Id查询金额等信息
+			selectByreport(supplementaryId){
+				supplementaryId=this.reportForm.supplementaryId
+				const _this=this
+				this.axios.get("http://localhost:8089/threeproject/selectBysuppId?supplementaryId="+supplementaryId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(repsose){
+					console.log(response)
+					_this.reportForm=response.data
+					_this.courseId=_this.reportForm.courseId
+					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=",_this.courseId,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+						.then(function(response){
+							console.log(response)
+							console.log("1111:"+response.data.courseId)
+							_this.coursedata2=response.data
+						}).catch(function(error){
+							console.log(error)
+						})
+				}).catch(function(error){
+					console.log(error)
+				})
+			},
+			//新增补报
+			insertReportEntry(){
+				const _this=this
+				this.reportForm.addname=this.$store.state.userInfo.userName
+				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.reportForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response){
+					console.log(response)
+					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
+						    params:_this.pageInfo,
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+					.then(function(response) {
+						console.log(response)
+						_this.tableData=response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+					_this.reportForm={}
+				}).catch(function(error){
+					console.log(error)
+				})
 			}
 		},
 		created() {
@@ -457,7 +571,20 @@
 				_this.regAttentState=response.data
 			}).catch(function(error) {
 				console.log(error)
+			}),
+			//查询补报管理信息
+			this.axios.get("http://localhost:8089/threeproject/selectsupplementary",{
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
 			})
+			.then(function(response){
+				_this.rekereport=response.data
+				console.log(response)
+			}).catch(function(error){
+				console.log(error)
+			})	
 		}
 	}
 </script>

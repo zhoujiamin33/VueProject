@@ -9,9 +9,9 @@
 					<el-form-item label="培训时段" :label-width="formLabelWidth">
 						<el-input v-model="form.period" autocomplete="off"></el-input>
 					</el-form-item>
-					<el-form-item label="新增人" :label-width="formLabelWidth">
+					<!-- <el-form-item label="新增人" :label-width="formLabelWidth">
 						<el-input v-model="form.addname" autocomplete="off"></el-input>
-					</el-form-item>
+					</el-form-item> -->
 				</el-form>
 				<template #footer>
 					<span class="dialog-footer">
@@ -88,7 +88,8 @@
 				form: {
 					periodId: "",
 					period: "",
-					addname: ""
+					addname: "",
+					updatename:""
 				}
 			}
 		},
@@ -106,7 +107,7 @@
 			//增加
 			addTrainingperiod() {
 				const _this = this
-				this.form.addname="admin"
+				this.form.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/trainingperiod", this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -138,6 +139,7 @@
 			//修改
 			updateTrainingperiod() {
 				const _this = this
+				this.form=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/trainingperiod", this.form,{
 					headers: {
 						'content-type': 'application/json',

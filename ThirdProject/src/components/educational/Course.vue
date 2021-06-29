@@ -70,14 +70,15 @@
 		
 		<!--课程详细弹窗 -->
 		<el-dialog title="查看课程详细" v-model="findDetail">
-			<el-row style="margin-left:570px;margin-bottom: 10px;width: 300px;">
+			<el-row style="margin-left:470px;margin-bottom: 10px;width: 300px;">
 				<el-button @click="dialogDetailForm=true" type="primary" icon="el-icon-plus"  size="mini">新增</el-button>
+				<el-button @click="batchDetails" type="success" icon="el-icon-plus"  size="mini">一键新增</el-button>
 				<el-button  type="danger" icon="el-icon-minus"  size="mini">删除</el-button>
 			</el-row>	
 			<el-table :data="detailData" border style="width:100%;margin-left:10px;" ref="singleTable" highlight-current-row>
-			    <el-table-column  type="selection"> </el-table-column>
-				<el-table-column  prop="serial" label="序列号"></el-table-column>
-			    <el-table-column  prop="detailcourseName" label="课程详细名称">
+			    <el-table-column  type="selection" align="center"> </el-table-column>
+				<el-table-column  type="index" label="编号" width="120px"  align="center"></el-table-column>
+			    <el-table-column  prop="detailcourseName" label="课程详细名称"  align="center">
 					<template #default="scope">
 						<a href="#" @click="showRowDetail(scope.row)">{{scope.row.detailcourseName}}</a>
 					</template>
@@ -202,12 +203,12 @@ export default{
 				courseId:""
 			},
 			detailsForm:{
-				courseId:"",detailcourseId:"",detailcourseName:"",serial:"",addname:""
+				courseId:"",detailcourseId:"",detailcourseName:"",serial:"",addname:"",updatename:""
 			},
 			typedata:[],
 			tableData:[],
 			form:{
-				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:""
+				courseId:"", classtypeId:"",courseName:"",courseMoney:"",classhours:"",updatename:"",addname:""
 			},
 			detailData:[],
 			dialogFormVisible:false,
@@ -233,7 +234,7 @@ export default{
 		 	var ps = qs.stringify(this.pageInfo)
 		 	console.log(ps)
 		     this.axios.get("http://localhost:8089/threeproject/findcourse",{
-				    params:this.pageInfo,
+					params:this.pageInfo,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -252,7 +253,7 @@ export default{
 		 	this.pageInfo.currentPage=currentPage
 		 	var ps = qs.stringify(this.pageInfo)
 		 	this.axios.get("http://localhost:8089/threeproject/findcourse",{
-				    params:this.pageInfo,
+					params:this.pageInfo,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -271,7 +272,7 @@ export default{
 		 	var ps = qs.stringify(this.pageInfo2)
 		 	console.log(ps)
 		     this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
-				    params:this.pageInfo2,
+					params:this.pageInfo2,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -290,7 +291,7 @@ export default{
 		 	this.pageInfo2.currentPage=currentPage
 		 	var ps = qs.stringify(this.pageInfo2)
 		 	this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
-				    params:this.pageInfo2,
+					params:this.pageInfo2,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -306,6 +307,7 @@ export default{
 		 //新增弹窗取消不了
 		  addCourse(){
 			  const _this=this
+			  this.form.addname=this.$store.state.updateUserInfo.username
 			  this.axios.post("http://localhost:8089/threeproject/addCourse",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -341,7 +343,7 @@ export default{
 		  //修改课程状态
 		  updateCourseState(row){
 			  console.log(row+"qwe")
-			  this.form2.updatename= "admin"
+			  this.form2.updatename= this.$store.state.updateUserInfo.username
 			  this.form2.courseId=row.courseId
 			 const _this=this
 			 this.axios.put("http://localhost:8089/threeproject/updateCourseState",this.form2,{
@@ -376,12 +378,11 @@ export default{
 		  //查询课程详细表
 		  findDetailCourses(courseId){
 			  this.findDetail=true
-			  // this.scope.row.courseId=row.courseId
 			  const _this=this
 			  this.pageInfo2.courseId=courseId
 			  console.log(this.pageInfo2)
 			  this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
-				    params:this.pageInfo2,
+					params:this.pageInfo2,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -395,13 +396,57 @@ export default{
 			  	console.log(error)
 			  })
 		  },
+		 //批量新增课程详细
+		 batchDetails(){
+			const _this = this
+				this.$confirm('是否一键生成所有课程详细？', '一键新增', {
+				distinguishCancelAndClose: true,
+				confirmButtonText: '是',
+				cancelButtonText: '否',
+				type:"warning"
+			}).then(() => {
+				_this.detailsForm.courseId =_this.pageInfo2.courseId
+				console.log(_this.detailsForm.courseId+"fff")
+				_this.detailsForm.addname=_this.$store.state.updateUserInfo.username
+				_this.axios.post("http://localhost:8089/threeproject/addDetails",_this.detailsForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response){
+					var row=response
+					_this.axios.get("http://localhost:8089/threeproject/findDetailCourses",{
+					params:_this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+					.then(function(response) {
+						_this.tableData = response.data.list
+						_this.pageInfo2.total=response.data.total
+						console.log(_this.UnitType)
+					}).catch(function(error) {
+						console.log(error)
+					})
+					ElMessage.success({
+					   message: '成功新增一条课程详细',
+					   type: 'success'
+					})
+				}).catch(function(errer){
+					console.log(errer)
+				})
+					console.log("43321")
+				}) 
+		 },
 		 //新增课程详细
 		 addDetails(){
 		 	const _this=this
 		 	this.detailsForm.courseId=this.pageInfo2.courseId
 		 	console.log(this.detailData)
 		 	console.log(this.detailsForm)
-			this.detailsForm.addname="Tsm管理员"
+			this.detailsForm.addname=this.$store.state.updateUserInfo.username
 		 	this.axios.post("http://localhost:8089/threeproject/addDetails",this.detailsForm,{
 					headers: {
 						'content-type': 'application/json',
@@ -445,6 +490,7 @@ export default{
 		  //修改课程
 		  updateCourse(){
 		  	const _this=this
+			this.form.updatename=this.$store.state.updateUserInfo.username
 		  	this.axios.put("http://localhost:8089/threeproject/updateCourse",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -478,9 +524,9 @@ export default{
 		  },
 		  //修改课程详细
 		  updateDetails(){
-			  const _this=this
+			  const _this=this.$store.state.userInfo.username
 			  console.log(this.detailsForm.detailcourseId+"课程详细Id")
-			  this.detailsForm.updatename="admin"
+			  this.detailsForm.updatename=this.$store.state.updateUserInfo.username
 			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm,{
 					headers: {
 						'content-type': 'application/json',
@@ -527,7 +573,7 @@ export default{
 				console.log(error)
 			}),
 			this.axios.get("http://localhost:8089/threeproject/findcourse",{
-				    params:this.pageInfo,
+					params:this.pageInfo,
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token

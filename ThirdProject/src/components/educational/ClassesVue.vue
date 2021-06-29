@@ -307,12 +307,13 @@
 					starteddate:"",
 					enddate:"",
 					teacherName:"",
-					empName:""
+					empName:"",
+					addname:""
 				},
 				dialogFormEdit:false,
 				//修改表单
 				formEdit:{
-					classesId:"",classroomId:"",userbookId:"",starteddate:"",enddate:"",teacherId:"",empId:""
+					classesId:"",classroomId:"",userbookId:"",starteddate:"",enddate:"",teacherId:"",empId:"",updatename:""
 				},
 				dialogFormsee:false,
 				//修改班级状态的id
@@ -401,6 +402,7 @@
 				 const _this=this
 				 this.form.classesName=this.session+this.semester+this.form.classtype
 				 console.log(this.form)
+				 this.addname=this.$store.state.updateUserInfo.username
 				 this.axios.post("http://localhost:8089/threeproject/insertClass",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -445,6 +447,7 @@
 			 //修改班级
 			 updateClass(){
 				const _this=this
+				this.formEdit.updatename=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/updateClass",this.formEdit,{
 					headers: {
 						'content-type': 'application/json',
@@ -498,7 +501,7 @@
 			 updateClassesOpen1(row){
 				 const _this=this
 				 this.form2.classesId=row.classesId
-				 this.form2.updatename="admin"
+				 this.form2.updatename=this.$store.state.updateUserInfo.username
 				 this.form2.courseId=row.courseId
 				 this.axios.put("http://localhost:8089/threeproject/updateClassesOpen1",this.form2,{
 					headers: {
@@ -549,7 +552,7 @@
 			 updateClassesOpen0(row){
 			 	const _this=this
 				this.form2.classesId=row.classesId
-				this.form2.updatename="admin"
+				this.form2.updatename=this.$store.state.updateUserInfo.username
 			 	this.axios.put("http://localhost:8089/threeproject/updateClassesOpen0",this.form2,{
 					headers: {
 						'content-type': 'application/json',

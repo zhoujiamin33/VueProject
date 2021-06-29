@@ -95,7 +95,7 @@ export default{
 			},
 			tableData:[],
 			form:{
-				classroomId:"", classroomName:"",cacacity:""
+				classroomId:"", classroomName:"",cacacity:"",addname:"",updatename:""
 			},
 			dialogFormVisible:false,
 			dialogFormVisible2:false
@@ -143,6 +143,7 @@ export default{
 		 // 新增方法
 		 addRoom(){
 		 	const _this=this
+			this.form.addname=this.$store.state.updateUserInfo.username
 		 	this.axios.post("http://localhost:8089/threeproject/addClassRoom",this.form,{
 					headers: {
 						'content-type': 'application/json',
@@ -178,6 +179,7 @@ export default{
 		 },
 		 updateRoom(){
 		 	const _this=this
+			this.form.updatename=this.$store.state.updateUserInfo.username
 		 	this.axios.put("http://localhost:8089/threeproject/updateClassRoom",this.form,{
 					headers: {
 						'content-type': 'application/json',
