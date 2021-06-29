@@ -236,7 +236,12 @@
 				// }
 			},
 			cuts(item) {
-				this.axios.put("http://localhost:8089/threeproject/delAnn", item)
+				this.axios.put("http://localhost:8089/threeproject/delAnn", item,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					} 
+				})
 					.then(function(response) {
 
 					}).catch(function(errer) {
@@ -263,9 +268,12 @@
 								this.cuts(item)
 							});
 							_this.axios.get("http://localhost:8089/threeproject/findPageAnn", {
-									params: this.pageInfo
-								})
-								.then(function(response) {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+								params: this.pageInfo
+							}).then(function(response) {
 									_this.tableData = response.data.list
 									_this.pageInfo.total = response.data.total
 									console.log(response)
@@ -273,7 +281,7 @@
 									console.log(error)
 								})
 						}).catch(action => {
-							console.log("2")
+							console.log("删除失败1")
 						});
 				}
 			},

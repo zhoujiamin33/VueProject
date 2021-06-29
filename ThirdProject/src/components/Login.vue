@@ -44,7 +44,7 @@
 	import {
 		ElMessage
 	} from 'element-plus'
-	import {rout} from '../router/index.js';
+	// import {rout} from '../router/index.js';
 	export default {
 		props: {
 			muted: {
@@ -69,7 +69,7 @@
 				videoRatio: null,
 				codeList: [],
 				LogFrom: {
-					username: '追风',
+					username: 'admin',
 					password: '123456',
 					code: ''
 				},
