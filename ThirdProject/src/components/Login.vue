@@ -69,7 +69,7 @@
 				videoRatio: null,
 				codeList: [],
 				LogFrom: {
-					username: '追风',
+					username: 'admin',
 					password: '123456',
 					code: ''
 				},

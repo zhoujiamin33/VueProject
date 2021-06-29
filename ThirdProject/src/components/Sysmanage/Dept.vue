@@ -1,7 +1,7 @@
 <template>
 <div style="display: flex;
 margin-bottom: 10px;">
-			<el-button @click="dialogFormVisible=true">新增</el-button>
+			<el-button type="primary" @click="dialogFormVisible=true">新增</el-button>
 			</div>
 			<el-table :data="Data1" style="width: 100%" border @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 				<el-table-column prop="deptId" label="Id">
@@ -16,8 +16,8 @@ margin-bottom: 10px;">
 				</el-table-column>
 				<el-table-column prop="index" label="操作"  fixed="right">
 					<template #default="scope">
-						<el-button type="text" @click="handleNodeClick(scope.row)">修改</el-button>
-						<el-button type="text" @click="delDept(scope.row)">删除</el-button>
+						<el-button type="primary" @click="handleNodeClick(scope.row)">修改</el-button>
+						<el-button type="primary" @click="delDept(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
