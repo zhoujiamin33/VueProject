@@ -3,11 +3,12 @@
 		<div class="mianboby">
 			<div class="mianwbk">
 				<b>快速索引：</b>
-				<el-select v-model="value" filterable placeholder="请选择">
-					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
+				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
+					<el-option label="咨询人" value="咨询人"></el-option>
+					<el-option label="电话号码" value="电话号码"></el-option>
+					<el-option label="接待人" value="接待人"></el-option>
 				</el-select>&nbsp;
-				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
+				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
 				<!-- <span class=""> -->&nbsp;&nbsp;&nbsp;<b>咨询时间:</b>&nbsp;
 				<!-- </span> -->
@@ -18,7 +19,7 @@
 			</div>
 
 			<div style="">
-				<el-button>查询</el-button>
+				<el-button @click="selectRegisterlivery()">查询</el-button>
 
 				<el-button @click="dialogFormVisible = true">新增</el-button>
 				<el-button @click="shengpi">审批</el-button>
@@ -295,7 +296,7 @@
 					</div>
 					<div style="display: flex; justify-content: space-between;">
 						<el-form-item label="回访次数 :" prop="receptionist">
-							<el-input disabled v-model="" style="width:220px"></el-input>
+							<el-input disabled v-model="form.registerId" style="width:220px"></el-input>
 						</el-form-item>
 						<el-form-item label="咨询内容 :" prop="handovertime">
 							<el-input disabled v-model="form.consultcontent" style="width:220px"></el-input>
@@ -350,12 +351,18 @@
 				</template>
 			</el-dialog>
 		</div>
-
+		<div>
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				:current-page="pageInfo.currentPage" :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize"
+				layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+			</el-pagination>
+		</div>
 	</div>
 
 </template>
 
 <script>
+	import qs from "qs"
 	import {
 		defineComponent,
 		ref
@@ -370,7 +377,15 @@
 			}
 		},
 		data() {
+			
 			return {
+				pageInfo: {
+					value:"",
+					input:"",
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				options: [{
 					value: 0,
 					label: '未缴费'
@@ -531,6 +546,9 @@
 			}
 		},
 		methods: {
+			handleClick(row) {
+				console.log(row);
+			},
 			handleSelectionChange(val) {
 				this.multipleSelection = [];
 				this.multipleSelection = val;
@@ -593,11 +611,68 @@
 
 				this.huifan(this.form.registerId)
 			},
+			
+			//多条件查询
+			selectRegisterlivery() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectRegisterlivery", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+						params: this.pageInfo
+						
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.ConsultationDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.ConsultationDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.ConsultationDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
 			huifan(registerId) {
 				registerId = this.form.registerId
 				console.log(registerId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + registerId, {
+				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit?registerId="+registerId, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -759,7 +834,7 @@
 				}).then(() => {
 					var registerId = _this.multipleSelection.map(item => item.registerId).join()
 					console.log(registerId + "-------")
-					this.axios.get("http://localhost:8089/threeproject/findRegisterId/" + registerId, {
+					this.axios.get("http://localhost:8089/threeproject/findRegisterId?registerId=" + registerId, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -785,14 +860,14 @@
 				_this.multipleSelection2.forEach(item => {
 					console.log(item)
 					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelRet/" + item.returnvisitId, {
+					this.axios.put("http://localhost:8089/threeproject/DelRet?returnvisitId=" + item.returnvisitId, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
 						})
 						.then(function(response) {
-							_this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + item
+							_this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit?registerId=" + item
 									.registerId, {
 										headers: {
 											'content-type': 'application/json',
@@ -821,19 +896,33 @@
 
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					_this.ConsultationDate = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				}),
-
+			// this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 	.then(function(response) {
+			// 		_this.ConsultationDate = response.data
+					
+			// 		console.log(response)
+			// 	}).catch(function(error) {
+			// 		console.log(error)
+			// 	}),
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.ConsultationDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					}),
 
 				this.axios.get("http://localhost:8089/threeproject/findCourse", {
 					headers: {
@@ -871,8 +960,6 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
-
 		},
 
 	};

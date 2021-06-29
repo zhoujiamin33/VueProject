@@ -39,7 +39,7 @@
 
 			<el-table ref="multipleTable" :data="WorkDate" tooltip-effect="dark" style=""
 				@selection-change="handleSelectionChange">
-				<el-table-column type="selection" width="55" 交接编号>
+				<el-table-column type="selection" width="55">
 				</el-table-column>
 				<el-table-column prop="memorandumattachmentId" label="交接编号" width="100">
 				</el-table-column>
@@ -309,114 +309,141 @@
 				this.multipleSelection = val;
 				console.log(val + "--------------")
 			},
+			// updateAuter() {
+			// 				const _this = this
+			// 				this.axios.delete("http://localhost:8089/tsm/delAuthorByroleid", {
+			// 					params: {
+			// 						"roleid": this.roleid,
+			// 						"Authors":qs.stringify(this.$refs.tree.getCheckedKeys())
+			// 					},
+			// 					headers: {
+			// 						'content-type': 'application/json',
+			// 						'jwtAuth': _this.$store.getters.token
+			// 					}
+			// 				}).then(function(response) {
+			// 					console.log(response.data)
+			// 					console.log(_this.$store.getters.token)
+			// 				}).catch(function(error) {
+			// 					console.log(error)
+			// 				})
+			// 				this.dialogFormVisible = false
+			// 			},
 			//招生审批
 			delWork() {
 				const _this = this
 				this.$confirm('确定要审核该学员吗?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					_this.multipleSelection.forEach(item => {
-						console.log(item)
-						this.axios.put("http://localhost:8089/threeproject//Spzszt/" + item
-								.memorandumattachmentId, {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+							_this.multipleSelection.forEach(item => {
+								console.log(item + "uuuu")
+								console.log(item.memorandumattachmentId)
+								console.log("------------------------------------------------------=====")
+
+								_this.axios.delete("http://localhost:8089/threeproject/Spzszt", {
+										params: {
+											"memorandumattachmentId":item.memorandumattachmentId
+										},
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
+									.then(function(response) {
+										console.log("==============+++++++++++++++++++++====")
+											_this.axios.get(
+													"http://localhost:8089/threeproject/findPageMemorandumattachment", {
+														headers: {
+															'content-type': 'application/json',
+															'jwtAuth': _this.$store.getters.token
+														},
+														params: _this.pageInfo
+													})
+												.then(function(response) {
+													console.log(response)
+													_this.WorkDate = response.data.list
+													_this.pageInfo.total = response.data.total
+												}).catch(function(error) {
+													console.log(error)
+												})
+											var Work = response.data
+											console.log("response内容:")
+											console.log(response)
+										}).catch(function(error) {
+											console.log(error)
+										})
+									})
+							}).catch(() => {
+								this.$message({
+									type: 'error',
+									message: '已取消审批'
+								});
+							});
+						},
+						handleCurrentChange(currentPage) {
+							var _this = this
+							this.pageInfo.currentPage = currentPage
+							var ps = qs.stringify(this.pageInfo)
+							this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
 									headers: {
 										'content-type': 'application/json',
 										'jwtAuth': _this.$store.getters.token
-									}
+									},
+									params: this.pageInfo
 								})
+								.then(function(response) {
+									console.log(response.data)
+									_this.WorkDate = response.data.list
+								}).catch(function(error) {
+									console.log(error)
+								})
+						},
+						handleSizeChange(pagesize) {
+							var _this = this
+							this.pageInfo.pagesize = pagesize
+							var ps = qs.stringify(this.pageInfo)
+							console.log(ps)
+							this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
+									params: this.pageInfo
+								})
+								.then(function(response) {
+									console.log(response.data)
+									_this.WorkDate = response.data.list
+								}).catch(function(error) {
+									console.log(error)
+								})
+						}
+
+					},
+					created() {
+						const _this = this
+						// this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
+						// 	.then(function(response) {
+						// 		_this.WorkDate = response.data
+						// 		console.log(response)
+						// 	}).catch(function(error) {
+						// 		console.log(error)
+						// 	}),
+						this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+								params: this.pageInfo
+							})
 							.then(function(response) {
-								_this.axios.get(
-										"http://localhost:8089/threeproject/findAllMemorandumattachment", {
-											headers: {
-												'content-type': 'application/json',
-												'jwtAuth': _this.$store.getters.token
-											},
-										})
-									.then(function(response) {
-										_this.WorkDate = response.data
-										console.log(response)
-									}).catch(function(error) {
-										console.log(error)
-									})
-								var Work = response.data
-								console.log("response内容:")
 								console.log(response)
+								_this.WorkDate = response.data.list
+								_this.pageInfo.total = response.data.total
 							}).catch(function(error) {
 								console.log(error)
 							})
-					})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '已取消审批'
-					});
-				});
-			},
-			handleCurrentChange(currentPage) {
-				var _this = this
-				this.pageInfo.currentPage = currentPage
-				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.WorkDate = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleSizeChange(pagesize) {
-				var _this = this
-				this.pageInfo.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo)
-				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log(response.data)
-						_this.WorkDate = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			}
-
-		},
-		created() {
-			const _this = this
-			// this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
-			// 	.then(function(response) {
-			// 		_this.WorkDate = response.data
-			// 		console.log(response)
-			// 	}).catch(function(error) {
-			// 		console.log(error)
-			// 	}),
-			this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					},
-					params: this.pageInfo
-				})
-				.then(function(response) {
-					console.log(response)
-					_this.WorkDate = response.data.list
-					_this.pageInfo.total = response.data.total
-				}).catch(function(error) {
-					console.log(error)
-				})
-		}
+					}
 
 
 
@@ -424,7 +451,7 @@
 
 
 
-	};
+			};
 </script>
 
 <style>
