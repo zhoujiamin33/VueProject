@@ -20,8 +20,8 @@
 			<div style="">
 				<el-button>查询</el-button>
 
-				<el-button @click="dialogFormVisible = true" >新增</el-button>
-				<el-button @click="shengpi" >审批</el-button>
+				<el-button @click="dialogFormVisible = true">新增</el-button>
+				<el-button @click="shengpi">审批</el-button>
 
 				<el-button @click="delRegister">删除</el-button>
 				<div>
@@ -30,7 +30,7 @@
 						<el-form :inline="true" :model="form" ref="ruleForm" class="demo-ruleForm">
 
 							<div style="display: flex; justify-content: space-between;">
-								
+
 								<el-form-item label="咨询方式 :" prop="zxfs">
 									<el-select v-model="form.consultationmode" placeholder="请选择咨询方式">
 										<el-option label="上门咨询" value="上门咨询"></el-option>
@@ -154,8 +154,8 @@
 				<el-table-column fixed="right" label="操作" width="130">
 					<template #default="scope">
 						<el-button type="text" @click="shengpi">审批</el-button>
-						<el-button type="text" @click="showEdit(scope.row)" >修改</el-button>
-						<el-button type="text" @click="showEdit2(scope.row)" >回访</el-button>
+						<el-button type="text" @click="showEdit(scope.row)">修改</el-button>
+						<el-button type="text" @click="showEdit2(scope.row)">回访</el-button>
 					</template>
 
 				</el-table-column>
@@ -352,7 +352,7 @@
 		</div>
 
 	</div>
-	
+
 </template>
 
 <script>
@@ -450,7 +450,7 @@
 					timeliness: '',
 					planreturnvisit: '',
 					paystate: '',
-					empId:''
+					empId: ''
 				},
 				retform: {
 
@@ -522,13 +522,13 @@
 				}
 			}
 		},
-		created(){
-		    this.tableData = this.tableTempData // tableTempData为临时静态数据
+		created() {
+			this.tableData = this.tableTempData // tableTempData为临时静态数据
 		},
 		computed: {
-		    num: function () {
-		        return this.tableData.length
-		    }
+			num: function() {
+				return this.tableData.length
+			}
 		},
 		methods: {
 			handleSelectionChange(val) {
@@ -541,15 +541,15 @@
 				this.multipleSelection2 = val;
 
 			},
-			cls(){
-				
+			cls() {
+
 				this.dialogFormVisible = false
 				this.dialogFormVisible2 = false
 				this.dialogFormVisible3 = false
 				for (var key in this.retform) {
 					delete this.retform[key];
 					console.log("111")
-					
+
 				}
 			},
 
@@ -597,7 +597,12 @@
 				registerId = this.form.registerId
 				console.log(registerId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + registerId)
+				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + registerId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log("1---------------------------------------------")
 						console.log(response)
@@ -609,30 +614,40 @@
 					})
 			},
 			//回访次数
-			filterChange (filters) {
-			    for (const key in filters) {
-			        if (filters[key].length > 0) {
-			            // 配合data中定义的数据枚举数组type，确定操作的是那一列
-			            if (filters[key][0].substr(0, 1) === 'p') {
-			                let queryParams = null
-			                // 获取选中的枚举值
-			                queryParams = filters[key][0].substr(1, 2)
-			                // 1、用的是静态数据，根据枚举值确定tableData
-			                // 2、如果用的是http请求的话，将queryParams作为参数去获取结果集，赋值给tableData即可
-			                if (queryParams === '') {
-			                    this.tableData = this.tableTempData
-			                } else {
-			                    this.tableData = this.tableTempData.filter((item) => item.status === queryParams)
-			                }
-			            }
-			        }
-			    }
-			},
+			// filterChange(filters) {
+			// 	for (const key in filters) {
+			// 		if (filters[key].length > 0) {
+			// 			// 配合data中定义的数据枚举数组type，确定操作的是那一列
+			// 			if (filters[key][0].substr(0, 1) === 'p') {
+			// 				let queryParams = null
+			// 				// 获取选中的枚举值
+			// 				queryParams = filters[key][0].substr(1, 2)
+			// 				// 1、用的是静态数据，根据枚举值确定tableData
+			// 				// 2、如果用的是http请求的话，将queryParams作为参数去获取结果集，赋值给tableData即可
+			// 				if (queryParams === '') {
+			// 					this.tableData = this.tableTempData
+			// 				} else {
+			// 					this.tableData = this.tableTempData.filter((item) => item.status === queryParams)
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// },
 			addConsultation() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddRegister", this.form)
+				this.axios.post("http://localhost:8089/threeproject/AddRegister", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findAllRegister")
+						_this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.ConsultationDate = response.data
 								console.log(response)
@@ -655,7 +670,12 @@
 			addReturnvisit(row) {
 				this.retform.registerId = this.form.registerId;
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddReturnvisit", this.retform)
+				this.axios.post("http://localhost:8089/threeproject/AddReturnvisit", this.retform, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(_this.retform.registerId)
 						var returnvisit = response.data
@@ -672,9 +692,19 @@
 
 			updateRegister() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateRegister", this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateRegister", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findAllRegister")
+						_this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.ConsultationDate = response.data
 								console.log(response)
@@ -692,9 +722,19 @@
 				_this.multipleSelection.forEach(item => {
 					console.log(item)
 					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelReg/" + item.registerId)
+					this.axios.put("http://localhost:8089/threeproject/DelReg?registerId=" + item.registerId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
-							_this.axios.get("http://localhost:8089/threeproject/findAllRegister")
+							_this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
 								.then(function(response) {
 									_this.ConsultationDate = response.data
 									console.log(response)
@@ -718,8 +758,13 @@
 					type: 'warning'
 				}).then(() => {
 					var registerId = _this.multipleSelection.map(item => item.registerId).join()
-					console.log(registerId+"-------")
-					this.axios.get("http://localhost:8089/threeproject/findRegisterId/" + registerId)
+					console.log(registerId + "-------")
+					this.axios.get("http://localhost:8089/threeproject/findRegisterId/" + registerId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							_this.ReturnvisitDate = response.data
 
@@ -740,10 +785,20 @@
 				_this.multipleSelection2.forEach(item => {
 					console.log(item)
 					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelRet/" + item.returnvisitId)
+					this.axios.put("http://localhost:8089/threeproject/DelRet/" + item.returnvisitId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							_this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + item
-									.registerId)
+									.registerId, {
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': _this.$store.getters.token
+										}
+									})
 								.then(function(response) {
 									console.log("1---------------------------------------------")
 									console.log(response)
@@ -766,30 +821,50 @@
 
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findAllRegister")
+			this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.ConsultationDate = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				
 
-				this.axios.get("http://localhost:8089/threeproject/findCourse")
+
+				this.axios.get("http://localhost:8089/threeproject/findCourse", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.CourseDate = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/findSource")
+				this.axios.get("http://localhost:8089/threeproject/findSource", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.SourceDate = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/findEmp")
+				this.axios.get("http://localhost:8089/threeproject/findEmp", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.EmpData = response.data
 					console.log(response)
@@ -810,6 +885,4 @@
 		align-content: center; */
 	/* margin-left: "600px"
 	} */
-
-	
 </style>

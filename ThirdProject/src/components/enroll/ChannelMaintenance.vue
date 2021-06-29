@@ -14,8 +14,7 @@
 
 			<div style="">
 				<el-button>查询</el-button>
-				<el-button  @click="dialogFormVisible = true">新增</el-button>
-
+				<el-button @click="dialogFormVisible = true">新增</el-button>
 				<el-dialog title="新增生源信息" v-model="dialogFormVisible">
 					<el-form :model="form">
 						<el-form-item prop="theoryCenterId" :required="true" label="生源渠道:"
@@ -55,7 +54,7 @@
 			</div>
 		</div>
 		<div>
-			<el-table :data="SourceDate" border >
+			<el-table :data="SourceDate" border>
 				<el-table-column fixed prop="sourceId" label="" width="120px">
 				</el-table-column>
 				<el-table-column prop="sourceName" label="生源渠道" width="">
@@ -116,7 +115,7 @@
 					sourceName: "",
 					addname: "",
 					consultcontent: "",
-				
+
 				},
 				// formLabelWidth: '120px'
 			}
@@ -127,7 +126,11 @@
 			},
 			addSource() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form)
+				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form, {headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						var source = response.data
@@ -143,7 +146,11 @@
 			},
 			updateSource() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form)
+				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form, {headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						var source = response.data
 						console.log("source:%o", source)
@@ -169,6 +176,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPageSource", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -184,6 +195,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPageSource", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -208,16 +223,20 @@
 			// 	}).catch(function(error) {
 			// 		console.log(error)
 			// 	})
-		this.axios.get("http://localhost:8089/threeproject/findPageSource", {
-				params: this.pageInfo
-			})
-			.then(function(response) {
-				console.log(response)
-				_this.SourceDate = response.data.list
-				_this.pageInfo.total = response.data.total
-			}).catch(function(error) {
-				console.log(error)
-			})
+			this.axios.get("http://localhost:8089/threeproject/findPageSource", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.SourceDate = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
 		}
 	}
 </script>

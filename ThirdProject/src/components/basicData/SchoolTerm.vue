@@ -93,9 +93,9 @@
 			handleClick(row) {
 				console.log(row);
 			},
-			cls(){
+			cls() {
 				const _this = this
-				
+
 				for (var key in _this.form) {
 					delete _this.form[key];
 					console.log("111")
@@ -105,10 +105,20 @@
 
 			addSemester() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Semester", this.form)
+				this.axios.post("http://localhost:8089/threeproject/Semester", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				}
+					)
 					.then(function(response) {
-					
+
 						_this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
 								params: _this.pageInfo
 							})
 							.then(function(response) {
@@ -120,7 +130,7 @@
 							})
 						console.log(response)
 						var semester = response.data
-						
+
 						_this.dialogFormVisible = false
 						for (var key in _this.form) {
 							delete _this.form[key];
@@ -132,7 +142,12 @@
 			},
 			updateSemester() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/Semester", this.form)
+				this.axios.put("http://localhost:8089/threeproject/updateSemester", this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						// this.axios.get("http://localhost:8089/threeproject/findPage", {
 						// 		params: this.pageInfo
@@ -143,7 +158,7 @@
 						// 	}).catch(function(error) {
 						// 		console.log(error)
 						// 	})
-						
+
 						var semester = response.data
 						console.log("semester:%o", semester)
 						var row = _this.SemesterDate.filter(d => d.semesterId == semester.semesterId)[0]
@@ -167,6 +182,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -182,6 +201,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -202,6 +225,10 @@
 			// 		console.log(error)
 			// 	}),
 			this.axios.get("http://localhost:8089/threeproject/findPageSemester", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
