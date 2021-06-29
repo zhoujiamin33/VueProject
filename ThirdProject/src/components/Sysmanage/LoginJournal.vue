@@ -70,7 +70,7 @@
 							}
 						})
 				.then(function(response) {
-					_this.Opjournal = response.data
+					_this.Opjournal = response.data.data
 					_this.Emp=_this.Opjournal.emp
 					console.log(_this.Emp)
 					console.log(response)

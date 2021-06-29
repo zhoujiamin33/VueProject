@@ -1613,7 +1613,7 @@
 					}
 				})
 				.then(function(response) {
-					_this.classType = response.data
+					_this.classType = response.data.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
