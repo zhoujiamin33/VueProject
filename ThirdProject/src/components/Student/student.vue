@@ -179,7 +179,7 @@
 				<el-table-column label="扣课时数" prop="0">0</el-table-column>
 				<el-table-column label="实收费用" prop="courseMoney"></el-table-column>
 				<el-table-column label="操作">
-					<el-button type="text">删除</el-button>
+					<el-button type="text" @click="">删除</el-button>
 				</el-table-column>
 			</el-table>
 			<el-descriptions :model="addForm" class="margin-top" title="预报信息" :column="2" :size="size" border>
@@ -1078,9 +1078,11 @@
 				this.dialogFormVisible2 = true
 			},
 			Updatestu() {
+				console.log("------------"+this.addForm.studentName)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatestudent", this.addForm,
+				this.axios.put("http://localhost:8089/threeproject/updatestudent",this.addForm,
 				{
+					
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -1100,11 +1102,15 @@
 			delstudent(studentId) {
 				console.log("-----------"+studentId)
 				this.addForm.studentId = studentId
-				this.addForm.deletename =this.$store.state.userInfo.userName
+				this.addForm.deletename ="哈哈"
 				console.log(this.addForm.studentId, this.addForm.deletename)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/delstudent" ,{params:this.addForm},
+				this.axios.put("http://localhost:8089/threeproject/delstudent" ,
 				{
+					params:{
+						'studentId':this.addForm.studentId,
+						'deletename': this.addForm.deletename
+						},
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token

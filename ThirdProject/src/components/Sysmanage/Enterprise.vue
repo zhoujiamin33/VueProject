@@ -98,7 +98,13 @@
 			// },
 			updateDept() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/enterprise", this.form)
+				this.axios.put("http://localhost:8089/threeproject/enterprise", this.form,
+				{
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
 						_this.$notify({
 						        title: '成功',
@@ -106,30 +112,17 @@
 						        type: 'success'
 						      });
 						console.log(response)
-						var enterprise = response.data
-						// _this.DeptData.push(dept)
-						var row = _this.form.filter(d=>d.enterpriseId==enterprise.enterpriseId)[0]
-						console.log(row)
-						row.enclosureBrand = enterprise.enclosureBrand
-						row.enterpriseName = enterprise.enterpriseName
-						row.enterpriseName = enterprise.enterpriseName
-						row.enterpriseShortname = enterprise.enterpriseShortname
-						row.enterpriseEnglishname = enterprise.enterpriseEnglishname
-						row.companytype = enterprise.companytype
-						row.industry = enterprise.industry
-						row.companyaddress = enterprise.companyaddress
-						row.postalcode = enterprise.postalcode
-						row.companyphone = enterprise.companyphone
-						row.faxphone = enterprise.faxphone
-						row.comanyweb = enterprise.comanyweb
-						row.eMail = enterprise.eMail
-						row.representative = enterprise.representative
-						row.registertime = enterprise.registertime
-						row.registermoney = enterprise.registermoney
-						row.empnumber = enterprise.empnumber
-						row.depositBank = enterprise.depositBank
-						row.bankNumber = enterprise.bankNumber
-						row.enterpriseBrief = enterprise.enterpriseBrief
+						_this.axios.get("http://localhost:8089/threeproject/findenterprise", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						}).then(function(response) {
+							_this.form = response.data.data
+							console.log(response)
+						}).catch(function(error) {
+							console.log(error)
+						})
 					
 					}).catch(function(error) {
 						console.log(error)

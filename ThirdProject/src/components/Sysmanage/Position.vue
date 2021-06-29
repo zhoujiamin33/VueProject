@@ -1,7 +1,7 @@
 <template>
 	<!-- 职位 -->
 		<div class="mian">
-				<div class="mainbody" style="width: 100%;">
+				<div class="mainbody" style="width: 100%;display: flex;">
 					<span style="margin-top: 10px;width: 90px;">快速检索：</span>
 						<el-select v-model="select">
 							<el-option label="职位名称" value="1" ></el-option>
@@ -12,10 +12,10 @@
 							@clear="serchVal">
 						
 						</el-input>
-						<el-button @click="findpositionname"><i class="el-icon-search"></i></el-button>
+						<el-button type="primary" @click="findpositionname"><i class="el-icon-search"/>查询</el-button>
 				</div>
-				<div style="margin-bottom: 30px;">
-					<el-button @click="dialogFormVisible=true">新增</el-button>
+				<div style="margin-bottom: 30px;display: flex;">
+					<el-button type="primary" @click="dialogFormVisible=true">新增</el-button>
 				</div>
 				
 			
@@ -28,8 +28,8 @@
 					</el-table-column>
 					<el-table-column prop="describe" label="操作">
 						<template #default="scope">
-						<el-button @click="positionEdit(scope.row)">修改</el-button>
-						<el-button @click="del(scope.row)">删除</el-button>
+						<el-button type="primary" @click="positionEdit(scope.row)">修改</el-button>
+						<el-button type="primary" @click="del(scope.row)">删除</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
