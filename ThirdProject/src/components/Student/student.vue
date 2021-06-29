@@ -1038,10 +1038,12 @@
 							type: 'error'
 						});
 					} else {
+						
 						var ids = _this.chektable.map(item => item.studentId).join()
+						console.log("+++++++++++++++"+ids)
 						// _this.chektable.forEach(item => {
 						// 	console.log(item.studentId)
-						_this.delstudent(ids, "cc")
+						_this.delstudent(ids)
 						// });
 						_this.$message({
 							type: 'success',
@@ -1095,11 +1097,12 @@
 					})
 			},
 			//删除
-			delstudent(studentId, deletename) {
+			delstudent(studentId) {
+				console.log("-----------"+studentId)
 				this.addForm.studentId = studentId
-				this.addForm.deletename = deletename
+				this.addForm.deletename =this.$store.state.userInfo.userName
 				console.log(this.addForm.studentId, this.addForm.deletename)
-				const _this = this;
+				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/delstudent" ,{params:this.addForm},
 				{
 					headers: {
@@ -1332,7 +1335,7 @@
 						var supendentity = response.data
 						_this.Supende = supendentity
 						_this.dialogFormVisible5 = false
-						_this.findclassstuId(supendentity.studentId)
+						_this.findclassstuId(_this.addForm.studentId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1536,7 +1539,7 @@
 					}
 				})
 					.then(function(response) {
-						_this.Classes = response.data.data
+						_this.Classes = response.data
 						// _this.form.classes=_this.Classes
 						// _this.form.classes.classesId = _this.Classes.classesId
 						 console.log("班级名称1：" + _this.Classes.emp)
@@ -1551,7 +1554,7 @@
 						 _this.addForm.whendetails=_this.Classes.whendetails
 						
 						console.log("kk" + _this.addForm.classesName + _this.addForm.starteddate)
-						console.log(response)
+						// console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
