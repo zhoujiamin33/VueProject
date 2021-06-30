@@ -3,19 +3,18 @@
 		<div class="mianboby">
 			<div class="mianwbk" style="">
 				<b>快速索引：</b>
-				<el-select v-model="value" filterable placeholder="请选择">
-					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
+				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
+					<el-option label="咨询登记ID" value="咨询登记ID"></el-option>
+					<el-option label="招生审核状态" value="招生审核状态"></el-option>
 				</el-select>
-				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
+				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
 			</div>
 			<div style="">
-				<el-button>查询</el-button>
+				<el-button @click="selectMemlivery()">查询</el-button>
 				<el-button @click="delWork">审批</el-button>
 				<div>
 					<el-dialog prop="theoryCenterId" :required="true" title="新增交接信息" v-model="dialogFormVisible">
-
 						<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
 							class="demo-ruleForm">
 							<el-form-item label="交接事项 :" prop="jjsx">
@@ -36,7 +35,6 @@
 			</div>
 		</div>
 		<div>
-
 			<el-table ref="multipleTable" :data="WorkDate" tooltip-effect="dark" style=""
 				@selection-change="handleSelectionChange">
 				<el-table-column type="selection" width="55">
@@ -45,7 +43,6 @@
 				</el-table-column>
 				<el-table-column prop="registerId" label="咨询登记编号" width="150">
 				</el-table-column>
-
 				<el-table-column prop="zsexaminetime" label="招生审核时间" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column prop="jwisexamine" label="招生审核状态">
@@ -69,7 +66,6 @@
 			<!-- 修改 -->
 			<div>
 				<el-dialog prop="theoryCenterId" :required="true" title="修改咨询登记信息" v-model="reply">
-
 					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 						<el-form-item label="交接事项 :" prop="name">
 							<el-input v-model="ruleForm.name"></el-input>
@@ -82,7 +78,6 @@
 								<el-input v-model="ruleForm.handovertime"></el-input>
 							</el-form-item>
 						</div>
-
 						<div style="text-align: center;"><b style="font-size: 17px;">上下班回复列表</b></div>
 						<div>
 							<el-table :data="hfjmtableData" stripe style="width: 100%">
@@ -94,7 +89,6 @@
 								</el-table-column>
 								<el-table-column prop="hfjmname" label="回复人" width="190px">
 								</el-table-column>
-
 							</el-table>
 						</div>
 						<div style="display: flex; justify-content: space-between;">
@@ -110,9 +104,7 @@
 								<el-input v-model="ruleForm.replycontent"></el-input>
 							</el-form-item>
 						</div>
-
 					</el-form>
-
 					<template #footer>
 						<span class="dialog-footer">
 							<el-button type="primary" @click="modify = false">保存</el-button>
@@ -125,9 +117,7 @@
 			<!-- //回访 -->
 			<div style="">
 				<el-dialog prop="theoryCenterId" :required="true" title="客户回访信息" v-model="returnvisit">
-
 					<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-
 						<div style="display: flex; justify-content: space-between;">
 							<el-form-item label="接待人 :" prop="name">
 								<el-input v-model="ruleForm.name" style="width: 120px; height: 20px;"></el-input>
@@ -174,7 +164,6 @@
 							</el-form-item>
 						</div>
 					</el-form>
-
 					<template #footer>
 						<span class="dialog-footer">
 							<el-button type="primary" @click="returnvisit = false">保存</el-button>
@@ -183,9 +172,7 @@
 					</template>
 				</el-dialog>
 			</div>
-
 		</div>
-
 	</div>
 </template>
 
@@ -195,18 +182,12 @@
 		defineComponent,
 		ref
 	} from 'vue'
-
-
-
 	export default {
-		setup() {
-			return {
-				input: ref('')
-			}
-		},
 		data() {
 			return {
 				pageInfo: {
+					value: "",
+					input: "",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
@@ -228,7 +209,6 @@
 					label: '北京烤鸭'
 				}],
 				value: '',
-
 				value1: '',
 				value2: '',
 				dialogTableVisible: false,
@@ -243,15 +223,14 @@
 					delivery: false,
 					type: [],
 					resource: '',
-					desc: ''
+					desc: '',
+					ZSExamineName: ''
 				},
-
 				ruleForm: {
 					jjsx: '',
 					jjr: '',
 					delivery: false,
 					type: [],
-
 				},
 				rules: {
 					jjsx: [{
@@ -276,8 +255,6 @@
 						message: '长度在 3 到 5 个字符',
 						trigger: 'blur'
 					}]
-
-
 				},
 				hfjmtableData: [{
 					hfjmid: '1',
@@ -309,149 +286,137 @@
 				this.multipleSelection = val;
 				console.log(val + "--------------")
 			},
-			// updateAuter() {
-			// 				const _this = this
-			// 				this.axios.delete("http://localhost:8089/tsm/delAuthorByroleid", {
-			// 					params: {
-			// 						"roleid": this.roleid,
-			// 						"Authors":qs.stringify(this.$refs.tree.getCheckedKeys())
-			// 					},
-			// 					headers: {
-			// 						'content-type': 'application/json',
-			// 						'jwtAuth': _this.$store.getters.token
-			// 					}
-			// 				}).then(function(response) {
-			// 					console.log(response.data)
-			// 					console.log(_this.$store.getters.token)
-			// 				}).catch(function(error) {
-			// 					console.log(error)
-			// 				})
-			// 				this.dialogFormVisible = false
-			// 			},
-			//招生审批
+			setup() {
+				return {
+					input: ref('')
+				}
+			},
 			delWork() {
 				const _this = this
 				this.$confirm('确定要审核该学员吗?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-							_this.multipleSelection.forEach(item => {
-								console.log(item + "uuuu")
-								console.log(item.memorandumattachmentId)
-								console.log("------------------------------------------------------=====")
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.multipleSelection.forEach(item => {
+						console.log(item + "uuuu")
+						console.log(item.memorandumattachmentId)
+						console.log("------------------------------------------------------=====")
 
-								_this.axios.delete("http://localhost:8089/threeproject/Spzszt", {
-										params: {
-											"memorandumattachmentId":item.memorandumattachmentId
-										},
-										headers: {
-											'content-type': 'application/json',
-											'jwtAuth': _this.$store.getters.token
-										}
-									})
-									.then(function(response) {
-										console.log("==============+++++++++++++++++++++====")
-											_this.axios.get(
-													"http://localhost:8089/threeproject/findPageMemorandumattachment", {
-														headers: {
-															'content-type': 'application/json',
-															'jwtAuth': _this.$store.getters.token
-														},
-														params: _this.pageInfo
-													})
-												.then(function(response) {
-													console.log(response)
-													_this.WorkDate = response.data.list
-													_this.pageInfo.total = response.data.total
-												}).catch(function(error) {
-													console.log(error)
-												})
-											var Work = response.data
-											console.log("response内容:")
-											console.log(response)
-										}).catch(function(error) {
-											console.log(error)
-										})
-									})
-							}).catch(() => {
-								this.$message({
-									type: 'error',
-									message: '已取消审批'
-								});
-							});
-						},
-						handleCurrentChange(currentPage) {
-							var _this = this
-							this.pageInfo.currentPage = currentPage
-							var ps = qs.stringify(this.pageInfo)
-							this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									},
-									params: this.pageInfo
-								})
-								.then(function(response) {
-									console.log(response.data)
-									_this.WorkDate = response.data.list
-								}).catch(function(error) {
-									console.log(error)
-								})
-						},
-						handleSizeChange(pagesize) {
-							var _this = this
-							this.pageInfo.pagesize = pagesize
-							var ps = qs.stringify(this.pageInfo)
-							console.log(ps)
-							this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									},
-									params: this.pageInfo
-								})
-								.then(function(response) {
-									console.log(response.data)
-									_this.WorkDate = response.data.list
-								}).catch(function(error) {
-									console.log(error)
-								})
-						}
-
-					},
-					created() {
-						const _this = this
-						// this.axios.get("http://localhost:8089/threeproject/findAllMemorandumattachment")
-						// 	.then(function(response) {
-						// 		_this.WorkDate = response.data
-						// 		console.log(response)
-						// 	}).catch(function(error) {
-						// 		console.log(error)
-						// 	}),
-						this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						_this.axios.delete("http://localhost:8089/threeproject/Spzszt", {
+								params: {
+									"memorandumattachmentId": item.memorandumattachmentId
+								},
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
-								},
-								params: this.pageInfo
+								}
 							})
 							.then(function(response) {
+								console.log("==============+++++++++++++++++++++====")
+								_this.axios.get(
+										"http://localhost:8089/threeproject/findPageMemorandumattachment", {
+											headers: {
+												'content-type': 'application/json',
+												'jwtAuth': _this.$store.getters.token
+											},
+											params: _this.pageInfo
+										})
+									.then(function(response) {
+										console.log(response)
+										_this.WorkDate = response.data.list
+										_this.pageInfo.total = response.data.total
+									}).catch(function(error) {
+										console.log(error)
+									})
+								var Work = response.data
+								console.log("response内容:")
 								console.log(response)
-								_this.WorkDate = response.data.list
-								_this.pageInfo.total = response.data.total
 							}).catch(function(error) {
 								console.log(error)
 							})
-					}
-
-
-
-
-
-
-
-			};
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '已取消审批'
+					});
+				});
+			},
+			//多条件查询
+			selectMemlivery() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectMemlivery", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.WorkDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.WorkDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.WorkDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}
+		},
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findPageMemorandumattachment", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.WorkDate = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+		}
+	};
 </script>
 
 <style>

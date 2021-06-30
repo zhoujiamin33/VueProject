@@ -124,6 +124,7 @@
 			},
 			addSource() {
 				const _this = this
+				this.form.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -145,6 +146,7 @@
 			},
 			updateSource() {
 				const _this = this
+				
 				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form, {
 						headers: {
 							'content-type': 'application/json',

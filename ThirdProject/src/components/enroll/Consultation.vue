@@ -1,20 +1,16 @@
 <template>
 	<div>
 		<div class="mianboby">
-			<div class="mianwbk">
+			<div class="mianwbk" style="margin-bottom: 20px;">
 				<b>快速索引：</b>
 				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
 					<el-option label="咨询人" value="咨询人"></el-option>
 					<el-option label="电话号码" value="电话号码"></el-option>
 					<el-option label="接待人" value="接待人"></el-option>
-				</el-select>&nbsp;
+				</el-select>
 				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
-				<!-- <span class=""> -->&nbsp;&nbsp;&nbsp;<b>咨询时间:</b>&nbsp;
-				<!-- </span> -->
-				<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期"
-					end-placeholder="结束日期">
-				</el-date-picker>
+				
 
 			</div>
 
@@ -134,8 +130,6 @@
 				<el-table-column prop="course.courseName" label="咨询课程" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column prop="source.sourceName" label="生源渠道" show-overflow-tooltip width="110px">
-				</el-table-column>
-				<el-table-column prop="" label="回访次数" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column prop="paystate" label="缴费状态" show-overflow-tooltip>
 					<template v-slot="scope1">
@@ -295,15 +289,13 @@
 						</el-form-item>
 					</div>
 					<div style="display: flex; justify-content: space-between;">
-						<el-form-item label="回访次数 :" prop="receptionist">
-							<el-input disabled v-model="form.registerId" style="width:220px"></el-input>
-						</el-form-item>
+						
 						<el-form-item label="咨询内容 :" prop="handovertime">
 							<el-input disabled v-model="form.consultcontent" style="width:220px"></el-input>
 						</el-form-item>
 					</div>
 
-					<div style="text-align: center;"><b style="font-size: 17px;">上下班回复列表</b></div>
+					<div style="text-align: center;"><b style="font-size: 17px;">回访列表</b></div>
 					<el-button @click="delReturnvisit" style="margin-left: 600px;">删除</el-button>
 					<div>
 
@@ -393,48 +385,7 @@
 					value: 2,
 					label: '已缴费'
 				}],
-				kssy: [{
-					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '双皮奶'
-				}, {
-					value: '选项3',
-					label: '蚵仔煎'
-				}, {
-					value: '选项4',
-					label: '龙须面'
-				}, {
-					value: '选项5',
-					label: '北京烤鸭'
-				}],
 				value: '',
-				shortcuts: [{
-					text: '最近一周',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近一个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近三个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-						return [start, end]
-					})(),
-				}],
 				value1: '',
 				value2: '',
 				CourseDate: [],
@@ -447,7 +398,6 @@
 				dialogFormVisible: false,
 				form: {
 					course: {
-
 					},
 					courseName: '',
 					registerId: '',
@@ -468,7 +418,6 @@
 					empId: ''
 				},
 				retform: {
-
 					returnvisitId: '',
 					registerId: '',
 					comments: '',
@@ -528,7 +477,6 @@
 						message: '请选择课程',
 						trigger: 'change'
 					}],
-
 					zxnr: [{
 						required: true,
 						message: '请输入咨询内容',
@@ -557,20 +505,16 @@
 			handleSelectionChange2(val) {
 				this.multipleSelection2 = [];
 				this.multipleSelection2 = val;
-
 			},
 			cls() {
-
 				this.dialogFormVisible = false
 				this.dialogFormVisible2 = false
 				this.dialogFormVisible3 = false
 				for (var key in this.retform) {
 					delete this.retform[key];
 					console.log("111")
-
 				}
 			},
-
 			showEdit(row) {
 				console.log(row);
 				this.form.planreturnvisit = row.planreturnvisit;
@@ -608,7 +552,6 @@
 				this.form.paystate = row.paystate
 				this.dialogFormVisible3 = true
 				//回访显示
-
 				this.huifan(this.form.registerId)
 			},
 			
@@ -688,28 +631,9 @@
 						console.log(error)
 					})
 			},
-			//回访次数
-			// filterChange(filters) {
-			// 	for (const key in filters) {
-			// 		if (filters[key].length > 0) {
-			// 			// 配合data中定义的数据枚举数组type，确定操作的是那一列
-			// 			if (filters[key][0].substr(0, 1) === 'p') {
-			// 				let queryParams = null
-			// 				// 获取选中的枚举值
-			// 				queryParams = filters[key][0].substr(1, 2)
-			// 				// 1、用的是静态数据，根据枚举值确定tableData
-			// 				// 2、如果用的是http请求的话，将queryParams作为参数去获取结果集，赋值给tableData即可
-			// 				if (queryParams === '') {
-			// 					this.tableData = this.tableTempData
-			// 				} else {
-			// 					this.tableData = this.tableTempData.filter((item) => item.status === queryParams)
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// },
 			addConsultation() {
 				const _this = this
+				// this.form.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/AddRegister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -764,7 +688,6 @@
 						console.log(error)
 					})
 			},
-
 			updateRegister() {
 				const _this = this
 				this.axios.put("http://localhost:8089/threeproject/updateRegister", this.form, {
@@ -791,7 +714,6 @@
 						console.log(error)
 					})
 			},
-
 			delRegister() {
 				const _this = this
 				_this.multipleSelection.forEach(item => {
@@ -854,7 +776,6 @@
 					});
 				});
 			},
-
 			delReturnvisit() {
 				const _this = this
 				_this.multipleSelection2.forEach(item => {
@@ -890,25 +811,9 @@
 						})
 				})
 			}
-
-
 		},
-
 		created() {
 			const _this = this
-			// this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
-			// 		headers: {
-			// 			'content-type': 'application/json',
-			// 			'jwtAuth': _this.$store.getters.token
-			// 		}
-			// 	})
-			// 	.then(function(response) {
-			// 		_this.ConsultationDate = response.data
-					
-			// 		console.log(response)
-			// 	}).catch(function(error) {
-			// 		console.log(error)
-			// 	}),
 				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
 						headers: {
 							'content-type': 'application/json',
@@ -961,15 +866,13 @@
 					console.log(error)
 				})
 		},
-
 	};
 </script>
 
 <style>
-	/* 	.mianboby {
-		/* 	display: flex;
+	.mianboby {
+		display: flex;
 		justify-content: space-between;
-		align-content: center; */
-	/* margin-left: "600px"
-	} */
+		align-content: center;
+	}
 </style>
