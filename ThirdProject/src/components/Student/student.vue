@@ -828,6 +828,29 @@
 					})
 				this.dialogFormVisible8 = false
 			},
+			//财务新增复课退费
+			// insertBackRefund(backId){
+			// 	const _this = this
+			// 	this.Backform2.backId=backId
+			// 	console.log(this.Backform2.backId+"qwqw")
+			// 	this.Backform2.studentId = this.Backform.studentId
+			// 	this.Backform2.classesId = this.Backform.classesId
+			// 	this.Backform2.detailcourseId = this.Backform.detailcourseId
+			// 	this.Backform2.suspendeId = this.Backform.suspendeId
+			// 	this.Backform2.courseId = this.Backform.courseId
+			// 	this.Backform2.addname=this.$store.state.updateUserInfo.username
+			// 	this.axios.post("http://localhost:8089/threeproject/insertRefund", this.Backform2,{
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 		.then(function(response) {
+			// 			console.log(response)
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			// 获取课类的编号
 			findclasstypeId(classtypeId) {
 				console.log("kkk" + classtypeId)

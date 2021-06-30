@@ -2,18 +2,15 @@
 	<div>
 		<div class="mianboby">
 			<div class="mianwbk" style="margin-bottom: 20px;">
-
 				<b>快速索引：</b>
-				<el-select v-model="value" filterable placeholder="请选择">
-					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
+				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
+					<el-option label="生源渠道" value="生源渠道"></el-option>
 				</el-select>
-				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
+				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
 			</div>
-
 			<div style="">
-				<el-button>查询</el-button>
+				<el-button @click="selectSourceFuzzyquery()">查询</el-button>
 				<el-button @click="dialogFormVisible = true">新增</el-button>
 				<el-dialog title="新增生源信息" v-model="dialogFormVisible">
 					<el-form :model="form">
@@ -98,6 +95,8 @@
 		data() {
 			return {
 				pageInfo: {
+					value:"",
+					input:"",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
@@ -115,7 +114,6 @@
 					sourceName: "",
 					addname: "",
 					consultcontent: "",
-
 				},
 				// formLabelWidth: '120px'
 			}
@@ -126,9 +124,11 @@
 			},
 			addSource() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form, {headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
+				this.form.addname=this.$store.state.updateUserInfo.username
+				this.axios.post("http://localhost:8089/threeproject/AddSource", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
 						}
 					})
 					.then(function(response) {
@@ -146,9 +146,11 @@
 			},
 			updateSource() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form, {headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
+				
+				this.axios.put("http://localhost:8089/threeproject/UpSource", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
 						}
 					})
 					.then(function(response) {
@@ -161,6 +163,24 @@
 						console.log("-----------3")
 						row.addname = source.addname
 						_this.dialogFormVisible2 = false
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//多条件查询
+			selectSourceFuzzyquery() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectSourceFuzzyquery", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.SourceDate = response.data.list
+						_this.pageInfo.total = response.data.total
 					}).catch(function(error) {
 						console.log(error)
 					})

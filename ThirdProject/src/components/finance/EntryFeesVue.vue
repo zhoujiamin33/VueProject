@@ -9,13 +9,14 @@
 					<el-option value="0" label="未审核">未审核</el-option>
 	 			</el-select>
 	 			<span style="margin-left: 20px;font-size: 15px;">缴费日期：</span>
-	 			  <el-date-picker v-model="value"  align="right" type="date"
-	 			      placeholder="选择日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>
-				<span style="margin-left: 20px;font-size: 15px;">录入人：</span>
-				<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
+	 			  <el-date-picker v-model="pageInfo.startTime"  align="center" type="date"
+	 			      placeholder="开始日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>至
+				  <el-date-picker v-model="pageInfo.endTime"  align="center" type="date"
+				      placeholder="结束日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>
+				
 	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:240px;" @click="dialogFormVisible=true">新增报班</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:20px;" @click="dialogFormbubao=true">补报缴费</el-button>
+				<el-button type="primary" icon="el-icon-plus" style="margin-left:100px;" @click="dialogFormVisible=true">新增报班</el-button>
+				<el-button type="primary" icon="el-icon-plus" style="margin-left:10px;" @click="dialogFormbubao=true">补报缴费</el-button>
 	 		</el-row>
 	 	</div>
 	</div>	
@@ -50,9 +51,8 @@
 			    </el-table-column>
 			</el-table>
 		</div>
-		<div style="display: flex; justify-content: space-between;">
+		<div style="display: flex; justify-content: space-between;margin-top: 20px;margin-left: 400px;">
 			<!-- 底部金额总结 -->
-			<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 			<el-pagination
 			@size-change="handleSizeChange"
 			@current-change="handleCurrentChange"
@@ -164,7 +164,9 @@
 					currentPage: 1,//标识当前页码
 					pagesize:4,//每页多少条数据
 					total:0,
-					ApprovalState:"",value2:"",input:"",
+					ApprovalState:"",
+					startTime:"",
+					endTime:"",
 				},
 				dialogFormVisible:false,//报班缴费
 				dialogFormbubao:false,//补报缴费
@@ -396,6 +398,7 @@
 			},
 			//根据咨询登记id查询课程id,并根据课程id查询应缴金额
 			selectByregisterId(registerId){
+				const _this=this
 				this.form.registerId=registerId
 				console.log("0000"+registerId)
 				this.axios.get("http://localhost:8089/threeproject/selectByregisterId?registerId="+this.form.registerId,{
@@ -407,9 +410,10 @@
 				.then(function(response) {
 					console.log(response)
 					_this.registerdata=response.data
-					_this.courseId=response.data.registerId
+					_this.courseId=response.data.courseId
+					_this.updatepaystate(response.data.registerIds)
 					console.log(_this.courseId+"xixixix")
-					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=",_this.courseId,{
+					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId="+_this.courseId,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -419,6 +423,7 @@
 						console.log(response)
 						_this.coursedata=response.data
 						console.log("1111:"+response.data.courseId)
+						
 					}).catch(function(error){
 						console.log(error)
 					})
@@ -459,7 +464,7 @@
 			selectBycontionEntry(){
 				const _this=this
 				console.log(this.pageInfo.ApprovalState+"abc")
-				this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD")
+				// this.pageInfo.value2=moment(this.value).format("YYYY-MM-DD")
 				// this.pageInfo.value2=this.value.toLocaleString()
 				console.log(this.pageInfo.value2)
 				console.log(this.pageInfo.input+"abcdef")
