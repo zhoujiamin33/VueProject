@@ -14,10 +14,9 @@
 				</el-input>
 			</div>
 			<div style="margin-left: 180px;">
-				<el-button @click="selectName">查询</el-button>
-				<el-button @click="shengpi">通过审批</el-button>
-				<el-button @click="open">办理退卡</el-button>
-				<el-button @click="del">删除</el-button>
+				<el-button type="primary" @click="selectName">查询</el-button>
+				<el-button type="success" @click="shengpi">通过审批</el-button>
+				<el-button type="danger" @click="del">删除</el-button>
 			</div>
 		</div>
 
@@ -179,7 +178,7 @@
 				<el-table-column label="扣课时数" prop="0">0</el-table-column>
 				<el-table-column label="实收费用" prop="courseMoney"></el-table-column>
 				<el-table-column label="操作">
-					<el-button type="text" @click="">删除</el-button>
+					<el-button type="text" @click="shanchu">删除</el-button>
 				</el-table-column>
 			</el-table>
 			<el-descriptions :model="addForm" class="margin-top" title="预报信息" :column="2" :size="size" border>
@@ -259,20 +258,6 @@
 						<el-option label="全额缴费" value="1">全额缴费</el-option>
 						<el-option label="预缴费" value="2">预缴费</el-option>
 					</el-select>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-office-building"></i>
-						预交金额:
-					</template>
-					<el-input v-model="supplementaryform.feesAdvance" placeholder="请选择预交金额"></el-input>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-office-building"></i>
-						实收金额:
-					</template>
-					<el-input v-model="supplementaryform.receipts" placeholder="请选择预交金额"></el-input>
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -408,7 +393,7 @@
 					</template>
 
 				</el-table-column>
-			
+
 				<el-table-column prop="zb" label="退学">
 					<template v-slot="scope">
 
@@ -480,7 +465,7 @@
 						学号:
 					</template>
 					{{this.addForm.studentNumber}}
-				
+
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -488,7 +473,7 @@
 						退学学员:
 					</template>
 					{{this.addForm.studentName}}
-				
+
 				</el-descriptions-item>
 				<el-descriptions-item>
 					<template #label>
@@ -518,7 +503,7 @@
 					</template>
 					{{this.addForm.courseMoney}}
 				</el-descriptions-item>
-				
+
 				<el-descriptions-item>
 					<template #label>
 						<i class="el-icon-office-building"></i>
@@ -720,7 +705,7 @@
 					studytime: '',
 					deletename: '',
 					classesId: '',
-					whendetails:'',//已上课时
+					whendetails: '', //已上课时
 					classesName: '', //班级名称
 					registerId: '', //咨询编号
 					suspendeReason: '', //停课理由
@@ -744,7 +729,7 @@
 					absent: '', //缺课时
 					detailcourseName: '', //详细课程名称
 					detailcourseId: '', //详细课程编号
-					dropId:''//退学编号
+					dropId: '' //退学编号
 				},
 				// 复课表
 				Backform: {
@@ -758,18 +743,8 @@
 					detailcourseId: '', //详细课程编号
 					courseId: '' //课程id
 				},
-				//财务复课退费表单
-				Backform2: {
-					backId:"",
-					studentId: '',
-					classesId: '',
-					suspendeId: '', //停课编号
-					detailcourseId: '', //详细课程编号
-					courseId: '' ,//课程id
-					addname:""
-				},
 				// 退学
-				Droportform:{
+				Droportform: {
 					studentstatusId: '', //学员状态id
 					studentId: '',
 					classesId: '',
@@ -818,17 +793,7 @@
 					courseMoney: '', //应收费用
 					detailsupplementaryName: '',
 					classhours: '',
-					studentId: '',
-					feesAdvance:0,
-					receipts:""
-				},
-				//财务补报
-				reportForm:{
-					courseMoney:"",
-					feesType:"",
-					feesAdvance:"",
-					addname:"",
-					receipts:""
+					studentId: ''
 				}
 			}
 
@@ -843,61 +808,59 @@
 				this.Backform.intention = this.addForm.intention
 				this.Backform.absent = this.addForm.absent
 				this.Backform.courseId = this.addForm.courseId
-				this.Backform.studentstatusId=this.addForm.studentstatusId
-				console.log("vv"+this.Backform.studentstatusId)
+				this.Backform.studentstatusId = this.addForm.studentstatusId
+				console.log("vv" + this.Backform.studentstatusId)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Addback?studentstatusId=" +this.Backform.studentstatusId,this.Backform,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/Addback?studentstatusId=" + this.Backform
+						.studentstatusId, this.Backform, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						console.log("------------停课开始")
 						_this.findclassstuId(_this.Backform.studentId)
-						if(_this.Backform.intention==1){
-							_this.insertBackRefund(response.data.backId)
-						}
+
+
 					}).catch(function(error) {
 						console.log(error)
 					})
 				this.dialogFormVisible8 = false
 			},
 			//财务新增复课退费
-			insertBackRefund(backId){
-				const _this = this
-				this.Backform2.backId=backId
-				console.log(this.Backform2.backId+"qwqw")
-				this.Backform2.studentId = this.Backform.studentId
-				this.Backform2.classesId = this.Backform.classesId
-				this.Backform2.detailcourseId = this.Backform.detailcourseId
-				this.Backform2.suspendeId = this.Backform.suspendeId
-				this.Backform2.courseId = this.Backform.courseId
-				this.Backform2.addname=this.$store.state.updateUserInfo.username
-				this.axios.post("http://localhost:8089/threeproject/insertRefund", this.Backform2,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-					.then(function(response) {
-						console.log(response)
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
+			// insertBackRefund(backId){
+			// 	const _this = this
+			// 	this.Backform2.backId=backId
+			// 	console.log(this.Backform2.backId+"qwqw")
+			// 	this.Backform2.studentId = this.Backform.studentId
+			// 	this.Backform2.classesId = this.Backform.classesId
+			// 	this.Backform2.detailcourseId = this.Backform.detailcourseId
+			// 	this.Backform2.suspendeId = this.Backform.suspendeId
+			// 	this.Backform2.courseId = this.Backform.courseId
+			// 	this.Backform2.addname=this.$store.state.updateUserInfo.username
+			// 	this.axios.post("http://localhost:8089/threeproject/insertRefund", this.Backform2,{
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 		.then(function(response) {
+			// 			console.log(response)
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			// 获取课类的编号
 			findclasstypeId(classtypeId) {
 				console.log("kkk" + classtypeId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findclasstypeId?classtypeId=" + classtypeId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/findclasstypeId?classtypeId=" + classtypeId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.Course = response.data
 						_this.form.course = _this.Course
@@ -909,13 +872,12 @@
 			selectByCourseId(courseId) {
 				const _this = this
 				// 课程表里
-				this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=" + courseId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId=" + courseId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log("-----------课程")
 						_this.Course = response.data
@@ -937,59 +899,57 @@
 				this.supplementaryform.studentId = this.addForm.studentId
 				this.Supplementary.push(this.supplementaryform)
 			},
+			// 删除预报
+			shanchu() {
+				this.Supplementary.remove(this.supplementaryform)
+			},
 			// 确定补报
 			okSupplementary() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddSupplementary", this.supplementaryform,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/AddSupplementary", this.supplementaryform, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log("------------开始补报")
-						_this.insertReportEntry()
 						_this.AddDetailsupplementary(response.data.supplementaryId)
 						_this.dialogFormVisible4 = false
 						// _this.findsupplementary()
-						
+						_this.insertReportEntry(_this.supplementaryform)
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			//财务新增补报
-			insertReportEntry(){
-				const _this=this
-				this.reportForm.courseMoney=this.supplementaryform.courseMoney
-				this.reportForm.feesType=this.supplementaryform.payment
-				this.reportForm.feesAdvance=this.supplementaryform.feesAdvance
-				this.reportForm.addname=this.$store.state.updateUserInfo.username
-				this.axios.post("http://localhost:8089/threeproject/insertEntry",this.reportForm,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response){
-					console.log(response)
-					_this.reportForm={}
-				}).catch(function(error){
-					console.log(error)
-				})
+			insertReportEntry() {
+				const _this = this
+				this.supplementaryform.addname = this.$store.state.userInfo.userName;
+				this.axios.post("http://localhost:8089/threeproject/insertEntry", this.supplementaryform, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.reportForm = {}
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			AddDetailsupplementary(supplementaryId) {
 				this.supplementaryform.supplementaryId = supplementaryId
 				console.log("this.supplementaryform.supplementaryId" + this.supplementaryform.supplementaryId)
 				console.log("this.supplementaryform.supplementaryId" + this.supplementaryform.detailsupplementaryName)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddDetailsupplementary", this.supplementaryform,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/AddDetailsupplementary", this.supplementaryform, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.Supplementary = response.data
 						console.log(response)
@@ -1002,14 +962,13 @@
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findsupplementary", {
 						params: this.pageInfo,
-						
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						
-					},
-					)
+
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+
+					}, )
 					.then(function(response) {
 						_this.Supplementary = response.data.list
 						_this.pageInfo.total = response.data.total
@@ -1023,13 +982,12 @@
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findName", {
 						params: this.pageInfo,
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						
-					},
-					)
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+
+					}, )
 					.then(function(response) {
 						_this.Stutable = response.data.list
 						_this.pageInfo.total = response.data.total
@@ -1100,13 +1058,9 @@
 							type: 'error'
 						});
 					} else {
-						
 						var ids = _this.chektable.map(item => item.studentId).join()
-						console.log("+++++++++++++++"+ids)
-						// _this.chektable.forEach(item => {
-						// 	console.log(item.studentId)
+						console.log("+++++++++++++++" + ids)
 						_this.delstudent(ids)
-						// });
 						_this.$message({
 							type: 'success',
 							message: '删除成功!'
@@ -1140,16 +1094,15 @@
 				this.dialogFormVisible2 = true
 			},
 			Updatestu() {
-				console.log("------------"+this.addForm.studentName)
+				console.log("------------" + this.addForm.studentName)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatestudent",this.addForm,
-				{
-					
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.put("http://localhost:8089/threeproject/updatestudent", this.addForm, {
+
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.selectName()
 						console.log(response.data)
@@ -1162,27 +1115,23 @@
 			},
 			//删除
 			delstudent(studentId) {
-				console.log("-----------"+studentId)
-				this.addForm.studentId = studentId
-				this.addForm.deletename ="哈哈"
-				this.addForm.deletename =this.$store.state.updateUserInfo.username
-				console.log(this.addForm.studentId, this.addForm.deletename)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/delstudent" ,
-				{
-					params:{
-						'studentId':this.addForm.studentId,
-						'deletename': this.addForm.deletename
+				console.log("-----------" + studentId)
+				this.addForm.studentId = studentId
+				this.axios.put("http://localhost:8089/threeproject/delstudent", {
+						params: {
+							'studentId': studentId,
+							'deletename': this.$store.state.updateUserInfo.username
 						},
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log("==============开始删除")
 						_this.selectName()
-
+						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -1200,7 +1149,7 @@
 				this.addForm.sourceId = row.sourceId
 				this.addForm.studentId = row.studentId
 				this.addForm.studentNumber = row.studentNumber
-				console.log("学号："+this.addForm.studentNumber)
+				console.log("学号：" + this.addForm.studentNumber)
 				this.addForm.studytime = row.studytime
 				this.addForm.registerId = row.registerId
 				this.addForm.classesId = row.classesId
@@ -1210,13 +1159,12 @@
 				console.log("班级表编号" + classesId)
 				const _this = this
 				// 学员表中
-				this.axios.get("http://localhost:8089/threeproject/findClassId?classesId=" + classesId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/findClassId?classesId=" + classesId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.Classes = response.data
 						// _this.StudentStatus.classes=_this.Classes
@@ -1224,7 +1172,7 @@
 						_this.addForm.classesName = _this.Classes.classesName
 						_this.addForm.detailcourseId = _this.Classes.detailcourseId
 						// _this.addForm.detailcourseName = _this.Classes.detailcourse.detailcourseName
-						_this.addForm.whendetails=_this.Classes.whendetails
+						_this.addForm.whendetails = _this.Classes.whendetails
 						console.log("班级名称1：" + _this.addForm.detailcourseName)
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
@@ -1248,16 +1196,15 @@
 			// 根据学员编号查询学员记录和班级:在学员状态表中
 			findclassstuId(studentId) {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findstuclass?studentId=" + studentId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/findstuclass?studentId=" + studentId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.StudentStatus = response.data
-						
+
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -1326,13 +1273,16 @@
 						});
 					} else {
 						var studentId = _this.chektable.map(item => item.studentId).join()
-						this.axios.get("http://localhost:8089/threeproject/findstudentId?studentId=" + studentId,
-						{
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						})
+						_this.axios.get("http://localhost:8089/threeproject/findstudentId", {
+								params: {
+									'studentId': studentId,
+									'jwexaminename': this.$store.state.updateUserInfo.username
+								},
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.Stustate = response.data
 								_this.selectName()
@@ -1354,7 +1304,7 @@
 
 			// 停课新增
 			showsupend(row) {
-				this.addForm.classesId =row.classesId
+				this.addForm.classesId = row.classesId
 				const _this = this
 				this.$confirm('您确定要对该学员进行停/复课操作吗?', '提示', {
 					confirmButtonText: '确定',
@@ -1373,14 +1323,14 @@
 							message: '该学员已退学!',
 							type: 'error'
 						});
-					}else {
+					} else {
 						console.log("fff" + row)
 						_this.addForm.studentstatusId = row.studentstatusId
 						_this.addForm.classesId = row.classesId
 						_this.addForm.courseId = row.courseId
 						_this.addForm.suspendeReason = row.suspendeReason
-						console.log("dkf"+_this.addForm.classesId)
-						_this.selectclassesId(_this.addForm.classesId)//根据班级id查询所以外键的
+						console.log("dkf" + _this.addForm.classesId)
+						_this.selectclassesId(_this.addForm.classesId) //根据班级id查询所以外键的
 						_this.dialogFormVisible5 = true
 					}
 				}).catch(() => {
@@ -1393,13 +1343,14 @@
 			// 新增停课
 			addsupende() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/addsupende?studentstatusId=" + this.addForm.studentstatusId, this
-						.addForm,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/addsupende?studentstatusId=" + this.addForm
+						.studentstatusId, this
+						.addForm, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						var supendentity = response.data
 						_this.Supende = supendentity
@@ -1429,10 +1380,10 @@
 					this.findClassId(this.addForm.classesId)
 					this.dialogFormVisible8 = true
 				}
-				
+
 			},
 			// findstudentstatusId(studentstatusId) {
-				
+
 			// 	this.addForm.studentstatusId=studentstatusId
 			// 	console.log("l"+this.addForm.studentstatusId)
 			// 	const _this = this
@@ -1477,8 +1428,8 @@
 						_this.addForm.courseId = row.courseId
 						_this.addForm.suspendeReason = row.suspendeReason
 						_this.addForm.courseMoney = row.course.courseMoney
-						_this.addForm.studentstatusId=row.studentstatusId
-						console.log("classes"+_this.addForm.classesId)
+						_this.addForm.studentstatusId = row.studentstatusId
+						console.log("classes" + _this.addForm.classesId)
 						_this.findClassId(_this.addForm.classesId)
 						_this.dialogFormVisible6 = true
 					}
@@ -1490,23 +1441,23 @@
 				});
 			},
 			tuixue() {
-				this.Droportform.studentId=this.addForm.studentId
-				this.Droportform.studentstatusId=this.addForm.studentstatusId
-				this.Droportform.classesId=this.addForm.classesId
-				this.Droportform.dropHandler=this.addForm.dropHandler
-				this.Droportform.dropReason=this.addForm.dropReason
-				this.Droportform.detailcourseId=this.addForm.detailcourseId
-				this.Droportform.courseId=this.addForm.courseId
-				console.log("fghjk"+this.Droportform.dropReason)
-				
+				this.Droportform.studentId = this.addForm.studentId
+				this.Droportform.studentstatusId = this.addForm.studentstatusId
+				this.Droportform.classesId = this.addForm.classesId
+				this.Droportform.dropHandler = this.addForm.dropHandler
+				this.Droportform.dropReason = this.addForm.dropReason
+				this.Droportform.detailcourseId = this.addForm.detailcourseId
+				this.Droportform.courseId = this.addForm.courseId
+				console.log("fghjk" + this.Droportform.dropReason)
+
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/Adddropout?studentstatusId="+this.Droportform.studentstatusId,this.Droportform,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/Adddropout?studentstatusId=" + this.Droportform
+						.studentstatusId, this.Droportform, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						console.log("45678345678开始退学")
 						_this.findclassstuId(_this.Droportform.studentId)
@@ -1515,23 +1466,22 @@
 					}).catch(function(error) {
 						console.log(error)
 					})
-					
-					this.dialogFormVisible6 = false
+
+				this.dialogFormVisible6 = false
 			},
 			// 根据学员状态来修改状态
-			updatestudentstatusId(studentstatusId,studentId){
-				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/updatetuixue?studentstatusId=" +studentstatusId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+			updatestudentstatusId(studentstatusId, studentId) {
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/updatetuixue?studentstatusId=" + studentstatusId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
-						_this.StudentStatus=response.data
-						
-						
+						_this.StudentStatus = response.data
+
+
 						_this.findclassstuId(studentId)
 						console.log(response)
 					}).catch(function(error) {
@@ -1541,18 +1491,17 @@
 			//财务部（退学、退费）
 			Refund(dropId) {
 				const _this = this
-				this.addForm.addname = this.$store.state.updateUserInfo.username
+				this.addForm.addname = "admin"
 				this.addForm.dropId = dropId
 				console.log(this.addForm.studentId + "abc12")
 				console.log(this.addForm.dropId + "abc")
 				console.log(this.addForm.courseId + "abc")
-				this.axios.post("http://localhost:8089/threeproject/insertRefund", this.addForm,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/insertRefund", this.addForm, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 					}).catch(function(error) {
@@ -1582,13 +1531,12 @@
 				console.log("课程编号：" + courseId)
 				const _this = this
 				// 学员状态表
-				this.axios.get("http://localhost:8089/threeproject/findcourseId?courseId=" + courseId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/findcourseId?courseId=" + courseId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.Classes = response.data
 						_this.form.classes = _this.Classes
@@ -1600,28 +1548,27 @@
 			selectclassesId(classesId) {
 				const _this = this
 				// 班级表
-				this.axios.get("http://localhost:8089/threeproject/selectById?classesId=" + classesId,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.get("http://localhost:8089/threeproject/selectById?classesId=" + classesId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.Classes = response.data
 						// _this.form.classes=_this.Classes
 						// _this.form.classes.classesId = _this.Classes.classesId
-						 // console.log("班级名称1：" + _this.Classes.emp)
+						console.log("班级名称1：" + _this.Classes.emp)
 						_this.addForm.classesName = _this.Classes.classesName
 						_this.addForm.teacherId = _this.Classes.teacherId
-						_this.addForm.teacherName = _this.Classes.emp.teacherName
+						_this.addForm.teacherNmae = _this.Classes.emp.teacherNmae
 						_this.addForm.empName = _this.Classes.emp.empName
 						_this.addForm.starteddate = _this.Classes.starteddate
 						_this.addForm.enddate = _this.Classes.enddate
 						_this.addForm.detailcourseId = _this.Classes.detailcourseId
-						 _this.addForm.detailcourseName = _this.Classes.detailcourse.detailcourseName
-						 _this.addForm.whendetails=_this.Classes.whendetails
-						
+						_this.addForm.detailcourseName = _this.Classes.detailcourse.detailcourseName
+						_this.addForm.whendetails = _this.Classes.whendetails
+
 						console.log("kk" + _this.addForm.classesName + _this.addForm.starteddate)
 						// console.log(response)
 					}).catch(function(error) {
@@ -1631,17 +1578,16 @@
 			//保存选择的班级：获取状态表的id修改班级和学员 
 			AddclassesId() {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/addclassesId", this.addForm,
-				{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.put("http://localhost:8089/threeproject/addclassesId", this.addForm, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
-						var Date1= response.data
-				_this.findclassstuId(_this.addForm.studentId)
-				// _this.findstudentstatusId(Data1.studentstatusId)
+						var Date1 = response.data
+						_this.findclassstuId(_this.addForm.studentId)
+						// _this.findstudentstatusId(Data1.studentstatusId)
 						_this.dialogFormVisible7 = false
 
 						console.log(response)
@@ -1655,12 +1601,12 @@
 		created() {
 			const _this = this
 			this.selectName(),
-				this.axios.get("http://localhost:8089/threeproject/findSource",{
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token
-							}
-						})
+				this.axios.get("http://localhost:8089/threeproject/findSource", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.Source = response.data
 					console.log(response)
@@ -1668,8 +1614,7 @@
 					console.log(error)
 				}),
 				// // 查询咨询登记
-				this.axios.get("http://localhost:8089/threeproject/findAllRegister",
-				{
+				this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -1682,7 +1627,7 @@
 					console.log(error)
 				}),
 				// 查询所有班级
-				this.axios.get("http://localhost:8089/threeproject/findAllClass",{
+				this.axios.get("http://localhost:8089/threeproject/findAllClass", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -1696,8 +1641,7 @@
 				}),
 
 				// 课类
-				this.axios.get("http://localhost:8089/threeproject/findcoursetype",
-				{
+				this.axios.get("http://localhost:8089/threeproject/findcoursetype", {
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token

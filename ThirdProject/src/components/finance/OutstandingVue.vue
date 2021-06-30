@@ -41,9 +41,8 @@
 	 			</el-table-column>
 	 		</el-table>
 	 	</div>
-		<div style="display: flex; justify-content: space-between;">
+		<div style="display: flex; justify-content: space-between  ;text-align: center;" >
 			<!-- 底部金额总结 -->
-			<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 			<el-pagination
 			@size-change="handleSizeChange2"
 			@current-change="handleCurrentChange2"
@@ -161,9 +160,8 @@
 	   	 			</el-table-column>
 	   	 		</el-table>
 	   	 	</div>
-			<div style="display: flex; justify-content: space-between;">
+			<div style="display: flex; justify-content: space-between; margin-top: 20px;margin-left: 300px;">
 				<!-- 底部金额总结 -->
-				<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 				<el-pagination
 				@size-change="handleSizeChange"
 				@current-change="handleCurrentChange"
@@ -242,7 +240,7 @@
 					Fees_Accumulated:""
 				},
 				PutDeleteForm:{
-					feesId:"",
+					outstandingId:"",
 					updatename:"",
 					approvalname:"",
 					revokeappname:""
@@ -331,10 +329,10 @@
 				this.selectByFeeId(row.feesId)
 			},
 			//根据报班缴费id查询数据
-			selectByFeeId(feeId){
-				console.log(feeId+"-------")
+			selectByFeeId(feesId){
+				console.log(feesId+"-------")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByfeeidtoentry?feedId="+feeId,{
+				this.axios.get("http://localhost:8089/threeproject/selectByfeeidtoentry?feesId="+feesId,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -373,7 +371,7 @@
 				console.log(this.pageInfo2.value2+"value2")
 				console.log(this.pageInfo2.Approval+"Approval")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByContionout"+this.pageInfo2,{
+				this.axios.get("http://localhost:8089/threeproject/selectByContionout",this.pageInfo2,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -392,6 +390,7 @@
 				const _this=this
 				this.form2.feesId=this.form.feesId
 				this.selectByFeeId(this.form2.feesId)
+				console.log(this.form2.feesId+"feesId")
 				this.form2.feesReceivable=this.form.feesReceivable
 				this.form2.feesAdvance=this.form.feesAdvance
 				this.form2.alongmoney=this.form.AlongMoney
@@ -425,17 +424,18 @@
 					_this.form={}
 					_this.form2={}
 					_this.dialogoutStanding=false
+					console.log(response)
 				}).catch(function(error){
 					console.log(error)
 				})
 			},
 			// 补缴之后，修改报班缴费的累计欠费
-			updateAccumulated1(feeId,feesaccumulated,alongmoney){
+			updateAccumulated1(feesId,feesaccumulated,alongmoney){
 				const _this=this
-				this.form3.feesId=feeId
+				this.form3.feesId=feesId
 				//累计欠费减去补缴的金额
 				this.form3.feesaccumulated=feesaccumulated-alongmoney
-				this.axios.put("http://localhost:8089/threeproject/updateFeesAccumulated/",this.form3,{
+				this.axios.put("http://localhost:8089/threeproject/updateFeesAccumulated",this.form3,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -443,8 +443,8 @@
 				})
 				.then(function(response){
 					console.log(response)
-					var entryfees=response.data
-					var row =_this.form.filter(d=>d.feesId==dept.feesId)[0]
+					// var entryfees=response.data
+					// var row =_this.form.filter(d=>d.feesId==dept.feesId)[0]
 				}).catch(function(error){
 					console.log(error)
 				})
@@ -453,6 +453,7 @@
 			updateapproval(row){
 				const _this=this
 				this.PutDeleteForm.approvalname=this.$store.state.updateUserInfo.username
+				this.PutDeleteForm.outstandingId=row.outstandingId
 				this.axios.put("http://localhost:8089/threeproject/updateApprovalState",this.PutDeleteForm,{
 					headers: {
 						'content-type': 'application/json',
@@ -482,6 +483,7 @@
 			updateRevokeapproval(row){
 				const _this=this
 				this.PutDeleteForm.revokeappname=this.$store.state.updateUserInfo.username
+				this.PutDeleteForm.outstandingId=row.outstandingId
 				this.axios.put("http://localhost:8089/threeproject/updateReApprovalState",this.PutDeleteForm,{
 					headers: {
 						'content-type': 'application/json',
@@ -511,7 +513,12 @@
 			deleteoutstanding(row){
 				const _this=this
 				this.PutDeleteForm.updatename=this.$store.state.updateUserInfo.username
-				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",this.PutDeleteForm)
+				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",this.PutDeleteForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
 					params:_this.pageInfo,

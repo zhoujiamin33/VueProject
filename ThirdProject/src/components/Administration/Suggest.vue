@@ -104,7 +104,6 @@
 				dept:[],
 
 				multipleSelection: [],
-
 				//分页
 				pageInfo: {
 					currentPage: 1, //识别当前页码
@@ -147,6 +146,10 @@
 			SuSearch_But(){
 				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findNamePageSuggest", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -166,7 +169,12 @@
 			DelSuggest(){
 				const _this = this
 				this.form2.deletename="娜贝拉"
-				this.axios.put("http://localhost:8089/threeproject/DelSuggest", this.form2)
+				this.axios.put("http://localhost:8089/threeproject/DelSuggest", this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						console.log(response)
 						var Su = response.data
@@ -184,12 +192,20 @@
 					return
 				}
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddSuggest", this.form2)
+				this.axios.post("http://localhost:8089/threeproject/AddSuggest", this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						// var Su = response.data
 						// _this.Suggest.push(Su)
-						const _this = this
 						this.axios.get("http://localhost:8089/threeproject/findPageSuggest", {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							},
 								params: this.pageInfo
 							})
 							.then(function(response) {
@@ -213,7 +229,12 @@
 				const _this = this
 				console.log("this.Suggest内容：")
 				console.log(this.Suggest)
-				this.axios.put("http://localhost:8089/threeproject/UpdateSuggest", this.form2)
+				this.axios.put("http://localhost:8089/threeproject/UpdateSuggest", this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var Su = response.data
 						console.log("response内容：")
@@ -292,6 +313,10 @@
 		created() {
 			const _this = this
 			this.axios.get("http://localhost:8089/threeproject/findPageSuggest", {
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': this.$store.getters.token
+				},
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -301,7 +326,12 @@
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/findalldept")
+				this.axios.get("http://localhost:8089/threeproject/findalldept",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						_this.dept = response.data
 						console.log(response)
@@ -342,27 +372,6 @@
 		width: 100%;
 	}
 
-	/* .el-header {
-		background-color: #B3C0D1; */
-		/* color: #333; */
-		/* text-align: center; */
-		/* line-height: 60px; */
-	/* } */
-
-/* 	.el-aside {
-		background-color: #D3DCE6;
-		color: #333; */
-		/* text-align: center; */
-/* 		height: 100%;
-		width: 100%;
-	} */
-
-	/* .el-main {
-		background-color: #E9EEF3;
-		color: #333; */
-		/* text-align: left; */
-		/* line-height: 160px; */
-	/* } */
 
 	.is-vertical {}
 

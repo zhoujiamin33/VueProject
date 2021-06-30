@@ -87,7 +87,12 @@
 		methods: {
 			AnnTypeAdd(){
 				const _this = this
-				this.axios.post("http://localhost:8089/thirdtroject/AnnTypeAdd",this.AnnType)
+				this.axios.post("http://localhost:8089/thirdtroject/AnnTypeAdd",this.AnnType,{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						var type=response.data
 						_this.tableData.push(type)
@@ -99,7 +104,12 @@
 			},
 			AnnTypeUpdate(){
 				const _this = this
-				this.axios.put("http://localhost:8089/thirdtroject/AnnTypeUpdate",this.AnnType)
+				this.axios.put("http://localhost:8089/thirdtroject/AnnTypeUpdate",this.AnnType,{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 					.then(function(response) {
 						var anntype=response.data
 						var row =_this.tableData.filter(t=>t.announcementtypeId==anntype.announcementtypeId)[0]
@@ -127,7 +137,12 @@
 				  type:"warning"
 				})
 				  .then(() => {
-					this.axios.get("http://localhost:8089/thirdtroject/findUnitType/"+row.unittypeId)
+					this.axios.get("http://localhost:8089/thirdtroject/findUnitType/"+row.unittypeId,{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							console.log(response)
 							if(response.data!=0){

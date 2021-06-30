@@ -42,7 +42,7 @@
 			</el-table>
 		</div>
 		<!-- 底部金额总结 -->
-		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
+		<div style="display: flex; justify-content: space-between; margin-top: 20px;margin-left: 400px;">
 			<el-pagination
 			@size-change="handleSizeChange"
 			@current-change="handleCurrentChange"

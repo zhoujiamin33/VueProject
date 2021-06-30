@@ -15,9 +15,9 @@
 				</el-input>
 			</div>
 			<div style="margin-left: 260px;">
-				<el-button @click="shwosu">查询</el-button>
-				<el-button @click="tgsp()">通过审批</el-button>
-				<el-button @click="qxbb()">取消补报</el-button>
+				<el-button type="primary" @click="shwosu">查询</el-button>
+				<el-button type="success" @click="tgsp()">通过审批</el-button>
+				<el-button type="danger" @click="qxbb()">取消补报</el-button>
 			</div>
 		</div>
 
@@ -269,11 +269,23 @@ import qs from 'qs'
 			},
 			// 审核状态
 			updatesupplementarystate(supplementaryId) {
-				console.log("---" + supplementaryId)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate?supplementaryId=" + supplementaryId)
+				console.log("---hhh" + this.$store.state.updateUserInfo.username)
+				
+				this.axios.delete("http://localhost:8089/threeproject/updatesupplementarystate" ,
+				{
+					params: {
+						'supplementaryId':supplementaryId,
+						'updatename':this.$store.state.updateUserInfo.username
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
-						_this.shwosu()
+						_this.findsupplementary()
+						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -281,16 +293,35 @@ import qs from 'qs'
 			updatesupplementarystate0(supplementaryId) {
 				console.log("---" + supplementaryId)
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatesupplementarystate0?supplementaryId=" + supplementaryId)
+				this.axios.delete("http://localhost:8089/threeproject/updatesupplementarystate0" ,
+				{
+					params: {
+						'supplementaryId':supplementaryId,
+						'deletename':this.$store.state.updateUserInfo.username
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
-						_this.shwosu()
+						_this.findsupplementary()
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			findcourseId(courseId) {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findcourseId?courseId=" + courseId)
+				this.axios.get("http://localhost:8089/threeproject/findcourseId" ,
+				{
+					params: {
+						'courseId':courseId
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
 						_this.Classes = response.data
 						_this.addForm.classesId = _this.Classes.classesId
@@ -310,18 +341,26 @@ import qs from 'qs'
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.shwosu()
+				this.findsupplementary()
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.shwosu()
+				this.findsupplementary()
 			},
-			shwosu(){
-				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/findsupplementary",{params:this.pageInfo})
+			findsupplementary() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/findsupplementary", {
+						params: this.pageInfo,
+			
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+			
+					})
 					.then(function(response) {
 						_this.tableData = response.data.list
 						_this.pageInfo.total = response.data.total
@@ -333,9 +372,16 @@ import qs from 'qs'
 		},
 		created() {
 			const _this = this;
-			this.shwosu(),
+			this.findsupplementary(),
 				// 查询所有班级
-				this.axios.get("http://localhost:8089/threeproject/findAllClass")
+				this.axios.get("http://localhost:8089/threeproject/findAllClass",
+				{
+					
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 				.then(function(response) {
 					_this.Classes = response.data
 					console.log(response)

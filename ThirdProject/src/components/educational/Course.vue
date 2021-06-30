@@ -524,7 +524,7 @@ export default{
 		  },
 		  //修改课程详细
 		  updateDetails(){
-			  const _this=this
+			  const _this=this.$store.state.userInfo.username
 			  console.log(this.detailsForm.detailcourseId+"课程详细Id")
 			  this.detailsForm.updatename=this.$store.state.updateUserInfo.username
 			  this.axios.put("http://localhost:8089/threeproject/updateByName",this.detailsForm,{

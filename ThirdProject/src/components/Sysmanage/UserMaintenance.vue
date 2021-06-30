@@ -1,11 +1,11 @@
 <template>
 	<!-- 用户-->
 	<div class="mian">
-		<div class="mainbody" style="width: 100%;display: flex;">
-			<!-- <span style="margin-top: 10px;width: 90px;">所属部门：</span>
+		<div class="mainbody" style="width: 100%;">
+			<span style="margin-top: 10px;width: 90px;">所属部门：</span>
 			<el-select >
 
-			</el-select> -->
+			</el-select>
 			<span style="margin-top: 10px;width: 90px;">快速检索：</span>
 			<el-select v-model="pageInfo.index">
 				<el-option label="用户编码" value="empId"></el-option>
@@ -24,256 +24,142 @@
 			</el-input>
 			<el-button @click="findemp_Name"><i class="el-icon-search"></i></el-button>
 		</div>
-		<div style="margin-bottom: 30px;display: flex;">
-			<el-button type="primary" @click="dialogFormVisible=true">新增</el-button>
-			<el-button type="primary" @click="qidong">启动</el-button>
-			<el-button type="primary" @click="jiny">禁用</el-button>
-			<el-button type="primary" @click="del">删除</el-button>
-		
+		<div style="margin-bottom: 30px;">
+			<el-button @click="dialogFormVisible=true">新增</el-button>
+			<el-button @click="qidong">启动</el-button>
+			<el-button @click="jiny">禁用</el-button>
+			<el-button @click="del">删除</el-button>
+			<el-button>导入</el-button>
+			<el-button>导出</el-button>
 		</div>
 
 		<!-- 新增按钮 -->
-		<el-dialog v-model="dialogFormVisible">
-			<el-descriptions :model="addForm" class="margin-top" title="新增用户" :column="2" :size="size" border>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-mobile-phone"></i>
-						用户编码:
-					</template>
-					    <el-input v-model="addForm.jobnumber"></el-input>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-location-outline"></i>
-						姓名:
-					</template>
-				<el-input v-model="addForm.empName"></el-input>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						登录密码:
-					</template>
-				<el-input type="password" v-model="addForm.password"></el-input>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						确定密码:
-					</template>
-		
-					<el-input type="password" v-model="addForm.password1"></el-input>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						所属部门:
-					</template>
-				<el-select v-model="addForm.deptId" placeholder="请选择" style="width: 178px;">
-					<el-option :label="item.deptName" :value="item.deptId" v-for="item in Data1"></el-option>
-				
-				</el-select>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						职位:
-					</template>
-				<el-select v-model="addForm.positionId" placeholder="请选择" style="width: 178px;">
-					<el-option :label="item.positionName" :value="item.positionId" v-for="item in Position">
-					</el-option>
-				</el-select>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						性别:
-					</template>
-				<el-radio v-model="addForm.empSex" label="男" value="男">男</el-radio>
-				<el-radio v-model="addForm.empSex" label="女" value="女">女</el-radio>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						出生日期:
-					</template>
-				<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birthday" style="width: 178px;">
-				</el-date-picker>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						工作状态:
-					</template>
-				<el-select v-model="addForm.workersstate" placeholder="请选择" style="width: 178px;">
-					<el-option label="正常" value="0">正常</el-option>
-					<el-option label="禁用" value="1">禁用</el-option>
-				</el-select>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						备注:
-					</template>
-				<el-input v-model="addForm.remarks"></el-input>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						邮件:
-					</template>
-		<el-input v-model="addForm.email"></el-input>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						职工电话:
-					</template>
-			<el-input v-model="addForm.empPhone"></el-input>
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<template #label>
-						<i class="el-icon-tickets"></i>
-						居住地址:
-					</template>
-				<el-input  v-model="addForm.address"></el-input>
-				
-				</el-descriptions-item>
-				<el-descriptions-item>
-					<el-button @click="AddEmp">确定</el-button>
-					<el-button @click="dialogFormVisible=false">返回</el-button>
-				</el-descriptions-item>
-			</el-descriptions>
-		</el-dialog>
-		<!-- 编辑按钮 -->
-		<el-dialog title="修改职位" v-model="dialogFormVisible2">
-			<el-descriptions :model="addForm" class="margin-top" title="新增用户" :column="2" :size="size" border>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-mobile-phone"></i>
-							用户编码:
-						</template>
-						    <el-input v-model="addForm.jobnumber"></el-input>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-location-outline"></i>
-							姓名:
-						</template>
+		<el-dialog title="新增用户" v-model="dialogFormVisible">
+			<el-form :model="addForm" :inline="true">
+				<el-form-item label="用户编码:" required p>
+					<el-input v-model="addForm.jobnumber"></el-input>
+				</el-form-item>
+				<el-form-item label="姓名:" label-width="80px" required>
 					<el-input v-model="addForm.empName"></el-input>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							登录密码:
-						</template>
+				</el-form-item>
+				<el-form-item label="登录密码:" label-width="90px">
 					<el-input type="password" v-model="addForm.password"></el-input>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							确定密码:
-						</template>
-			
-						<el-input type="password" v-model="addForm.password1"></el-input>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							所属部门:
-						</template>
+				</el-form-item>
+				<el-form-item label="确认密码:" label-width="90px">
+					<el-input type="password" v-model="addForm.password1"></el-input>
+				</el-form-item>
+				<el-form-item label="所属部门:" label-width="90px">
 					<el-select v-model="addForm.deptId" placeholder="请选择" style="width: 178px;">
 						<el-option :label="item.deptName" :value="item.deptId" v-for="item in Data1"></el-option>
-					
+
 					</el-select>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							职位:
-						</template>
+				</el-form-item>
+				<el-form-item label="职位:" label-width="90px">
 					<el-select v-model="addForm.positionId" placeholder="请选择" style="width: 178px;">
 						<el-option :label="item.positionName" :value="item.positionId" v-for="item in Position">
 						</el-option>
 					</el-select>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							性别:
-						</template>
+
+				</el-form-item>
+				<el-form-item label="性别:" label-width="90px">
 					<el-radio v-model="addForm.empSex" label="男" value="男">男</el-radio>
 					<el-radio v-model="addForm.empSex" label="女" value="女">女</el-radio>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							出生日期:
-						</template>
+				</el-form-item>
+				<el-form-item label="出生日期:" label-width="90px" style="margin-left: 80px;">
 					<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birthday" style="width: 178px;">
 					</el-date-picker>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							工作状态:
-						</template>
+				</el-form-item>
+				<el-form-item label="状态:" label-width="90px">
 					<el-select v-model="addForm.workersstate" placeholder="请选择" style="width: 178px;">
 						<el-option label="正常" value="0"></el-option>
 						<el-option label="禁用" value="1"></el-option>
 					</el-select>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							备注:
-						</template>
+				</el-form-item>
+				<el-form-item label="备注:" style="margin-left: 40px;">
 					<el-input v-model="addForm.remarks"></el-input>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							邮件:
-						</template>
-			<el-input v-model="addForm.email"></el-input>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							职工电话:
-						</template>
-				<el-input v-model="addForm.empPhone"></el-input>
-					</el-descriptions-item>
-					<el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							居住地址:
-						</template>
-					<el-input  v-model="addForm.address"></el-input>
-					
-					</el-descriptions-item>
-					<el-descriptions-item>
-				
-						<el-button @click="dialogFormVisible2 = false">取 消</el-button>
-						<el-button type="primary" @click="updateEmp()">确 定</el-button>
-					
-					</el-descriptions-item>
-				</el-descriptions>
+				</el-form-item>
+				<el-form-item label="电子邮件:" style="margin-left: 10px;">
+					<el-input v-model="addForm.eMail"></el-input>
+				</el-form-item>
+				<el-form-item label="职工电话:" style="margin-left: 40px;">
+					<el-input v-model="addForm.empPhone"></el-input>
+				</el-form-item>
+				<el-form-item label="居住地址:" style="margin-left: 40px;">
+					<el-input v-model="addForm.address"></el-input>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="dialogFormVisible = false">取 消</el-button>
+					<el-button type="primary" @click="AddEmp">确 定</el-button>
+				</span>
+			</template>
 		</el-dialog>
-		
-		<el-table :data="tableData" border style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+		<!-- 编辑按钮 -->
+		<el-dialog title="编辑用户" v-model="dialogFormVisible2">
+			<el-form :model="addForm" :inline="true">
+				<el-form-item label="用户编码:" required p>
+					<el-input v-model="addForm.jobnumber"></el-input>
+				</el-form-item>
+				<el-form-item label="姓名:" label-width="80px" required>
+					<el-input v-model="addForm.empName"></el-input>
+				</el-form-item>
+				<el-form-item label="登录密码:" label-width="90px">
+					<el-input type="password" v-model="addForm.password"></el-input>
+				</el-form-item>
+				<el-form-item label="确认密码:" label-width="90px">
+					<el-input type="password" v-model="addForm.password1"></el-input>
+				</el-form-item>
+				<el-form-item label="所属部门:" label-width="90px">
+					<el-select v-model="addForm.deptId" placeholder="请选择" style="width: 178px;">
+						<el-option :label="item.deptName" :value="item.deptId" v-for="item in Data1"></el-option>
+
+					</el-select>
+				</el-form-item>
+				<el-form-item label="职位:" label-width="90px">
+					<el-select v-model="addForm.positionId" placeholder="请选择" style="width: 178px;">
+						<el-option :label="item.positionName" :value="item.positionId" v-for="item in Position">
+						</el-option>
+					</el-select>
+
+				</el-form-item>
+				<el-form-item label="性别:" label-width="90px">
+					<el-radio v-model="addForm.empSex" label="男" value="男">男</el-radio>
+					<el-radio v-model="addForm.empSex" label="女" value="女">女</el-radio>
+				</el-form-item>
+				<el-form-item label="出生日期:" label-width="90px" style="margin-left: 80px;">
+					<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birthday" style="width: 178px;">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item label="状态:" label-width="90px">
+					<el-select v-model="addForm.workersstate" placeholder="请选择" style="width: 178px;">
+						<el-option label="正常" :value="0">
+							正常
+						</el-option>
+						<el-option label="禁用" :value="1">
+							禁用
+						</el-option>
+
+					</el-select>
+				</el-form-item>
+				<el-form-item label="备注:" style="margin-left: 40px;">
+					<el-input v-model="addForm.remarks"></el-input>
+				</el-form-item>
+				<el-form-item label="电子邮件:" style="margin-left: 10px;">
+					<el-input v-model="addForm.eMail"></el-input>
+				</el-form-item>
+				<el-form-item label="职工电话:" style="margin-left: 40px;">
+					<el-input v-model="addForm.empPhone"></el-input>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="dialogFormVisible2 = false">取 消</el-button>
+					<el-button type="primary" @click="updateEmp()">确 定</el-button>
+				</span>
+			</template>
+		</el-dialog>
+		<el-table :data="tableData" border @selection-change="handleSelectionChange">
 			<el-table-column prop="empId" label="Id">
 			</el-table-column>
 			<el-table-column type="selection">
@@ -298,10 +184,10 @@
 			</el-table-column>
 			<el-table-column prop="addtime" label="建档日期">
 			</el-table-column>
-			<el-table-column prop="index" label="操作" fixed="right" align="center" width="200">
+			<el-table-column prop="index" label="操作">
 				<template #default="scope">
-					<el-button type="primary">附加角色</el-button>
-					<el-button type="primary" @click="Eidt(scope.row)">修改</el-button>
+					<el-button>附加角色</el-button>
+					<el-button @click="Eidt(scope.row)">修改</el-button>
 				</template>
 			</el-table-column>
 
@@ -347,13 +233,11 @@
 					birthday: '',
 					workersstate: '',
 					remarks: '',
-					email: '',
+					eMail: '',
 					empPhone: '',
 					empName: '',
 					empId: '',
-					address:'',
-					updatename:'',
-					addname:''
+					address:''
 				},
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
@@ -376,11 +260,10 @@
 				this.addForm.birthday = row.birthday
 				this.addForm.workersstate = row.workersstate
 				this.addForm.remarks = row.remarks
-				this.addForm.email = row.email
+				this.addForm.eMail = row.eMail
 				this.addForm.empPhone = row.empPhone
 				this.addForm.empName = row.empName
 				this.addForm.empId = row.empId
-				this.addForm.address=row.address
 				this.dialogFormVisible2 = true
 			},
 			
@@ -398,6 +281,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
+					console.log("1111111111")
 					if(_this.checkrow.length==0){
 						_this.$message({
 							showClose: true,
@@ -454,7 +338,16 @@
 				const _this = this;
 				this.axios.put("http://localhost:8089/threeproject/updatestat?eworkersstate="+workersstate+"?empId="+empId)
 					.then(function(response) {
-						_this.findemp_Name()
+						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total=response.data.total
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
 							
 					}).catch(function(error) {
 						console.log(error)
@@ -495,35 +388,37 @@
 				// this.addForm.deletename=deletename
 				console.log(this.addForm.empId)
 				const _this = this;
-				this.axios.put("http://localhost:8089/threeproject/deltimelimeness",{
-					params:{
-						'empId':_this.addForm.empId
-						
-					},
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.put("http://localhost:8089/threeproject/deltimelimeness?empId="+this.addForm.empId)
 					.then(function(response) {
-						_this.findemp_Name()
-							console.log(response)
+						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total=response.data.total
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+							
 					}).catch(function(error) {
 						console.log(error)
 					})
 			},
 			AddEmp() {
 				console.log(this.addForm)
-				this.addForm.addname=this.$store.state.userInfo.userName;
 				const _this = this;
-				this.axios.post("http://localhost:8089/threeproject/addemp", this.addForm,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.post("http://localhost:8089/threeproject/addemp", this.addForm)
 					.then(function(response) {
-						_this.findemp_Name()
+						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
 						console.log(response)
 						var dept = response.data
 						_this.tableData.push(dept)
@@ -541,19 +436,35 @@
 			//修改
 			updateEmp() {
 				const _this = this
-				// this.addForm.updatename=this.$store.state.userInfo.userName;
-				console.log("============修改开始")
-				this.axios.put("http://localhost:8089/threeproject/updateemp", this.addForm,{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
+				this.axios.put("http://localhost:8089/threeproject/updateemp", this.addForm)
 					.then(function(response) {
-						console.log("====="+_this.addForm.empId)
-						_this.findemp_Name()
+						_this.axios.get("http://localhost:8089/threeproject/findAllEmp", {
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total=response.data.total
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+						console.log(response)
+						var dept = response.data
+						// _this.DeptData.push(dept)
+						var row = _this.tableData.filter(d => d.empId == dept.empId)[0]
+						row.jobnumber = dept.jobnumber
+						row.password = dept.password
+						row.password1 = dept.password
+						row.positionId = dept.positionId
+						row.deptId = dept.deptId
+						row.empSex = dept.empSex
+						row.birthday = dept.birthday
+						row.workersstate = dept.workersstate
+						row.remarks = dept.remarks
+						row.eMail = dept.eMail
+						row.empPhone = dept.empPhone
+						row.empName = dept.empName
 						_this.dialogFormVisible2 = false
-						_this.addForm={}
 					}).catch(function(error) {
 						console.log(error)
 					})
@@ -564,26 +475,41 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.findemp_Name()
+				this.axios.get("http://localhost:8089/threeproject/findalls", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log("-------------------------------------------")
+						console.log(response.data)
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			handleSizeChange(pagesize) {
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-				this.findemp_Name()
+				this.axios.get("http://localhost:8089/threeproject/findalls", {
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log("-------------------------------------------")
+						console.log(response.data)
+						_this.tableData = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			//多条件模糊查询
 		
 			//查询名称
 			findemp_Name(){
+				console.log(this.pageInfo.select1,this.pageInfo.input)
 				const _this = this;
 				this.axios.get("http://localhost:8089/threeproject/findalls", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
+						params: this.pageInfo
 					})
 					.then(function(response) {
 						_this.tableData = response.data.list
@@ -599,26 +525,14 @@
 		created() {
 			const _this = this;
 			this.findemp_Name(),
-				this.axios.get("http://localhost:8089/threeproject/findalldept",
-				{
-					headers: {
-					'content-type': 'application/json',
-					'jwtAuth': _this.$store.getters.token
-				},
-				})
+				this.axios.get("http://localhost:8089/threeproject/findalldept")
 				.then(function(response) {
 					_this.Data1 = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/findallposition",{
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				}
-				)
+				this.axios.get("http://localhost:8089/threeproject/findallposition")
 				.then(function(response) {
 					_this.Position = response.data
 					console.log(response)

@@ -138,7 +138,13 @@
 					},
 					 Addstudent(){
 						 const _this = this;
-						this.axios.post("http://localhost:8089/threeproject/addposition", this.addForm)
+						this.axios.post("http://localhost:8089/threeproject/addposition", this.addForm,
+						{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+						}
+						})
 						.then(function(response) {
 							console.log(response)
 							var dept=response.data
@@ -160,7 +166,13 @@
 					 },
 					 updateposition(){
 						 const _this = this
-						 this.axios.put("http://localhost:8089/threeproject/updateposition", this.addForm)
+						 this.axios.put("http://localhost:8089/threeproject/updateposition", this.addForm,
+						 {
+						 	headers: {
+						 		'content-type': 'application/json',
+						 		'jwtAuth': _this.$store.getters.token
+						 }
+						 })
 						 .then(function(response) {
 						 	console.log(response)
 						 	var dept=response.data
@@ -176,10 +188,26 @@
 					 },
 					 del(row){
 						const _this = this
-						 this.axios.put("http://localhost:8089/threeproject/delTimeLiness?positionId="+ row.positionId)
+						 this.axios.put("http://localhost:8089/threeproject/delTimeLiness",
+						 {
+						 	params: {
+						 		'positionId':row.positionId
+						 	},
+						 	headers: {
+						 		'content-type': 'application/json',
+						 		'jwtAuth': _this.$store.getters.token
+						 }
+						 })
 						 .then(function(response) {
 						 	console.log(response)
-							_this.axios.get("http://localhost:8089/threeproject/findpositionname",{params: _this.pageInfo})
+							_this.axios.get("http://localhost:8089/threeproject/findpositionname",
+							{
+								params: this.pageInfo,
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+							}
+							})
 								.then(function(response) {
 									_this.tableData = response.data.list
 									_this.pageInfo.total=response.data.total
@@ -195,7 +223,14 @@
 					 findpositionname(){
 						 const _this = this;
 						
-						 this.axios.get("http://localhost:8089/threeproject/findpositionname",{params: this.pageInfo})
+						 this.axios.get("http://localhost:8089/threeproject/findpositionname",
+						 {
+						 	params: this.pageInfo,
+						 	headers: {
+						 		'content-type': 'application/json',
+						 		'jwtAuth': _this.$store.getters.token
+						 }
+						 })
 						 	.then(function(response) {
 						 		_this.tableData = response.data.list
 						 		_this.pageInfo.total=response.data.total
@@ -214,8 +249,12 @@
 					 	var ps = qs.stringify(this.pageInfo)
 					 	console.log(ps)
 					 	this.axios.get("http://localhost:8089/threeproject/findpositionname", {
-					 			params: this.pageInfo
-					 		})
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 					 		.then(function(response) {
 					 			console.log("-------------------------------------------")
 					 			console.log(response.data)
@@ -230,8 +269,12 @@
 					 	var ps = qs.stringify(this.pageInfo)
 					 	console.log(ps)
 					 	this.axios.get("http://localhost:8089/threeproject/findpositionname", {
-					 			params: this.pageInfo
-					 		})
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 					 		.then(function(response) {
 					 			console.log("-------------------------------------------")
 					 			console.log(response.data)
@@ -244,7 +287,13 @@
 				created() {
 					const _this = this;
 					console.log(this.pageInfo.pagesize, this.pageInfo.currentPage)
-					this.axios.get("http://localhost:8089/threeproject/findpositionname",{params: this.pageInfo})
+					this.axios.get("http://localhost:8089/threeproject/findpositionname",{
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 						.then(function(response) {
 							_this.tableData = response.data.list
 							_this.pageInfo.total=response.data.total

@@ -7,41 +7,41 @@
 		<div style="margin-bottom: 30px;">
 			<el-button>保存</el-button>
 		</div>
-				<el-form ref="form" :model="form" label-width="90px" :inline="true" style="width: 100%;text-align: center;margin-top: 50px;">
-				  <el-form-item label="模块类型:" required >
+				 <el-form ref="form" :model="form" label-width="90px" :inline="true" style="width: 100%;text-align: center;margin-top: 50px;">
+				 <!-- <el-form-item label="模块类型:" required >
 				    <el-input v-model="form.positionId" style="width: 220px;"></el-input>
-				  </el-form-item>
+				  </el-form-item> -->
 				  <el-form-item label="模块编码:" required style="margin-left: 20px;">
-				    <el-input v-model="form.positionName" style="width: 220px;" ></el-input>
+				    <el-input v-model="form.id" style="width: 220px;" ></el-input>
 				  </el-form-item>
 				  <el-form-item label="模块名称:" required>
-				     <el-input v-model="form.positionName" style="width: 220px;" ></el-input>
+				     <el-input v-model="form.menuName" style="width: 220px;" ></el-input>
 				  </el-form-item>
 				  <el-form-item label="上级模块:" style="margin-left: 20px;">
-				    <el-input v-model="form.positionfzr" style="width: 220px;"></el-input>
+				    <el-input v-model="form.menuPid" style="width: 220px;"></el-input>
 				  </el-form-item>
 				  <el-form-item label="文件路径:" >
-				    <el-input v-model="form.positionphone" style="width: 220px;"></el-input>
+				    <el-input v-model="form.method" style="width: 220px;"></el-input>
 				  </el-form-item>
-				  <el-form-item label="图片路径:" style="margin-left: 20px;" >
+				 <!-- <el-form-item label="图片路径:" style="margin-left: 20px;" >
 				    <el-input v-model="form.positioncz" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="模块性质:" >
+				  </el-form-item> -->
+				  <!-- <el-form-item label="模块性质:" >
 				    <el-select v-model="form.positiontype" placeholder="请选择" style="width: 220px;">
 				    	<el-option label="客服部门" value="1"></el-option>
 				    	<el-option label="销售部门" value="2"></el-option>
 						<el-option label="常规部门" value="3"></el-option>
 				    </el-select>
-				  </el-form-item>
+				  </el-form-item> -->
 				  <el-form-item label="模块状态:" style="margin-left: 30px;
 padding-right: 70px;">
-				    <el-radio v-model="form.sex" label="0">启用</el-radio>
-				    <el-radio v-model="form.sex" label="1">禁用</el-radio>
+				    <el-radio v-model="form.status" label="0">启用</el-radio>
+				    <el-radio v-model="form.status" label="1">禁用</el-radio>
 				  </el-form-item>
-				  <el-form-item label="功能描述:">
+				  <!-- <el-form-item label="功能描述:">
 				    <el-input v-model="form.beizhu" style="width: 220px;"></el-input>
-				  </el-form-item>
-				  <el-form-item label="操作权限:" style="margin-left: 30px;
+				  </el-form-item> -->
+				<!--  <el-form-item label="操作权限:" style="margin-left: 30px;
 padding-right: 50px;">
 				    <el-radio v-model="form.authority" label="0">控制</el-radio>
 				    <el-radio v-model="form.authority" label="1">不控制</el-radio>
@@ -50,7 +50,7 @@ padding-right: 50px;">
 				    <el-checkbox v-model="form.checked1">公司</el-checkbox>
 				    <el-checkbox v-model="form.checked2">个人</el-checkbox>
 					 <el-checkbox v-model="form.checked3">部门</el-checkbox>
-				  </el-form-item>
+				  </el-form-item> -->
 				  </el-form>
 				  </div>
 </template>
@@ -60,10 +60,11 @@ padding-right: 50px;">
 		data(){
 			return{
 				form:{
-					positionId:'',
-					positionName:'',
-					checked:'',
-					authority:''
+					id:'',
+					menuName:'',
+					menuPid:'',
+					method:'',
+					status:''
 					
 				},
 				data: [{
@@ -110,7 +111,8 @@ padding-right: 50px;">
 		 methods: {
 		      handleNodeClick(data) {
 		        console.log(data);
-		      }
+		      },
+			  
 		    }
 		
 	}

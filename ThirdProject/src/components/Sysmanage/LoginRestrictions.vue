@@ -5,7 +5,7 @@
 				<span><i class="el-icon-date"></i> 已限制用户</span>
 			</template>
 			<div style="margin-bottom: 10px;display: flex;">
-				<el-button @click="updatewxz()">取消限制</el-button>
+				<el-button type="danger" @click="updatewxz()">取消限制</el-button>
 			</div>
 			<el-table :data="Restrictionsyi" border @selection-change="handleSelectionChange"
 				:header-cell-style="{background:'#eef1f6',color:'#606266'}">
@@ -137,7 +137,16 @@
 			},
 			xz(ids) {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateyxz?empId=" + ids)
+				this.axios.put("http://localhost:8089/threeproject/updateyxz" ,
+				{
+					params:{
+						'empId':ids
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
 						_this.selectweixz()
 						_this.selectyixz()
@@ -149,7 +158,16 @@
 			qx(ids) {
 
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatewxz/" + ids)
+				this.axios.put("http://localhost:8089/threeproject/updatewxz" ,
+				{
+					params:{
+						'empId':ids
+					},
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
 						_this.selectyixz()
 						_this.selectweixz()
@@ -161,7 +179,14 @@
 			},
 			selectyixz(){
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectyixz")
+				this.axios.get("http://localhost:8089/threeproject/selectyixz",
+				{
+				
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 					.then(function(response) {
 						_this.Restrictionsyi = response.data
 						console.log(response)
@@ -171,7 +196,14 @@
 			},
 			selectweixz(){
 					const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectweixz")
+				this.axios.get("http://localhost:8089/threeproject/selectweixz",
+				{
+				
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 				.then(function(response) {
 					_this.Restrictions = response.data
 					console.log(response)
@@ -183,14 +215,28 @@
 		},
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/selectyixz")
+			this.axios.get("http://localhost:8089/threeproject/selectyixz",
+			{
+				
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+			}
+			})
 				.then(function(response) {
 					_this.Restrictionsyi = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/selectweixz")
+				this.axios.get("http://localhost:8089/threeproject/selectweixz",
+				{
+				
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
 				.then(function(response) {
 					_this.Restrictions = response.data
 					console.log(response)

@@ -40,9 +40,8 @@
 		 		</el-table-column>
 		 	</el-table>
 		 </div>
-		<div style="display: flex; justify-content: space-between;">
+		<div style="display: flex; justify-content: space-between;margin-top: 20px;margin-left: 400px;">
 			<!-- 底部金额总结 -->
-			<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 			<el-pagination
 			@size-change="handleSizeChange"
 			@current-change="handleCurrentChange"
@@ -70,9 +69,9 @@
 		    			<el-date-picker v-model="pageInfo2.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
 		  			经办人：
 		  			<el-input  v-model="pageInfo2.input" style="width: 150px;"></el-input>
-		    			<el-button style="margin-left: 10px;" @click="selectBycontionBook2">查询</el-button>
+		    			<el-button style="margin-left:60px;" @click="selectBycontionBook2">查询</el-button>
 		    			<el-button type="danger" >删除</el-button>
-		    			<el-button type="primary" icon="el-icon-plus" style="margin-left:10px;">新增出库</el-button>
+		    			<!-- <el-button type="primary" icon="el-icon-plus" style="margin-left:10px;">新增出库</el-button> -->
 		    		</el-row>
 		    	</div>
 		   </div>	
@@ -97,9 +96,8 @@
 				</el-table-column>
 		   	</el-table>
 		   </div>
-		  <div style="display: flex; justify-content: space-between;">
+		  <div style="display: flex; justify-content: space-between;margin-top: 20px;margin-left: 400px;">
 		  	<!-- 底部金额总结 -->
-		  		<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 		  		<el-pagination
 		  		@size-change="handleSizeChange2"
 		  		@current-change="handleCurrentChange2"

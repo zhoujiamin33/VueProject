@@ -15,9 +15,9 @@
 						</el-input>
 					</div>
 					<div style="margin-left:280px;">
-						<el-button @click="selectName">查询</el-button>
-						<el-button @click="tgsp">通过审批</el-button>
-						<el-button @click="del">删除</el-button>
+						<el-button type="primary" @click="selectName">查询</el-button>
+						<el-button type="success" @click="tgsp">通过审批</el-button>
+						<el-button type="danger" @click="del">删除</el-button>
 					</div>
 				</div>
 			
@@ -80,7 +80,14 @@
 						},
 						 dialogFormVisible: false,
 						 dialogFormupdate:false,
-						     chektable:[] 
+						     chektable:[] ,
+							 addForm:{
+								 addname:'',
+								 studentId:'',
+								 courseId:'',
+								 jwAppname:'',//教务审核人
+								 deletename:''//删除人
+							 }
 					}
 				},
 				methods: {
@@ -88,6 +95,7 @@
 					handleSelectionChange(row) {
 						console.log(row)
 						this.chektable = row
+						
 					},
 					tgsp() {
 						const _this=this
@@ -105,6 +113,7 @@
 							} else {
 								var ids=_this.chektable.map(item =>item.dropId).join()
 									_this.updatedropoutstate(ids)
+									
 								_this.$message({
 									type: 'success',
 									message: '审批成功!'
@@ -151,8 +160,12 @@
 					selectName() {
 						const _this = this
 						this.axios.get("http://localhost:8089/threeproject/findcls_stuNameAndxuehao", {
-								params: this.pageInfo
-							})
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 							.then(function(response) {
 								_this.tableData = response.data.list
 								_this.pageInfo.total = response.data.total
@@ -164,10 +177,22 @@
 					// 审核
 					updatedropoutstate(dropId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate?dropId="+dropId)
+						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate",
+						{
+							params: {
+								'dropId':dropId,
+								'jwappname':this.$store.state.updateUserInfo.username
+							},
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+						}
+						})
 							.then(function(response) {
-								_this.showDropout()
-								console.log("fff"+response)
+								_this.Refund(_this.chektable)
+								_this.selectName()
+								
+								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
 							})
@@ -175,9 +200,19 @@
 					//删除
 					deldropoutId(dropId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness?dropId="+dropId)
+						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness",
+						{
+							params: {
+								'dropId':dropId,
+								'deletename':this.$store.state.updateUserInfo.username
+							},
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+						}
+						})
 							.then(function(response) {
-								_this.showDropout()
+								_this.selectName()
 								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
@@ -197,7 +232,32 @@
 						var ps = qs.stringify(this.pageInfo)
 						console.log(ps)
 						this.selectName()
-					}
+					},
+					//财务部（退学、退费）
+					Refund(row) {
+						const _this = this
+						this.addForm.addname = "admin"
+						// this.addForm.dropId = row.dropId
+						// this.addForm.studentId = row.studentId
+						// this.addForm.courseId = row.courseId
+						console.log(this.addForm.studentId + "abc12")
+						console.log(this.addForm.dropId + "abc")
+						console.log(this.addForm.courseId + "abc")
+						this.axios.post("http://localhost:8089/threeproject/insertRefund", this.addForm,
+						{
+							
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
+							.then(function(response) {
+								console.log(response)
+							}).catch(function(error) {
+								console.log(error)
+							})
+					},
+					
 					
 				},
 				created() {
