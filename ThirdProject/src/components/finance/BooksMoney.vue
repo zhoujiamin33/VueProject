@@ -5,15 +5,11 @@
 		  	<!-- 搜索框、输入框 、按钮-->
 		  	<div style="margin-left:5px;line-height: 40px;">
 		  		<el-row style="text-align: center;">
-		  			是否审核：
-		  			<el-select  v-model="pageInfo.Approval"  placeholder="请选择">
-		  				<el-option value="1" label="已审核"></el-option><el-option value="0" label="未审核"></el-option>
-		  			</el-select>
+		  			
 		  			支出日期：
-		  			<el-date-picker v-model="pageInfo.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
-		  			<el-date-picker v-model="pageInfo.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
-					经办人：
-					<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
+		  			<el-date-picker v-model="pageInfo.startTime" type="date"  placeholder="选择开始日期"> </el-date-picker>
+		  			<el-date-picker v-model="pageInfo.endTime" type="date"  placeholder="选择结束日期"> </el-date-picker>
+					
 		  			<el-button style="margin-left: 10px;" @click="selectBycontionBook">查询</el-button>
 					<el-button type="danger" >删除</el-button>
 		  		</el-row>
@@ -21,7 +17,7 @@
 		 </div>	
 		<!-- 表格 -->
 		<div style="position: relative;margin-top: 50px;"  >
-		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;" :header-cell-style="{background:'#eef1f6',color:'#606266'}">
+		 	<el-table :data="tableData"  border style="width:100%;margin-left:5px;" stripe :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		 		<el-table-column fixed  type="selection"> </el-table-column>
 		 		<el-table-column  prop="expensesName" label="单据号" width="200"> </el-table-column>
 		 	    <el-table-column prop="expensesDate" label="收支日期"  align="center"> </el-table-column>
@@ -60,15 +56,9 @@
 		    	<!-- 搜索框、输入框 、按钮-->
 		    	<div style="margin-left:10px;line-height: 40px;">
 		    		<el-row style="text-align: center;">
-		    			是否审核：
-		    			<el-select  v-model="pageInfo2.Approval"  placeholder="请选择">
-		    				<el-option value="1" label="已审核"></el-option><el-option value="0" label="未审核"></el-option>
-		    			</el-select>
 		    			收入日期：
-		    			<el-date-picker v-model="pageInfo2.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
-		    			<el-date-picker v-model="pageInfo2.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
-		  			经办人：
-		  			<el-input  v-model="pageInfo2.input" style="width: 150px;"></el-input>
+		    			<el-date-picker v-model="pageInfo2.startTime" type="date"  placeholder="选择开始日期"> </el-date-picker>
+		    			<el-date-picker v-model="pageInfo2.endTime" type="date"  placeholder="选择结束日期"> </el-date-picker>
 		    			<el-button style="margin-left:60px;" @click="selectBycontionBook2">查询</el-button>
 		    			<el-button type="danger" >删除</el-button>
 		    			<!-- <el-button type="primary" icon="el-icon-plus" style="margin-left:10px;">新增出库</el-button> -->
@@ -77,14 +67,14 @@
 		   </div>	
 		  <!-- 表格 -->
 		  <div style="position: relative;margin-top: 50px;">
-		   	<el-table :data="tableData2"  border style="width:100%;margin-left:5px;">
+		   	<el-table :data="tableData2"  border style="width:100%;margin-left:5px;" stripe :header-cell-style="{background:'#eef1f6',color:'#606266'}">
 		   		<el-table-column fixed  type="selection"> </el-table-column>
 		   		<el-table-column  prop="refundName" label="单据号" width="200" align="center"> </el-table-column>
 		   	    <el-table-column prop="refundDate" label="收支日期" align="center" > </el-table-column>
 		   	    <el-table-column prop="refundDetails" label="收支明细" align="center"> </el-table-column>
 		   	    <el-table-column prop="refundCount"  label="出库数量" align="center"> </el-table-column>
 		   	    <el-table-column prop="totalmoney" label="收入总额" align="center"> </el-table-column>
-		   		<el-table-column prop="zip" label="审核状态" >
+		   		<el-table-column prop="zip" label="审核状态"  align="center">
 					<template #default="scope">
 						<p v-if="scope.row.approval==0">
 							<el-button type="warning" icon="el-icon-warning-outline" circle size="mini" @click="updateApprovalincome(scope.row)"></el-button>
@@ -127,19 +117,15 @@
 					currentPage: 1,//标识当前页码
 					pagesize:4,//每页多少条数据
 					total:0,
-					Approval:"",
-					input:"",
-					value1:"",
-					value2:""
+					startTime:"",
+					endTime:""
 				},
 				pageInfo2:{
 					currentPage: 1,//标识当前页码
 					pagesize:4,//每页多少条数据
 					total:0,
-					Approval:"",
-					input:"",
-					value1:"",
-					value2:""
+					startTime:"",
+					endTime:""
 				},
 				//审核教材入库表单
 				form:{

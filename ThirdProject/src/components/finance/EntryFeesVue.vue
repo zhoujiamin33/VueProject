@@ -14,9 +14,8 @@
 				  <el-date-picker v-model="pageInfo.endTime"  align="center" type="date"
 				      placeholder="结束日期" :disabled-date="disabledDate" :shortcuts="shortcuts"></el-date-picker>
 				
-	 			<el-button style="margin-left: 20px;" @click="selectBycontionEntry">查询</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:100px;" @click="dialogFormVisible=true">新增报班</el-button>
-				<el-button type="primary" icon="el-icon-plus" style="margin-left:10px;" @click="dialogFormbubao=true">补报缴费</el-button>
+	 			<el-button style="margin-left:140px;" @click="selectBycontionEntry">查询</el-button>
+				<el-button type="primary"  style="margin-left:90px;" @click="dialogFormVisible=true">新增报班</el-button>
 	 		</el-row>
 	 	</div>
 	</div>	
@@ -66,7 +65,7 @@
 			</el-pagination>
 		</div>
 		<!-- 新增报班缴费 -->
-		<el-dialog title=" 新增报班缴费" v-model="dialogFormVisible">
+		<el-dialog title=" 新增报班缴费" v-model="dialogFormVisible" width="55%">
 		  <el-form :model="form">
 		    <div>
 				<div style="display: flex;justify-content: space-between;">
@@ -108,47 +107,6 @@
 		
 		
 		</el-dialog>
-		<!-- 新增补报缴费 -->
-		<!-- 		<el-dialog title=" 新增补报缴费" v-model="dialogFormbubao">
-				  <el-form :model="form">
-				    <div>
-						<div style="display: flex;justify-content: space-between;">
-							 <el-form-item label="补报人" > 
-							  <el-select v-model="reportForm.supplementaryId" @change="selectByreport(reportForm.supplementaryId)">
-								  <el-option v-for="item in rekereport" :value="item.supplementaryId" :label="item.student.studentName"></el-option>
-							  </el-select>
-						</el-form-item> 
-						<el-form-item label="应收金额" v-model="reportForm.feesReceivable">
-							  <el-input v-model="coursedata2.courseMoney"></el-input>
-						</el-form-item>
-						</div>
-						<div style="display: flex;justify-content: space-between;">
-							<div>
-								<el-form-item label="缴费方式"  style="width:80px">
-								  <el-select v-model="reportForm.payment" class="typeselect">
-									  <el-option value="0" label="全额缴费">全额缴费</el-option>
-									  <el-option value="1" label="预交缴费">预交缴费</el-option>
-								  </el-select>
-								</el-form-item>
-								<el-form-item label="预交金额"   style="width:80px">
-								  <el-input v-model="reportForm.feesAdvance" style="width:80px"/>
-								</el-form-item>
-							</div>
-							<div>
-								<el-form-item label="实收金额">
-								  <el-input v-model="reportForm.receipts"></el-input>
-								</el-form-item>
-							</div>
-						</div>
-					</div>
-				  </el-form>
-				  <template #footer>
-				    <span class="dialog-footer">
-				      <el-button @click="dialogFormbubao = false">取 消</el-button>
-				      <el-button type="primary" @click="insertReportEntry">保存并新建</el-button>
-				    </span>
-				  </template>
-				</el-dialog> -->
 </template>
 
 <script>
@@ -411,7 +369,7 @@
 					console.log(response)
 					_this.registerdata=response.data
 					_this.courseId=response.data.courseId
-					_this.updatepaystate(response.data.registerIds)
+					// _this.updatepaystate(response.data.registerIds)
 					console.log(_this.courseId+"xixixix")
 					_this.axios.get("http://localhost:8089/threeproject/selectByCourseId?courseId="+_this.courseId,{
 					headers: {
@@ -435,27 +393,25 @@
 			updatepaystate(registerId){
 				this.registerId=registerId
 				const _this=this
-				this.axios.put("http://localhost:8089/threeproject/updatepaystate?registerId="+this.registerId,{
+				this.axios.delete("http://localhost:8089/threeproject/updatepaystate?registerId="+this.registerId,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/findEntryFees",{
-					params:_this.pageInfo,
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-					.then(function(response) {
-						console.log(response)
-						_this.tableData=response.data.list
-						_this.pageInfo.total = response.data.total
-					}).catch(function(error) {
-						console.log(error)
+				this.axios.get("http://localhost:8089/threeproject/selectAttentState",{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
 					})
+				.then(function(response) {
+					console.log(response)
+					_this.regAttentState=response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
 				}).catch(function(error){
 					console.log(error)
 				})
