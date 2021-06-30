@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-row style="margin-left:1030px;margin-bottom: 10px;">
-		  <!-- <el-button @click="dialogFormVisible=true">新增</el-button> -->
+		  <el-button @click="dialogFormVisible=true" style="margin-left:200px;" type="primary">新增</el-button>
 		</el-row>
 		<!-- 新增弹窗 -->
 		<el-dialog title="新增教室" v-model="dialogFormVisible">
@@ -60,7 +60,7 @@
 			<el-table-column fixed="right" label="操作"  width="100"  align="center">
 				<template #default="scope">
 					<el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
-					<el-button type="text" size="small" @click="dialogFormVisible=true">新增</el-button>
+					<!-- <el-button type="text" size="small" @click="dialogFormVisible=true">新增</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>

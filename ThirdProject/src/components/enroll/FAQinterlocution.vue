@@ -3,15 +3,15 @@
 		<div class="mianboby">
 			<div class="mianwbk">
 				<b>快速索引：</b>
-				<el-select v-model="value" filterable placeholder="问题">
-					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
+				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
+					<el-option label="问题" value="问题"></el-option>
 				</el-select>
-				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
+				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
 
 			</div>
 			<div>
+				<el-button @click="selectFaqFuzzyquery()">查询</el-button>
 				<el-button @click="FAQxshi">管理</el-button>
 				<el-dialog title="FAQ问答管理" :data="FaqQuestionsDate" v-model="dialogFormVisible">
 					<el-form :inline="true" :model="form" class="demo-ruleForm">
@@ -142,6 +142,8 @@
 		data() {
 			return {
 				pageInfo: {
+					value:"",
+					input:"",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
@@ -241,6 +243,25 @@
 				this.form.answer = row.answer
 				this.form.updatename = row.updatename
 				this.dialogFormVisible3 = true
+			},
+			
+			//多条件查询
+			selectFaqFuzzyquery() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectFaqFuzzyquery", {
+						params: this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.FaqQuestionsDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			//新增
 			addFaqQuestions() {

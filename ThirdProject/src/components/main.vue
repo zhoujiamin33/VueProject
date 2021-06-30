@@ -19,7 +19,7 @@
 	<div class="userinfo">
 		<div class="imgdiv"></div>
 		<div class="basicdiv">
-			<p>admin</p>
+			<p>{{this.$store.state.updateUserInfo.username}}</p>
 			<p>财务部会计</p>
 		</div>
 		<div class="memorandum">

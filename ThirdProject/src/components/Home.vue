@@ -10,12 +10,13 @@
 			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #ffffff;">
 				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
 				<i class="el-icon-full-screen"
-					style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;"></i>
+					style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;"
+					@click=""></i>
 				<div class="photo" style="width:150px;text-align: center;">
 					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
 					<div style="margin-top: -70px;width: 270px;">
 						<el-dropdown>
-							<span class="el-dropdown-link">Tsm管理员<i
+							<span class="el-dropdown-link"><i
 									class="el-icon-arrow-down el-icon--right"></i></span>
 							<template #dropdown>
 								<el-dropdown-menu>
@@ -49,7 +50,7 @@
 						unique-opened>
 
 						<!-- 侧边栏内容 -->
-						<el-submenu :key="menu.id" :index="menu.id" v-for="menu in logninfo.menus">
+						<el-submenu :index="menu.id" v-for="menu in logninfo.menus">
 							<template #title>
 								<span>{{ menu.menuName }}</span>
 							</template>
@@ -133,7 +134,23 @@
 				this.paramThis.isCollapse = this.isCollapse;
 			},
 			logout() {
-
+				if(this.$store.state.updateUserInfo.token===""){
+					this.$message.error('错了哦，这是一条错误消息');
+				}else{
+					const _this=this
+					this.axios.post("http://localhost:8089/threeproject/signout")
+						.then(function(response){
+							console.log("已退出")
+							_this.$store.commit("updateUserInfo",null)
+							sessionStorage.setItem('refresh',"false")
+							_this.asideMenus = _this.$store.getters.asideMenus("/logout")
+							_this.$router.push({
+								path: "/login"
+							})
+						}).catch(function(error){
+							console.log(error)
+						})
+				}
 			}
 		},
 		mounted: function() {
