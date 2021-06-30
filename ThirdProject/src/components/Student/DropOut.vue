@@ -164,7 +164,7 @@
 					// 审核
 					updatedropoutstate(dropId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate/"+dropId)
+						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate?dropId="+dropId)
 							.then(function(response) {
 								_this.showDropout()
 								console.log("fff"+response)
@@ -175,7 +175,7 @@
 					//删除
 					deldropoutId(dropId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness/"+dropId)
+						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness?dropId="+dropId)
 							.then(function(response) {
 								_this.showDropout()
 								console.log(response)

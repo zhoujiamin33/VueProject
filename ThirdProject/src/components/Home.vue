@@ -7,7 +7,7 @@
 				<el-avatar style="margin-top: 10px;margin-left:10px;"></el-avatar>
 				<h3 style="color:#ffffff ;width: 200px;margin-top: -70px;margin-left:65px;">卓越培训系统</h3>
 			</div>
-			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #bababa;">
+			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #ffffff;">
 				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
 				<i class="el-icon-full-screen"
 					style=" position: absolute; left: 81%; top: 10px; padding: 5px 10px; font-size:33px;color: #FFFFFF;"
@@ -39,13 +39,13 @@
 				<!-- <el-scrollbar style="height: 100%;"> -->
 				<el-scrollbar>
 					<!-- 收起导航栏 -->
-					<div style="color: #fff; background-color:#e8eaee; 
+					<div style="color: #fff; background-color:#ffffff; 
 					cursor: pointer;" :class="{'web-top-close-nav':isCollapse}">
-						<i style="font-size: 30px; color: #303133;" class="open-close-nav"
+						<i style="font-size: 30px; color: #000000;" class="open-close-nav"
 							:class="{'el-icon-s-fold':!isCollapse,'el-icon-s-unfold':isCollapse}"
 							@click="openCloseNav"></i>
 					</div>
-					<el-menu :default-active="$route.path" :uniqueOpened="true" router background-color="#dcdee1" text-color="#fff" active-text-color="#409EFF"
+					<el-menu :default-active="$route.path" :uniqueOpened="true" router background-color="#ffffff" text-color="#000000" active-text-color="#409EFF"
 						class="el-menu-vertical-demo" :collapse="isCollapse" :collapse-transithion="false"
 						unique-opened>
 
@@ -242,7 +242,7 @@
 	}
 
 	.el-header {
-		background-color: #333333;
+		background-color: #626262;
 		font-size: 20px;
 		line-height: 60px;
 		font-size: 22px;
@@ -253,7 +253,7 @@
 	}
 
 	.el-aside {
-		background-color: #dcdee1;
+		background-color: #eaeaea;
 		display: block;
 		overflow-y: scroll;
 		height: 650px;

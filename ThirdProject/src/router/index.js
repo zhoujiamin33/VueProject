@@ -9,7 +9,7 @@ import Home from '../components/Home.vue'
 import DefaultMain from '../components/main.vue'
 import store from "../store/index.js"
 import { storeKey } from 'vuex'
-// import { t } from 'element-plus/lib/locale'
+import { t } from 'element-plus/lib/locale'
 
 const modules =
 	import.meta.glob('../components/**/*.vue');

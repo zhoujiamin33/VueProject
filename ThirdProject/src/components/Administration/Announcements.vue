@@ -6,9 +6,9 @@
 				<el-container style="border: #409EFF 1px solid;">
 					<el-header>
 						<span style="font-size: 14px;">快速检索</span>
-						<el-input style="width: 200px;margin-left: 10px;" v-model="AnnSearch" placeholder="请输入内容">
+						<el-input style="width: 200px;margin-left: 10px;" v-model="pageInfo.AnnSearch" placeholder="请输入主题、内容">
 						</el-input>
-						<el-button icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
+						<el-button @click="AnnQuery" icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
 					</el-header>
 					<el-main>
 						<div class="edit">
@@ -18,36 +18,37 @@
 								<el-form :model="form1" :rules="forRules" ref="form1">
 									<el-form-item>
 										<el-select v-model="form1.announcementtypeId" placeholder="公告分类">
-											<el-option v-for="itms in AnnType" :label="itms.announcementtypeName"
-												:value="itms.announcementtypeId"></el-option>
+											<el-option v-for="itms in AnnType" :label="itms.announcementtypeName" :value="itms.announcementtypeId"></el-option>
 										</el-select>
 									</el-form-item>
 									<el-form-item class="qwe" prop="announcementTheme">
-										<el-input style="width: 100%;" v-model="form1.announcementTheme"
-											autocomplete="off" placeholder="公告主题"></el-input>
+										<el-input style="width: 100%;" v-model="form1.announcementTheme" autocomplete="off" placeholder="公告主题"></el-input>
 									</el-form-item>
 									<el-form-item>
-										<el-date-picker v-model="form1.startTime" type="date" placeholder="开始日期"
-											:disabled-date="disabledDate" :shortcuts="shortcuts">
+										<el-date-picker v-model="form1.startTime" type="date" placeholder="开始日期" :shortcuts="shortcuts">
 										</el-date-picker>
 										--
-										<el-date-picker v-model="form1.endTime" type="date" placeholder="结束日期"
-											:disabled-date="disabledDate" :shortcuts="shortcuts">
+										<el-date-picker @blur="aaaa" v-model="form1.endTime" type="date" placeholder="结束日期" :shortcuts="shortcuts">
 										</el-date-picker>
 									</el-form-item>
 									<el-form-item>
-										<el-input v-model="form1.announcementContent" type="textarea" rows="15"
-											placeholder="公告内容"></el-input>
+										<el-input v-model="form1.announcementContent" type="textarea" rows="15" placeholder="公告内容"></el-input>
 									</el-form-item>
-									<!-- <el-form-item>
-										<textarea v-model="" style="width: 600px;vertical-align: middle;" placeholder="允许查看用户"></textarea>
-										<i class="el-icon-search" style="cursor: pointer;background: #409EFF;margin-right: 10px;"></i>
-										<span style="cursor: pointer; ">全部用户</span>
-									</el-form-item> -->
+									<el-form-item>
+										<i class="el-icon-search" @click="dialogFormVisible3 = true" style="cursor: pointer;background: #409EFF;margin-right: 10px;">选择可查看人</i>
+										<el-dialog title="选择可查看人" v-model="dialogFormVisible3" :close-on-click-modal="false" append-to-body>
+											<el-transfer v-model="yesemps.yesemp" :props="{key: 'empId',label: 'empName'}" :titles="['未关联', '已关联']" :data="noemp"></el-transfer>
+
+											<div slot="footer" class="dialog-footer" style="text-align: right;margin-top: 10px;">
+												<el-button @click="dialogFormVisible3 = false">取 消</el-button>
+												<el-button type="primary" @click="dialogFormVisible3 = false">确 定</el-button>
+											</div>
+										</el-dialog>
+									</el-form-item>
 								</el-form>
 								<template #footer>
 									<span class="dialog-footer">
-										<el-button @click="">取 消</el-button>
+										<el-button @click="CancelSys">取 消</el-button>
 										<el-button type="primary" @click="AnnAdd">确 定</el-button>
 									</span>
 								</template>
@@ -56,13 +57,11 @@
 							<el-button @click="suspend">暂停</el-button>
 							<el-button @click="cutoff">删除</el-button>
 						</div>
-						<el-table ref="multipleTable" :data="tableData" height="500" tooltip-effect="dark"
-							@selection-change="handleSelectionChange">
+						<el-table ref="multipleTable" :data="tableData" height="500" tooltip-effect="dark" @selection-change="handleSelectionChange">
 							<el-table-column type="selection" width="55">
 							</el-table-column>
 							<el-table-column label="公告主题" width="180">
-								<template #default="scope"><a href="#"
-										@click="showEdit1(scope.row)">{{ scope.row.announcementTheme }}</a></template>
+								<template #default="scope"><a href="#" @click="showEdit1(scope.row)">{{ scope.row.announcementTheme }}</a></template>
 							</el-table-column>
 							<el-table-column prop="user" label="允许查看用户" width="120">
 							</el-table-column>
@@ -87,33 +86,21 @@
 							<el-form :model="form1" :rules="forRules" ref="form1">
 								<el-form-item prop="announcementtypeId">
 									<el-select v-model="form1.announcementtypeId" placeholder="公告分类">
-										<el-option v-for="itms in AnnType" :label="itms.announcementtypeName"
-											:value="itms.announcementtypeId"></el-option>
+										<el-option v-for="itms in AnnType" :label="itms.announcementtypeName" :value="itms.announcementtypeId"></el-option>
 									</el-select>
 								</el-form-item>
 								<el-form-item class="qwe" prop="announcementTheme">
-									<el-input style="width: 100%;" v-model="form1.announcementTheme" autocomplete="off"
-										placeholder="公告主题"></el-input>
+									<el-input style="width: 100%;" v-model="form1.announcementTheme" autocomplete="off" placeholder="公告主题"></el-input>
 								</el-form-item>
 								<el-form-item>
-									<el-date-picker v-model="form1.startTime" type="date" placeholder="开始日期"
-										:disabled-date="disabledDate" :shortcuts="shortcuts">
+									<el-date-picker v-model="form1.startTime" type="date" placeholder="开始日期" :shortcuts="shortcuts">
 									</el-date-picker>
 									--
-									<el-date-picker v-model="form1.endTime" type="date" placeholder="结束日期"
-										:disabled-date="disabledDate" :shortcuts="shortcuts">
+									<el-date-picker v-model="form1.endTime" type="date" placeholder="结束日期" :shortcuts="shortcuts">
 									</el-date-picker>
 								</el-form-item>
 								<el-form-item>
-									<el-input v-model="form1.announcementContent" type="textarea" rows="15"
-										placeholder="公告内容"></el-input>
-								</el-form-item>
-								<el-form-item>
-									<textarea v-model="form1.user" style="width: 600px;vertical-align: middle;"
-										placeholder="允许查看用户"></textarea>
-									<i class="el-icon-search"
-										style="cursor: pointer;background: #409EFF;margin-right: 10px;"></i>
-									<span style="cursor: pointer; ">全部用户</span>
+									<el-input v-model="form1.announcementContent" type="textarea" rows="15" placeholder="公告内容"></el-input>
 								</el-form-item>
 							</el-form>
 							<template #footer>
@@ -126,10 +113,9 @@
 					</el-main>
 					<el-footer>
 						<div class="block">
-							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-								:current-page="pageInfo.currentPage" :page-sizes="[2, 5, 10, 20]"
-								:page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper"
-								:total="pageInfo.total">
+							<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
+							 :page-sizes="[2, 5, 10, 20]" :page-size="pageInfo.pagesize" layout="total, sizes, prev, pager, next, jumper"
+							 :total="pageInfo.total">
 							</el-pagination>
 						</div>
 					</el-footer>
@@ -145,20 +131,27 @@
 	export default {
 		data() {
 			return {
+				noemp: [],
+				yesemps:{
+					yesemp: [],
+					id:''
+				}
+				,
 				isCollapse: false,
 				auto: '200px',
-				AnnSearch: '',
 				tableData: [],
 				AnnType: [],
 				multipleSelection: [],
 
 				//隐藏新增页面
+				dialogFormVisible3: false,
 				dialogFormVisible: false,
 				dialogFormVisible2: false,
 				pageInfo: {
 					currentPage: 1, //识别当前页码
 					pagesize: 2, //每页多少条数据
-					total: 0
+					total: 0,
+					AnnSearch: ''
 				},
 				form1: {
 					announcementId: '',
@@ -168,7 +161,7 @@
 					announcementTheme: '',
 					announcementContent: '',
 					announcementState: '',
-					addname: '哈哈哈',
+					addname: '',
 					addtime: '',
 					publishname: '',
 					publishtime: '',
@@ -212,6 +205,14 @@
 			};
 		},
 		methods: {
+			aaaa() {
+				console.log(this.form1)
+			},
+			CancelSys() {
+				this.dialogFormVisible = false
+				this.form1 = []
+				this.yesemps.yesemp = []
+			},
 			handleOpen(key, keyPath) {
 				console.log(key, keyPath);
 			},
@@ -239,8 +240,8 @@
 				this.axios.put("http://localhost:8089/threeproject/delAnn", item,{
 					headers: {
 						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					} 
+						'jwtAuth': this.$store.getters.token
+					}
 				})
 					.then(function(response) {
 
@@ -264,16 +265,19 @@
 						})
 						.then(() => {
 							_this.multipleSelection.forEach(item => {
-								item.deletename="默认"
+								item.deletename = _this.$store.state.updateUserInfo.username
+								console.log("删除人"+_this.$store.state.updateUserInfo.username)
 								this.cuts(item)
 							});
-							_this.axios.get("http://localhost:8089/threeproject/findPageAnn", {
-								headers: {
-									'content-type': 'application/json',
-									'jwtAuth': _this.$store.getters.token
-								},
-								params: this.pageInfo
-							}).then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/findAnns", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
+								
+									params: this.pageInfo
+								})
+								.then(function(response) {
 									_this.tableData = response.data.list
 									_this.pageInfo.total = response.data.total
 									console.log(response)
@@ -281,16 +285,23 @@
 									console.log(error)
 								})
 						}).catch(action => {
-							console.log("删除失败1")
+							console.log("2")
 						});
 				}
 			},
 
 			handleSizeChange(pagesize) {
 				var _this = this
+				// this.pageInfo.AnnSearch=null
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/threeproject/findPageAnn", {
+				this.axios.get("http://localhost:8089/threeproject/findAnns", {
+					
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+					
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -302,9 +313,16 @@
 			},
 			handleCurrentChange(currentPage) {
 				var _this = this
+				this.pageInfo.AnnSearch = ''
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
-				this.axios.get("http://localhost:8089/threeproject/findPageAnn", {
+				this.axios.get("http://localhost:8089/threeproject/findAnns", {
+					
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+					
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -324,19 +342,25 @@
 				this.form1.startTime = row.startTime
 				this.form1.endTime = row.endTime
 				this.form1.announcementContent = row.announcementContent
-				this.form1.updatename = '默认'
+				this.form1.updatename = this.$store.state.updateUserInfo.username
 				this.dialogFormVisible2 = true
 			},
 			UpdateAnn() {
 				const _this = this
 				console.log("this.Unit内容：")
+				// this.from.updatename=this.$store.state.updateUserInfo.username
 				console.log(this.Unit)
-				this.axios.put("http://localhost:8089/threeproject/AnnUpdate", this.form1)
+				this.axios.put("http://localhost:8089/threeproject/AnnUpdate", this.form1,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var Ann = response.data
 						console.log("response内容：")
 						console.log(response)
-						var row = _this.tableData.filter(t => t.announcementtypeId == Ann.announcementtypeId)[0]
+						var row = _this.tableData.filter(t => t.announcementId == Ann.announcementId)[0]
 						row.announcementTheme = Ann.announcementTheme
 						row.startTime = Ann.startTime
 						row.endTime = Ann.endTime
@@ -355,10 +379,15 @@
 						dangerouslyUseHTMLString: true,
 					});
 				} else {
-					const _this=this
+					const _this = this
 					_this.multipleSelection.forEach(item => {
-						item.publishname="启用人"
-						this.axios.put("http://localhost:8089/threeproject/AnnState", item)
+						item.publishname = this.$store.state.updateUserInfo.username
+						this.axios.put("http://localhost:8089/threeproject/AnnState", item,{
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 							.then(function(response) {
 								var Ann = response.data
 								console.log("response内容：")
@@ -366,12 +395,12 @@
 								var row = _this.tableData.filter(t => t.announcementtypeId == Ann.announcementtypeId)[0]
 								row.announcementState = Ann.announcementState
 								_this.dialogFormVisible2 = false
-						
+
 							}).catch(function(error) {
 								console.log(error)
 							})
 					});
-					
+
 				}
 
 			},
@@ -381,11 +410,16 @@
 						dangerouslyUseHTMLString: true,
 					});
 				} else {
-					const _this=this
+					const _this = this
 					_this.multipleSelection.forEach(item => {
-						item.suspendname="禁用人"
+						item.suspendname = this.$store.state.updateUserInfo.username
 						console.log(item)
-						this.axios.put("http://localhost:8089/threeproject/SuspendAnn", item)
+						this.axios.put("http://localhost:8089/threeproject/SuspendAnn", item,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 							.then(function(response) {
 								var Ann = response.data
 								console.log("response内容：")
@@ -393,7 +427,7 @@
 								var row = _this.tableData.filter(t => t.announcementtypeId == Ann.announcementtypeId)[0]
 								row.announcementState = Ann.announcementState
 								_this.dialogFormVisible2 = false
-						
+
 							}).catch(function(error) {
 								console.log(error)
 							})
@@ -402,11 +436,76 @@
 			},
 			AnnAdd() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AnnAdd", this.form1)
+				if (this.form1.announcementtypeId != '') {
+					if (this.form1.announcementTheme != '') {
+						if (this.form1.startTime < this.form1.endTime && this.form1.startTime != '' && this.form1.endTime != '') {
+							if (this.yesemps.yesemp.length != 0) {
+								console.log("13423")
+								this.form1.addname=this.$store.state.updateUserInfo.username
+								this.axios.post("http://localhost:8089/threeproject/AnnAdd", this.form1,{
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									}
+								})
+									.then(function(response) {
+										_this.yesemps.id=response.data.announcementId 
+										var Anns = response.data
+										console.log("AnnAdd?????")
+										console.log(response)
+										_this.tableData.push(Anns)
+										_this.dialogFormVisible = false
+										_this.axios.post("http://localhost:8089/threeproject/AddAnnSelect" ,{
+												headers: {
+													'content-type': 'application/json',
+													'jwtAuth': _this.$store.getters.token
+												},
+												params:_this.yesemps
+											})
+											.then(function(response) {
+												console.log(response)
+											}).catch(function(error) {
+												console.log(error)
+											})
+									}).catch(function(error) {
+										console.log(error)
+									})
+							} else {
+								this.$alert('<strong>请选择可查看人！</strong>', '提示', {
+									dangerouslyUseHTMLString: true,
+								});
+							}
+						} else {
+							this.$alert('<strong>请正确输入开始结束时间</strong>', '提示', {
+								dangerouslyUseHTMLString: true,
+							});
+						}
+					} else {
+						this.$alert('<strong>公告主题不能为空</strong>', '提示', {
+							dangerouslyUseHTMLString: true,
+						});
+					}
+				} else {
+					this.$alert('<strong>公告分类不能为空</strong>', '提示', {
+						dangerouslyUseHTMLString: true,
+					});
+				}
+
+
+
+			},
+			AnnQuery() {
+				const this_ = this
+				this.axios.get("http://localhost:8089/threeproject/findAnns", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
 					.then(function(response) {
-						var Anns = response.data
-						_this.tableData.push(Anns)
-						_this.dialogFormVisible = false
+						this_.tableData = response.data.list
+						this_.pageInfo.total = response.data.total
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
@@ -415,26 +514,29 @@
 		},
 		created() {
 			const this_ = this
-			// this.axios.get("http://localhost:8089/threeproject/findAllAnn")
-			// 	.then(function(response) {
-			// 		this_.tableData = response.data
-			// 		console.log(response)
-			// 	}).catch(function(error) {
-			// 		console.log(error)
-			// 	}),
-			this.axios.get("http://localhost:8089/threeproject/findAnnType")
+			this.AnnQuery()
+			this.axios.get("http://localhost:8089/threeproject/findAnnType",{
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': this.$store.getters.token
+				}
+			})
 				.then(function(response) {
 					this_.AnnType = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-				this.axios.get("http://localhost:8089/threeproject/findPageAnn", {
-					params: this.pageInfo
+
+				this.axios.get("http://localhost:8089/threeproject/selectEmp",{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
 				})
 				.then(function(response) {
-					this_.tableData = response.data.list
-					this_.pageInfo.total = response.data.total
+					this_.noemp = response.data
+					console.log("拥护！")
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
@@ -472,27 +574,27 @@
 		width: 100%;
 	}
 
-	/* .el-header {
+	.el-header {
 		background-color: #B3C0D1;
-		color: #333; */
+		color: #333;
 		/* text-align: center; */
-/* 		line-height: 60px;
-	} */
+		line-height: 60px;
+	}
 
-	/* .el-aside {
+	.el-aside {
 		background-color: #D3DCE6;
-		color: #333; */
+		color: #333;
 		/* text-align: center; */
-/* 		height: 100%;
+		height: 100%;
 		width: 100%;
-	} */
+	}
 
-	/* .el-main {
+	.el-main {
 		background-color: #E9EEF3;
-		color: #333; */
+		color: #333;
 		/* text-align: left; */
 		/* line-height: 160px; */
-	/* } */
+	}
 
 	.is-vertical {}
 

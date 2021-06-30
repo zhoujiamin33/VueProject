@@ -82,7 +82,12 @@
 			UnitTypeAdd(){
 				console.log(this.UnitType)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/UnitTypeAdd",this.UnitType)
+				this.axios.post("http://localhost:8089/threeproject/UnitTypeAdd",this.UnitType,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var unittype=response.data
 						_this.tableData.push(unittype)
@@ -94,7 +99,12 @@
 			},
 			UnitTypeUpdate(){
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/UnitTypeUpdate",this.UnitType)
+				this.axios.put("http://localhost:8089/threeproject/UnitTypeUpdate",this.UnitType,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var unittype=response.data
 						var row =_this.tableData.filter(t=>t.unittypeId==unittype.unittypeId)[0]
@@ -121,7 +131,12 @@
 				  type:"warning"
 				})
 				  .then(() => {
-				    _this.axios.delete("http://localhost:8089/threeproject/UnitTypeDelete/"+row.unittypeId)
+				    _this.axios.delete("http://localhost:8089/threeproject/UnitTypeDelete?unittypeId="+row.unittypeId,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': this.$store.getters.token
+						}
+					})
 					.then(function(response){
 						var rows =_this.tableData.filter(t=>t.unittypeId!=row.unittypeId)
 						_this.tableData=rows
@@ -144,21 +159,32 @@
 				  type:"warning"
 				})
 				  .then(() => {
-					this.axios.get("http://localhost:8089/threeproject/findUnitType/"+row.unittypeId)
+					this.axios.get("http://localhost:8089/threeproject/findUnitType?unittypeId="+row.unittypeId,{
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': this.$store.getters.token
+						}
+					})
 						.then(function(response) {
 							console.log(response)
 							if(response.data!=0){
-								console.log("不能删除！")
-								return;
+								alert("在使用中！！")
+							}else{
+								_this.axios.put("http://localhost:8089/threeproject/updateTimeLiness",row,{
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': this.$store.getters.token
+									}
+								})
+								.then(function(response){
+									var unittype=response.data
+									var rows =_this.tableData.filter(t=>t.unittypeId!=unittype.unittypeId)
+									_this.tableData=rows
+								}).catch(function(errer){
+									console.log(errer)
+								})
 							}
-							_this.axios.put("http://localhost:8089/threeproject/updateTimeLiness",row)
-							.then(function(response){
-								var unittype=response.data
-								var rows =_this.tableData.filter(t=>t.unittypeId!=unittype.unittypeId)
-								_this.tableData=rows
-							}).catch(function(errer){
-								console.log(errer)
-							})	
+								
 							console.log("11111111")
 						}).catch(function(error) {
 							console.log(error)
@@ -173,7 +199,12 @@
 		},
 		created() {
 			const this_ = this
-			this.axios.get("http://localhost:8089/threeproject/UnitTypeShowAll")
+			this.axios.get("http://localhost:8089/threeproject/selectUnitTypeAll",{
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': this.$store.getters.token
+				}
+			})
 				.then(function(response) {
 					this_.tableData = response.data
 					console.log(response)

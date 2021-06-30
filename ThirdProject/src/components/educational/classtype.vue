@@ -115,55 +115,66 @@ export default{
 	},
 	 methods: {
 		//循环保存被选中的id
-		handleSelectionChange(val) {
-			this.multipleSelection = [];
-			for (var i=0;i<val.length;i++) {
-				this.multipleSelection.push(val[i].classtypeId);
-			}
-			console.log(val)
-		}, 
+		// handleSelectionChange(val) {
+		// 	this.multipleSelection = [];
+		// 	for (var i=0;i<val.length;i++) {
+		// 		this.multipleSelection.push(val[i].classtypeId);
+		// 	}
+		// 	console.log(val)
+		// }, 
 		
 		//批量删除
-		cutoff() {
-			// var deletename="默认"
-			if (this.multipleSelection.length == 0) {
-				this.$alert('<strong>请至选中一个！</strong>', '提示', {
-				dangerouslyUseHTMLString: true,
-				});
-			}else {
-				const _this = this
-				this.$confirm('是否删除？', '删除', {
-				distinguishCancelAndClose: true,
-				confirmButtonText: '是',
-				cancelButtonText: '否',
-				type:"warning"
-			}).then(() => {
-				_this.axios.put("http://localhost:8089/threeproject/updateCourseType/"+this.multipleSelection)
-				.then(function(response){
-					var row=response
-					_this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo})
-					.then(function(response) {
-						_this.tableData = response.data.list
-						_this.pageInfo.total=response.data.total
-						console.log(_this.UnitType)
-					}).catch(function(error) {
-						console.log(error)
-					})
-				}).catch(function(errer){
-					console.log(errer)
-				})
-					console.log("43321")
-				}).catch(action => {
-					console.log("2")
-				});
-			}
-		},
+		// cutoff() {
+		// 	// var deletename="默认"
+		// 	if (this.multipleSelection.length == 0) {
+		// 		this.$alert('<strong>请至选中一个！</strong>', '提示', {
+		// 		dangerouslyUseHTMLString: true,
+		// 		});
+		// 	}else {
+		// 		const _this = this
+		// 		this.$confirm('是否删除？', '删除', {
+		// 		distinguishCancelAndClose: true,
+		// 		confirmButtonText: '是',
+		// 		cancelButtonText: '否',
+		// 		type:"warning"
+		// 	}).then(() => {
+		// 		_this.axios.put("http://localhost:8089/threeproject/updateCourseType/"+this.multipleSelection)
+		// 		.then(function(response){
+		// 			var row=response
+		// 			_this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo},{
+		// 			headers: {
+		// 				'content-type': 'application/json',
+		// 				'jwtAuth': _this.$store.getters.token
+		// 			}
+		// 		})
+		// 			.then(function(response) {
+		// 				_this.tableData = response.data.list
+		// 				_this.pageInfo.total=response.data.total
+		// 				console.log(_this.UnitType)
+		// 			}).catch(function(error) {
+		// 				console.log(error)
+		// 			})
+		// 		}).catch(function(errer){
+		// 			console.log(errer)
+		// 		})
+		// 			console.log("43321")
+		// 		}).catch(action => {
+		// 			console.log("2")
+		// 		});
+		// 	}
+		// },
 		handleSizeChange(pagesize) {
 		    var _this=this
 		    this.pageInfo.pagesize=pagesize
 			var ps = qs.stringify(this.pageInfo)
 			console.log(ps)
-		    this.axios.get("http://localhost:8089/threeproject/findPage",{params:this.pageInfo})
+		    this.axios.get("http://localhost:8089/threeproject/findPage",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		    .then(function(response){
 		    	console.log("-------------------------------------------")
 		    	console.log(response.data)
@@ -176,7 +187,13 @@ export default{
 			var _this=this
 			this.pageInfo.currentPage=currentPage
 			var ps = qs.stringify(this.pageInfo)
-			this.axios.get("http://localhost:8089/threeproject/findPage",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/findPage",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response.data)
 				_this.tableData=response.data.list
@@ -187,7 +204,13 @@ export default{
 		 // 模糊查询后分页显示
 		 SelectByName(){
 			 const _this=this
-			 this.axios.get("http://localhost:8089/threeproject/findPage",{params:this.pageInfo})
+			 this.axios.get("http://localhost:8089/threeproject/findPage",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			 .then(function(response){
 				 console.log(response)
 				 _this.tableData=response.data.list
@@ -199,8 +222,13 @@ export default{
 		 // 修改方法
 		 updateType(){
 			 const _this=this
-			 this.updatename="admin"
-			 this.axios.put("http://localhost:8089/threeproject/updateType",this.form)
+			 this.updatename=this.$store.state.updateUserInfo.username
+			 this.axios.put("http://localhost:8089/threeproject/updateType",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			 .then(function(response){
 				 console.log(response)
 				 var classtype=response.data
@@ -229,10 +257,21 @@ export default{
 		  // 新增方法
 		  addType(){
 			  const _this=this
-			  this.addname="admin"
-			  this.axios.post("http://localhost:8089/threeproject/addcoursetype",this.form)
+			  this.addname=this.$store.state.updateUserInfo.username
+			  this.axios.post("http://localhost:8089/threeproject/addcoursetype",this.form,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			  .then(function(response){
-				  _this.axios.get("http://localhost:8089/threeproject/findPage",{params:_this.pageInfo})
+				  _this.axios.get("http://localhost:8089/threeproject/findPage",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				  .then(function(response) {
 				  	console.log(response)
 				  	_this.tableData=response.data.list
@@ -254,7 +293,13 @@ export default{
 	created() {
 		// 在界面分页显示数据
 		const _this=this
-		this.axios.get("http://localhost:8089/threeproject/findPage",{params:this.pageInfo})
+		this.axios.get("http://localhost:8089/threeproject/findPage",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 		.then(function(response) {
 			console.log(response)
 			_this.tableData=response.data.list

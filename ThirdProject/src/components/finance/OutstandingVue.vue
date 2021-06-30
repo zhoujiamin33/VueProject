@@ -182,7 +182,7 @@
 
 <script>
 	import qs from 'qs'
-	import moment from "moment"
+	// import moment from "moment"
 	export default{
 		name:"outstanding",
 		data(){
@@ -200,8 +200,10 @@
 					value2:"",
 					Approval:"",
 				},
-				select:"",
-				input:"",
+				selectkey:{
+					select:"",
+					input:""
+				},
 				tableData:[],
 				tableData2:[],
 				dialogoutStanding:false,
@@ -238,6 +240,12 @@
 				form3:{
 					feesId:"",
 					Fees_Accumulated:""
+				},
+				PutDeleteForm:{
+					feesId:"",
+					updatename:"",
+					approvalname:"",
+					revokeappname:""
 				}
 			}
 		},
@@ -247,7 +255,13 @@
 			    this.pageInfo.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:this.pageInfo})
+			    this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -260,7 +274,13 @@
 				var _this=this
 				this.pageInfo.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:this.pageInfo})
+				this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData2=response.data.list
@@ -273,7 +293,13 @@
 			    this.pageInfo2.pagesize=pagesize
 				var ps = qs.stringify(this.pageInfo2)
 				console.log(ps)
-			    this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{params:this.pageInfo2})
+			    this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{
+					params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			    .then(function(response){
 			    	console.log("-------------------------------------------")
 			    	console.log(response.data)
@@ -286,7 +312,13 @@
 				var _this=this
 				this.pageInfo2.currentPage=currentPage
 				var ps = qs.stringify(this.pageInfo2)
-				this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{params:this.pageInfo2})
+				this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{
+					params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response.data)
 					_this.tableData=response.data.list
@@ -302,7 +334,12 @@
 			selectByFeeId(feeId){
 				console.log(feeId+"-------")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByfeeidtoentry/"+feeId)
+				this.axios.get("http://localhost:8089/threeproject/selectByfeeidtoentry?feedId="+feeId,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					_this.form=response.data
 					console.log(response)
@@ -315,7 +352,12 @@
 			selectbyContion(select,input){
 				const _this=this
 				feeId=this.entryfeeId
-				this.axios.get("http://localhost:8089/threeproject/selectBycontion/"+select+"/"+input)
+				this.axios.get("http://localhost:8089/threeproject/selectBycontion",this.selectkey,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					_this.qianfeidata=response.data.list
 					_this.pageInfo.total=response.data.total
@@ -331,7 +373,12 @@
 				console.log(this.pageInfo2.value2+"value2")
 				console.log(this.pageInfo2.Approval+"Approval")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByContionout/"+this.pageInfo2.Approval+"/"+this.pageInfo2.value1+"/"+this.pageInfo2.value2)
+				this.axios.get("http://localhost:8089/threeproject/selectByContionout"+this.pageInfo2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					_this.tableData2=response.data
@@ -350,10 +397,21 @@
 				this.form2.alongmoney=this.form.AlongMoney
 				//累计欠费----//补缴金额
 				this.form2.accumulated=this.form.feesaccumulated-this.form.AlongMoney
-				this.form2.addname=this.form.addname
-				this.axios.post("http://localhost:8089/threeproject/insertoutstanding",this.form2)
+				this.form2.addname=this.$store.state.updateUserInfo.username
+				this.axios.post("http://localhost:8089/threeproject/insertoutstanding",this.form2,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response){
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -377,7 +435,12 @@
 				this.form3.feesId=feeId
 				//累计欠费减去补缴的金额
 				this.form3.feesaccumulated=feesaccumulated-alongmoney
-				this.axios.put("http://localhost:8089/threeproject/updateFeesAccumulated/",this.form3)
+				this.axios.put("http://localhost:8089/threeproject/updateFeesAccumulated/",this.form3,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
 					console.log(response)
 					var entryfees=response.data
@@ -389,10 +452,21 @@
 			//审核
 			updateapproval(row){
 				const _this=this
-				row.approvalname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateApprovalState/",row)
+				this.PutDeleteForm.approvalname=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateApprovalState",this.PutDeleteForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response){
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -407,10 +481,21 @@
 			// 撤销审核
 			updateRevokeapproval(row){
 				const _this=this
-				row.revokeappname="admin"
-				this.axios.put("http://localhost:8089/threeproject/updateReApprovalState",row)
+				this.PutDeleteForm.revokeappname=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/updateReApprovalState",this.PutDeleteForm,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response){
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -425,10 +510,16 @@
 			// 删除
 			deleteoutstanding(row){
 				const _this=this
-				row.deletename="admin"
-				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",row)
+				this.PutDeleteForm.updatename=this.$store.state.updateUserInfo.username
+				this.axios.put("http://localhost:8089/threeproject/deleteoutstanding",this.PutDeleteForm)
 				.then(function(response){
-					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:_this.pageInfo})
+					_this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+					params:_this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response){
 						console.log(response)
 						_this.tableData2=response.data.list
@@ -444,7 +535,13 @@
 		created() {
 			//查询报班缴费数据中缴费方式未预交的数据
 			const _this=this
-			this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{params:this.pageInfo2})
+			this.axios.get("http://localhost:8089/threeproject/findAlloutstanding",{
+				    params:this.pageInfo2,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.tableData=response.data.list
@@ -452,7 +549,13 @@
 			}).catch(function(error){
 				console.log(error)
 			}),
-			this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{params:this.pageInfo})
+			this.axios.get("http://localhost:8089/threeproject/selectoutstanding",{
+				    params:this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 			.then(function(response){
 				console.log(response)
 				_this.tableData2=response.data.list

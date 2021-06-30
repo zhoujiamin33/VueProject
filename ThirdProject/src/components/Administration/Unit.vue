@@ -153,7 +153,10 @@
 				AnnSelect: '',
 				Units: [],
 				UnitType: [],
-				multipleSelection: [],
+				AddIdName:{
+					multipleSelection: [],
+					name:''
+				},
 				pageInfo: {
 					currentPage: 1, //识别当前页码
 					pagesize: 2, //每页多少条数据
@@ -218,12 +221,6 @@
 					this.auto = "auto"
 				}
 			},
-			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
-			},
-			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
-			},
 			submitUpload() {
 				this.$refs.upload.submit();
 			},
@@ -243,15 +240,14 @@
 				this.dialogFormVisible2 = true
 			},
 			handleSelectionChange(val) {
-				this.multipleSelection = [];
+				this.AddIdName.multipleSelection = [];
 				for (var i = 0; i < val.length; i++) {
-					this.multipleSelection.push(val[i].unitId);
+					this.AddIdName.multipleSelection.push(val[i].unitId);
 				}
 				console.log(val)
 			},
 			cutoff() {
-				var un = "默认"
-				if (this.multipleSelection.length == 0) {
+				if (this.AddIdName.multipleSelection.length == 0) {
 					this.$alert('<strong>请至选中一个！</strong>', '提示', {
 						dangerouslyUseHTMLString: true,
 					});
@@ -264,11 +260,19 @@
 							type: "warning"
 						})
 						.then(() => {
-							_this.axios.put("http://localhost:8089/threeproject/delUnit/" + this.multipleSelection +
-									"/" + un)
+							_this.axios.put("http://localhost:8089/threeproject/delUnit" + this.AddIdName.multipleSelection,{
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': this.$store.getters.token
+								}
+							})
 								.then(function(response) {
 									var row = response
 									_this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+										headers: {
+											'content-type': 'application/json',
+											'jwtAuth': this.$store.getters.token
+										},
 											params: _this.pageInfo
 										})
 										.then(function(response) {
@@ -283,7 +287,7 @@
 									console.log(errer)
 								})
 						}).catch(action => {
-							console.log("2")
+							console.log("删除失败")
 						});
 				}
 			},
@@ -298,7 +302,12 @@
 			UnitAdd() {
 				console.log(this.Unit)
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/UnitAdd", this.Unit)
+				this.axios.post("http://localhost:8089/threeproject/UnitAdd", this.Unit,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var unit = response.data
 						_this.Units.push(unit)
@@ -312,7 +321,12 @@
 				const _this = this
 				console.log("this.Unit内容：")
 				console.log(this.Unit)
-				this.axios.put("http://localhost:8089/threeproject/UpdateUnit", this.Unit)
+				this.axios.put("http://localhost:8089/threeproject/UpdateUnit", this.Unit,{
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						var unit = response.data
 						console.log("response内容：")
@@ -340,55 +354,71 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo);
 				console.log(ps)
-				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log("-----------")
-						console.log(response.data)
-						_this.Units = response.data.list
-					}).catch(function(errer) {
-						console.log(errer)
-					})
+				findPageUnit()
+				// this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+				// 	headers: {
+				// 		'content-type': 'application/json',
+				// 		'jwtAuth': this.$store.getters.token
+				// 	},
+				// 		params: this.pageInfo
+				// 	})
+				// 	.then(function(response) {
+				// 		console.log("-----------")
+				// 		console.log(response.data)
+				// 		_this.Units = response.data.list
+				// 	}).catch(function(errer) {
+				// 		console.log(errer)
+				// 	})
 			},
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
+				findPageUnit()
+				// this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+				// 	headers: {
+				// 		'content-type': 'application/json',
+				// 		'jwtAuth': this.$store.getters.token
+				// 	},
+				// 		params: this.pageInfo
+				// 	})
+				// 	.then(function(response) {
+				// 		console.log("-----------")
+				// 		console.log(response.data)
+				// 		_this.Units = response.data.list
+				// 	}).catch(function(errer) {
+				// 		console.log(errer)
+				// 	})
+			},
+			findPageUnit(){
+				const _this = this
 				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						console.log("-----------")
-						console.log(response.data)
-						_this.Units = response.data.list
-					}).catch(function(errer) {
-						console.log(errer)
-					})
-			}
-		},
-		created() {
-			const _this = this
-			// 			this.axios.get("http://localhost:8089/threeproject/findAllUnit")
-			// 			.then(function(response){
-			// 				_this.Units=response.data
-			// 				console.log(response)
-			// 			}).catch(function(errer){
-			// 				console.log(errer)
-			// 			}),
-			this.axios.get("http://localhost:8089/threeproject/UnitTypeShowAll")
-				.then(function(response) {
-					_this.UnitType = response.data
-					console.log(_this.UnitType)
-				}).catch(function(error) {
-					console.log(error)
-				}),
-				this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
 					_this.Units = response.data.list
 					_this.pageInfo.total = response.data.total
+					console.log(_this.UnitType)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			}
+		},
+		created() {
+			const _this = this
+			findPageUnit()
+			this.axios.get("http://localhost:8089/threeproject/selectUnitTypeAll",{
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': this.$store.getters.token
+				}
+			})
+				.then(function(response) {
+					_this.UnitType = response.data
 					console.log(_this.UnitType)
 				}).catch(function(error) {
 					console.log(error)

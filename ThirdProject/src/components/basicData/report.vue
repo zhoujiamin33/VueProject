@@ -63,7 +63,11 @@
 			},
 			sum(){
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/ConsultationmodeStatistics")
+				this.axios.get("http://localhost:8089/threeproject/ConsultationmodeStatistics",{headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+					}
+				})
 					.then(function(response) {
 						_this.ConsultationmodeData=response.data.data;
 						console.log(response+"==================")

@@ -179,7 +179,12 @@
 
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+			this.axios.get("http://localhost:8089/threeproject/findFaqQuestions", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
 				.then(function(response) {
 					_this.FaqQuestionsDate = response.data
 					console.log(response)
@@ -187,6 +192,10 @@
 					console.log(error)
 				})
 			this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
 					params: this.pageInfo
 				})
 				.then(function(response) {
@@ -236,7 +245,12 @@
 			//新增
 			addFaqQuestions() {
 				const _this = this
-				this.axios.post("http://localhost:8089/threeproject/AddFaqQuestions", this.form)
+				this.axios.post("http://localhost:8089/threeproject/AddFaqQuestions", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						console.log(response)
 						var faq_questions = response.data
@@ -254,7 +268,12 @@
 			updateFaqQuestions() {
 				const _this = this
 				console.log(this.faqId + "kkk")
-				this.axios.put("http://localhost:8089/threeproject/UpFaqQuestions", this.form)
+				this.axios.put("http://localhost:8089/threeproject/UpFaqQuestions", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 
 						// var faqQuestions = response.data
@@ -264,7 +283,12 @@
 						// 	console.log("-----------3")
 						// row.answer = faqQuestions.answer
 						// row.updatename = faqQuestions.updatename
-						_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+						_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								}
+							})
 							.then(function(response) {
 								_this.FaqQuestionsDate = response.data
 								console.log(response)
@@ -282,7 +306,12 @@
 					console.log(item)
 					console.log(item.faqId + "=======")
 					item.deletename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelFaq/" + item.faqId)
+					this.axios.put("http://localhost:8089/threeproject/DelFaq/" + item.faqId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token
+							}
+						})
 						.then(function(response) {
 							_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
 								.then(function(response) {
@@ -301,9 +330,14 @@
 			},
 
 
-			FAQxshi (){
+			FAQxshi() {
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findFaqQuestions")
+				this.axios.get("http://localhost:8089/threeproject/findFaqQuestions", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
 					.then(function(response) {
 						_this.FaqQuestionsDate = response.data
 						console.log(response)
@@ -318,6 +352,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
 				this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -334,6 +372,10 @@
 				var ps = qs.stringify(this.pageInfo)
 				console.log(ps)
 				this.axios.get("http://localhost:8089/threeproject/findPageFaq", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
 						params: this.pageInfo
 					})
 					.then(function(response) {

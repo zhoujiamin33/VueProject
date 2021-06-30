@@ -138,7 +138,7 @@
 					},
 					 Addstudent(){
 						 const _this = this;
-						this.axios.post("http://localhost:8089/threeproject/position", this.addForm)
+						this.axios.post("http://localhost:8089/threeproject/addposition", this.addForm)
 						.then(function(response) {
 							console.log(response)
 							var dept=response.data
@@ -160,7 +160,7 @@
 					 },
 					 updateposition(){
 						 const _this = this
-						 this.axios.put("http://localhost:8089/threeproject/position", this.addForm)
+						 this.axios.put("http://localhost:8089/threeproject/updateposition", this.addForm)
 						 .then(function(response) {
 						 	console.log(response)
 						 	var dept=response.data
@@ -176,10 +176,10 @@
 					 },
 					 del(row){
 						const _this = this
-						 this.axios.put("http://localhost:8089/threeproject/delTimeLiness/"+ row.positionId)
+						 this.axios.put("http://localhost:8089/threeproject/delTimeLiness?positionId="+ row.positionId)
 						 .then(function(response) {
 						 	console.log(response)
-							_this.axios.get("http://localhost:8089/threeproject/selTimeLiness",{params: _this.pageInfo})
+							_this.axios.get("http://localhost:8089/threeproject/findpositionname",{params: _this.pageInfo})
 								.then(function(response) {
 									_this.tableData = response.data.list
 									_this.pageInfo.total=response.data.total
@@ -213,7 +213,7 @@
 					 	this.pageInfo.currentPage = currentPage
 					 	var ps = qs.stringify(this.pageInfo)
 					 	console.log(ps)
-					 	this.axios.get("http://localhost:8089/threeproject/selTimeLiness", {
+					 	this.axios.get("http://localhost:8089/threeproject/findpositionname", {
 					 			params: this.pageInfo
 					 		})
 					 		.then(function(response) {
@@ -229,7 +229,7 @@
 					 	this.pageInfo.pagesize = pagesize
 					 	var ps = qs.stringify(this.pageInfo)
 					 	console.log(ps)
-					 	this.axios.get("http://localhost:8089/threeproject/selTimeLiness", {
+					 	this.axios.get("http://localhost:8089/threeproject/findpositionname", {
 					 			params: this.pageInfo
 					 		})
 					 		.then(function(response) {
@@ -244,7 +244,7 @@
 				created() {
 					const _this = this;
 					console.log(this.pageInfo.pagesize, this.pageInfo.currentPage)
-					this.axios.get("http://localhost:8089/threeproject/selTimeLiness",{params: this.pageInfo})
+					this.axios.get("http://localhost:8089/threeproject/findpositionname",{params: this.pageInfo})
 						.then(function(response) {
 							_this.tableData = response.data.list
 							_this.pageInfo.total=response.data.total

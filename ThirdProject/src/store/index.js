@@ -3,6 +3,7 @@ import {createStore} from 'vuex'
 const store=createStore({
 	state:{
 		updateUserInfo:{
+			id:'',
 			username:"",
 			isValidate:false,
 			token:"",
