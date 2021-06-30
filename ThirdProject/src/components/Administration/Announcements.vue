@@ -231,10 +231,6 @@
 				this.multipleSelection = [];
 				this.multipleSelection = val;
 				console.log(this.multipleSelection)
-
-				// for (var i = 0; i < val.length; i++) {
-				// 	this.multipleSelection.push(val[i].announcementId);
-				// }
 			},
 			cuts(item) {
 				this.axios.put("http://localhost:8089/threeproject/delAnn", item,{
@@ -274,7 +270,6 @@
 										'content-type': 'application/json',
 										'jwtAuth': _this.$store.getters.token
 									},
-								
 									params: this.pageInfo
 								})
 								.then(function(response) {
@@ -296,12 +291,10 @@
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/threeproject/findAnns", {
-					
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						},
-					
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -317,12 +310,10 @@
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo) // eslint-disable-line no-unused-vars
 				this.axios.get("http://localhost:8089/threeproject/findAnns", {
-					
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						},
-					
 						params: this.pageInfo
 					})
 					.then(function(response) {
@@ -348,7 +339,6 @@
 			UpdateAnn() {
 				const _this = this
 				console.log("this.Unit内容：")
-				// this.from.updatename=this.$store.state.updateUserInfo.username
 				console.log(this.Unit)
 				this.axios.put("http://localhost:8089/threeproject/AnnUpdate", this.form1,{
 					headers: {
@@ -382,13 +372,14 @@
 					const _this = this
 					_this.multipleSelection.forEach(item => {
 						item.publishname = this.$store.state.updateUserInfo.username
-						this.axios.put("http://localhost:8089/threeproject/AnnState", item,{
+						this.axios.put("http://localhost:8089/threeproject/AnnState",item,{
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
-						})
-							.then(function(response) {
+
+						}).then(function(response) {
+
 								var Ann = response.data
 								console.log("response内容：")
 								console.log(response)
@@ -406,7 +397,7 @@
 			},
 			suspend() {
 				if (this.multipleSelection.length == 0) {
-					this.$alert('<strong>请至选中一个！</strong>', '提示', {
+					this.$alert('<strong>请至少选中一个！</strong>', '提示', {
 						dangerouslyUseHTMLString: true,
 					});
 				} else {
@@ -419,8 +410,7 @@
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
 						}
-					})
-							.then(function(response) {
+					}).then(function(response) {
 								var Ann = response.data
 								console.log("response内容：")
 								console.log(response)
@@ -490,9 +480,6 @@
 						dangerouslyUseHTMLString: true,
 					});
 				}
-
-
-
 			},
 			AnnQuery() {
 				const this_ = this
@@ -506,28 +493,25 @@
 					.then(function(response) {
 						this_.tableData = response.data.list
 						this_.pageInfo.total = response.data.total
-						console.log(response)
-					}).catch(function(error) {
+					})
+					.catch(function(error) {
 						console.log(error)
 					})
 			}
 		},
 		created() {
 			const this_ = this
-			this.AnnQuery()
 			this.axios.get("http://localhost:8089/threeproject/findAnnType",{
 				headers: {
 					'content-type': 'application/json',
 					'jwtAuth': this.$store.getters.token
 				}
-			})
-				.then(function(response) {
+			}).then(function(response) {
 					this_.AnnType = response.data
 					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				}),
-
 				this.axios.get("http://localhost:8089/threeproject/selectEmp",{
 					headers: {
 						'content-type': 'application/json',
