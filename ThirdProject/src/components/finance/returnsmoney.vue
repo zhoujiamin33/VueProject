@@ -43,8 +43,6 @@
 		</div>
 		<!-- 底部金额总结 -->
 		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
-			<!-- 底部金额总结 -->
-			<span style="margin-top:15px;font-size: 14px;margin-left:10px;">缴费总额：已审核金额：未审核金额：</span>
 			<el-pagination
 			@size-change="handleSizeChange"
 			@current-change="handleCurrentChange"

@@ -2,7 +2,7 @@
 	<div>
 		<!-- 搜索按钮 -->
 		<div style="margin-top:35px;display: flex;justify-content: space-between">
-		  <el-input placeholder="请输入内容" v-model="pageInfo.searchinput" class="input-with-select" style="width:320px;height: 20px;margin-left:10px;">
+		  <el-input placeholder="请输入内容" clearable v-model="pageInfo.searchinput" class="input-with-select" style="width:320px;height: 20px;margin-left:10px;">
 		     <template #append>
 		        <el-button icon="el-icon-search"  @click="SelectByName">查询</el-button>
 		      </template>
@@ -20,9 +20,6 @@
 		    <div style="text-align: center;">
 				<el-form-item label="课类名称" :label-width="formLabelWidth">
 				  <el-input v-model="form.classtypeName" autocomplete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="新增人员" :label-width="formLabelWidth">
-				  <el-input v-model="form.addname" autocomplete="off"></el-input>
 				</el-form-item>
 			</div>
 		  </el-form>
