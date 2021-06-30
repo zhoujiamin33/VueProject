@@ -13,7 +13,7 @@
 	  <el-form-item label="确认密码:" required style="margin-left: 10px;">
 	    <el-input v-model="form.password1"  show-password></el-input>
 	  </el-form-item>
-	  <el-button>确定初始化</el-button>
+	  <el-button type="primary">确定初始化</el-button>
 	  </el-form>
 </template>
 
@@ -33,18 +33,37 @@
 		},
 		methods:{
 			xiugai(){
-				this.form.EmpId=this.$store.state.userInfo.userId
-				this.form.empName=this.$store.state.userInfo.userName
+				// this.form.EmpId=this.$store.state.updateUserInfo.userid
+				this.form.empName=this.$store.state.updateUserInfo.username
+				
 			}
 		},
-	  setup() {
-	    return {
-	      password: ref(''),
-		  password1: ref(''),
-		  EmpId:ref(''),
-		  EmpName:ref('')
-	    }
-	  }
+		created(){
+		this.form.empName=this.$store.state.updateUserInfo.username
+		
+			const _this=this
+			this.axios.get("http://localhost:8089/threeproject/findalldept",
+			{
+				headers: {
+				'content-type': 'application/json',
+				'jwtAuth': _this.$store.getters.token
+			}
+			})
+			.then(function(response) {
+				_this.Data1 = response.data
+				console.log(response)
+			}).catch(function(error) {
+				console.log(error)
+			})
+		}
+	  // setup() {
+	  //   return {
+	  //     password: ref(''),
+		 //  password1: ref(''),
+		 //  EmpId:ref(''),
+		 //  EmpName:ref('')
+	  //   }
+	  // }
 	})
 </script>
 

@@ -12,8 +12,8 @@ margin-bottom: 10px;">
 				</el-table-column>
 				<el-table-column prop="deptName" label="部门名称">
 				</el-table-column>
-				<el-table-column prop="superiorsDeptId" label="上级部门">
-				</el-table-column>
+				<!-- <el-table-column prop="superiorsDeptId" label="上级部门">
+				</el-table-column> -->
 				<el-table-column prop="index" label="操作"  fixed="right">
 					<template #default="scope">
 						<el-button type="primary" @click="handleNodeClick(scope.row)">修改</el-button>
@@ -38,7 +38,7 @@ margin-bottom: 10px;">
 						</template>
 					<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
 					</el-descriptions-item>
-					<el-descriptions-item>
+					<!-- <el-descriptions-item>
 						<template #label>
 							<i class="el-icon-tickets"></i>
 							上级部门:
@@ -48,7 +48,7 @@ margin-bottom: 10px;">
 						<el-option label="销售部门" value="2"></el-option>
 						<el-option label="常规部门" value="3"></el-option>
 					</el-select>
-					</el-descriptions-item>
+					</el-descriptions-item> -->
 					<el-descriptions-item>
 						<el-button @click="AddDept">确定</el-button>
 						<el-button @click="dialogFormVisible=false">返回</el-button>
@@ -79,7 +79,7 @@ margin-bottom: 10px;">
 							</template>
 						<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
 						</el-descriptions-item>
-						<el-descriptions-item>
+						<!-- <el-descriptions-item>
 							<template #label>
 								<i class="el-icon-tickets"></i>
 								上级部门:
@@ -89,7 +89,7 @@ margin-bottom: 10px;">
 							<el-option label="销售部门" value="2"></el-option>
 							<el-option label="常规部门" value="3"></el-option>
 						</el-select>
-						</el-descriptions-item>
+						</el-descriptions-item> -->
 						<el-descriptions-item>
 							<el-button @click="updatedept">确定</el-button>
 							<el-button @click="dialogFormVisible2=false">返回</el-button>
@@ -134,12 +134,20 @@ margin-bottom: 10px;">
 			  AddDept(){
 				  const _this = this
 				 
-				  this.axios.post("http://localhost:8089/threeproject/adddept", this.form)
+				  this.axios.post("http://localhost:8089/threeproject/adddept", this.form,
+				  {
+				  	headers: {
+				  		'content-type': 'application/json',
+				  		'jwtAuth': _this.$store.getters.token
+				  }
+				  })
 				  .then(function(response) {
 				  	console.log(response)
 				  	var dept=response.data
 				  	_this.Data1.push(dept)
+					
 					_this.dialogFormVisible=false
+					console.log(response)
 				_this.form={
 					deptSortnumber:'',
 					deptName:'',
@@ -152,16 +160,19 @@ margin-bottom: 10px;">
 			 
 			  updatedept(){
 				  const _this = this
-				    this.axios.put("http://localhost:8089/threeproject/updatedept", this.form)
+				    this.axios.put("http://localhost:8089/threeproject/updatedept", this.form,
+					{
+						
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 				    .then(function(response) {
-				    	console.log(response)
-				    	var dept=response.data
-				    	var row=_this.Data1.filter(d=>d.deptSortnumber==dept.deptSortnumber)[0]
-				    	row.deptSortnumber=dept.deptSortnumber
-				    	row.deptName=dept.deptName
-				    	row.superiorsDeptId=dept.superiorsDeptId
-						row.deptId=dept.deptId
+				    	console.log("response=============")
+				    	_this.showdept()
 						_this.dialogFormVisible2=false
+						console.log(response)
 				  _this.form={
 				  	deptSortnumber:'',
 				  	deptName:'',
@@ -180,26 +191,26 @@ margin-bottom: 10px;">
 			  				          cancelButtonText: '取消',
 			  				          type: 'warning'
 			  				        }).then(() => {
-			  							_this.axios.put("http://localhost:8089/threeproject/deldept?deptId="+_this.form.deptId)
+			  							_this.axios.put("http://localhost:8089/threeproject/deldept",
+										{
+											params: {
+												'deptId':_this.form.deptId,
+												'deletename':_this.$store.state.userInfo.userName
+											},
+											headers: {
+												'content-type': 'application/json',
+												'jwtAuth': _this.$store.getters.token
+										}
+										})
 			  								.then(function(response) {
-			  									var dept = response.data
-			  									var rows = _this.Data1
-			  										.filter(d => d.deptId != dept.deptId)
-			  									console.log("del rows:%o",rows)
-			  									_this.Data1=rows
+			  									_this.showdept()
 												_this.form={
 																	  
 													deptSortnumber:'',
 													deptName:'',
 													superiorsDeptId:'',
 												}
-											_this.axios.get("http://localhost:8089/threeproject/findalldept")
-												.then(function(response) {
-													_this.Data1 = response.data
-													console.log(response)
-												}).catch(function(error) {
-													console.log(error)
-												})
+											console.log(response)
 			  								}).catch(function(error) {
 												
 			  									console.log(error)
@@ -210,19 +221,28 @@ margin-bottom: 10px;">
 			  							  message: '取消删除!'
 			  							});
 			  				        });	
-			  			}
+			  			},
+						showdept(){
+							const _this = this;
+							this.axios.get("http://localhost:8089/threeproject/findalldept",
+							{
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+							}
+							})
+								.then(function(response) {
+									_this.Data1 = response.data
+									console.log(response)
+								}).catch(function(error) {
+									console.log(error)
+								})
+							}
+						
 		    },
 			created() {
-				const _this = this;
-			this.axios.get("http://localhost:8089/threeproject/findalldept")
-				.then(function(response) {
-					_this.Data1 = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				})
+				this.showdept()
 			}
-			
 		
 	}
 </script>

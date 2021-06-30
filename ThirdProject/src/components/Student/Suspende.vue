@@ -15,9 +15,9 @@
 					</el-input>
 				</div>
 				<div style="margin-left: 280px;">
-					<el-button @click="showsupende">查询</el-button>
-					<el-button @click="tgsp">通过审批</el-button>
-					<el-button @click="del">删除</el-button>
+					<el-button type="primary" @click="showsupende">查询</el-button>
+					<el-button type="success" @click="tgsp">通过审批</el-button>
+					<el-button type="danger" @click="del">删除</el-button>
 				</div>
 			</div>
 		
@@ -132,7 +132,17 @@
 				//审批
 				updateapproval(suspendeId){
 					const _this = this;
-					this.axios.put("http://localhost:8089/threeproject/updateapprovalsu?suspendeId="+suspendeId)
+					this.axios.put("http://localhost:8089/threeproject/updateapprovalsu",
+					{
+						params: {
+							'suspendeId':suspendeId,
+							'suspendeSappname':this.$store.state.updateUserInfo.username
+						},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 						.then(function(response) {
 							_this.showsupende()
 							console.log(response)
@@ -143,7 +153,17 @@
 				//删除
 				delsuspend(suspendeId){
 					const _this = this;
-					this.axios.put("http://localhost:8089/threeproject/delsuspend?suspendeId="+suspendeId)
+					this.axios.put("http://localhost:8089/threeproject/delsuspend",
+					{
+						params: {
+							'suspendeId':suspendeId,
+							'deletename':this.$store.state.updateUserInfo.username
+						},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 						.then(function(response) {
 							_this.showsupende()
 							console.log(response)
@@ -168,7 +188,14 @@
 				},
 				showsupende(){
 					const _this = this;
-					this.axios.get("http://localhost:8089/threeproject/findAllsuspende",{params:this.pageInfo})
+					this.axios.get("http://localhost:8089/threeproject/findAllsuspende",
+					{
+						params:this.pageInfo,
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+					}
+					})
 						.then(function(response) {
 							_this.SuspendeData= response.data.list
 							_this.pageInfo.total = response.data.total
