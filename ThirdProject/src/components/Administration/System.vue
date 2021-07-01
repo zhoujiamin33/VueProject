@@ -3,17 +3,18 @@
 		<el-container>
 			<el-main style="padding: 0px;">
 				<el-container style="border: #409EFF 1px solid;">
-					<el-header>
-						<span style="font-size: 14px;">快速检索</span>
-						<el-select style="margin-left: 10px;" v-model="pageInfo.index" placeholder="请输选择内容">
-							<el-option label="主题" value="System_Theme"></el-option>
-							<el-option label="内容" value="System_Content"></el-option>
-						</el-select>
-						<el-input style="width: 200px;margin-left: 10px;" v-model="pageInfo.value" placeholder="请输入内容">
-						</el-input>
-						<el-button @click="findConditional" icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
-					</el-header>
+					
 					<el-main>
+						<!-- <el-header> -->
+							<span style="font-size: 14px;">快速检索</span>
+							<el-select style="margin-left: 10px;" v-model="pageInfo.index" placeholder="请输选择内容">
+								<el-option label="主题" value="System_Theme"></el-option>
+								<el-option label="内容" value="System_Content"></el-option>
+							</el-select>
+							<el-input style="width: 200px;margin-left: 10px;" v-model="pageInfo.value" placeholder="请输入内容">
+							</el-input>
+							<el-button @click="findConditional" icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
+						<!-- </el-header> -->
 						<div class="edit">
 							<el-button @click="newAnn">新增</el-button>
 							<el-dialog title="新增" v-model="dialogFormVisible" :close-on-click-modal="false">
@@ -41,7 +42,7 @@
 										<textarea style="width: 600px;vertical-align: middle;" placeholder="允许查看用户" disabled="disabled" v-model="form2.names"></textarea>
 										<i class="el-icon-search" @click="dialogFormVisible3 = true" style="cursor: pointer;background: #409EFF;margin-right: 10px;"></i>
 										<el-dialog title="选择可查看人" v-model="dialogFormVisible3" :close-on-click-modal="false" append-to-body>
-											<el-transfer v-model="yesemps.yesemp" :props="{key: 'empId',label: 'empName'}" :titles="['未关联', '已关联']" :data="noemp"
+											<el-transfer v-model="yesemp" :props="{key: 'empId',label: 'empName'}" :titles="['未关联', '已关联']" :data="noemp"
 											 @change="change"></el-transfer>
 											<div slot="footer" class="dialog-footer" style="text-align: right;margin-top: 10px;">
 												<el-button @click="CancelSys(0)">取 消</el-button>
@@ -139,10 +140,9 @@
 		data() {
 			return {
 				noemp: [],
-				yesemps:{
-					yesemp: [],
-					id:''
-				},
+
+				yesemp: [],
+					
 				isCollapse: false,
 				height: document.documentElement.clientHeight,
 				width: document.documentElement.clientWidth,
@@ -204,28 +204,14 @@
 			CancelSys(row) {
 				if(row===0){
 					this.dialogFormVisible3 = false
-					this.yesemps.yesemp = []
+					this.yesemp = []
 					this.form2.names=null
 				}else{
 					this.dialogFormVisible = false
-					this.yesemps.yesemp = []
+					this.yesemp = []
 					this.form2 = []
 				}
 				
-			},
-			handleOpen(key, keyPath) {
-				console.log(key, keyPath);
-			},
-			handleClose(key, keyPath) {
-				console.log(key, keyPath);
-			},
-			Switch() {
-				this.isCollapse = !this.isCollapse
-				if (this.auto == "auto") {
-					this.auto = '200px'
-				} else {
-					this.auto = "auto"
-				}
 			},
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
@@ -263,7 +249,8 @@
 								item.deletename = this.$store.state.updateUserInfo.username
 								this.cuts(item)
 							});
-							_this.axios.get("http://localhost:8089/threeproject/findAllSystem", {
+							_this.pageInfo.currentPage=1
+							_this.axios.get("http://localhost:8089/threeproject/findConditional", {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
@@ -295,7 +282,7 @@
 			},
 			UpdateSystem() {
 				const _this = this
-				this.form2.updatename = "修改"
+				this.form2.updatename =this.$store.state.updateUserInfo.username
 				console.log(this.form2)
 				this.axios.put("http://localhost:8089/threeproject/UpdateSystem", this.form2,{
 					headers: {
@@ -454,7 +441,7 @@
 					empId,
 					empName
 				}) => {
-					this.yesemps.yesemp.forEach(item => {
+					this.yesemp.forEach(item => {
 						if (item === empId) {
 							this.form2.names += empName + " "
 						}
@@ -469,7 +456,7 @@
 				if (this.form2.systemtypeId != '') {
 					if (this.form2.systemTheme != '') {
 						if (this.form2.deptId != '') {
-							if (this.yesemps.yesemp.length != 0) {
+							if (this.yesemp.length != 0) {
 								const _this = this
 								this.form2.addname = _this.$store.state.updateUserInfo.username
 								console.log(this.form2)
@@ -482,11 +469,13 @@
 									.then(function(response) {
 										var sys = response.data
 										sys.names = _this.value
-										_this.yesemps.id=response.data.systemId
 										_this.System.push(sys)
 										_this.dialogFormVisible = false
-										_this.axios.post("http://localhost:8089/threeproject/AddSystemSelect",{
-											params:_this.yesemps,
+										_this.axios.delete("http://localhost:8089/threeproject/AddSystemSelect",{
+											params:{
+												id:response.data.systemId,
+												yesemp:qs.stringify(_this.yesemp)
+											},
 											headers: {
 												'content-type': 'application/json',
 												'jwtAuth': _this.$store.getters.token

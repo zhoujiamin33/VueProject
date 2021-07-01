@@ -3,7 +3,8 @@ import {createStore} from 'vuex'
 const store=createStore({
 	state:{
 		updateUserInfo:{
-			id:'',
+			pon:"",
+			id:"",
 			username:"",
 			isValidate:false,
 			token:"",
@@ -44,6 +45,8 @@ const store=createStore({
 				
 			}else{
 				console.log("更新用户状态.......用户名:%s",user.username)
+				state.updateUserInfo.pon=user.pon
+				state.updateUserInfo.id=user.id
 				state.updateUserInfo.username=user.username
 				state.updateUserInfo.isValidate=true
 				state.updateUserInfo.token=user.token

@@ -1,7 +1,6 @@
 <template>
 	<!-- <div class="common-layout"> -->
 	<el-container>
-		<el-header>Header</el-header>
 		<el-container>
 			<!-- <el-aside :style="{width:auto}" height="100%">
 				
@@ -11,7 +10,7 @@
 					<el-form :model="UnitType">
 					<el-form-item>
 						<el-input v-model="UnitType.unittypeName" placeholder="单位类型名称"></el-input>
-						<el-input v-model="UnitType.addname" placeholder="增加人"></el-input>
+						<!-- <el-input v-model="UnitType.addname" placeholder="增加人"></el-input> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -25,7 +24,7 @@
 					<el-form :model="UnitType">
 					<el-form-item>
 						<el-input v-model="UnitType.unittypeName" placeholder="单位类型名称"></el-input>
-						<el-input v-model="UnitType.updatename" placeholder="修改人"></el-input>
+						<!-- <el-input v-model="UnitType.updatename" placeholder="修改人"></el-input> -->
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -42,8 +41,6 @@
 					<el-table-column prop="addname" label="增加人">
 					</el-table-column>
 					<el-table-column prop="updatename" label="修改人">
-					</el-table-column>
-					<el-table-column prop="deleteName" label="删除人">
 					</el-table-column>
 					<el-table-column label="操作" width="200">
 						<template #default="scope">
@@ -82,6 +79,7 @@
 			UnitTypeAdd(){
 				console.log(this.UnitType)
 				const _this = this
+				this.UnitType.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/UnitTypeAdd",this.UnitType,{
 					headers: {
 						'content-type': 'application/json',
@@ -99,6 +97,7 @@
 			},
 			UnitTypeUpdate(){
 				const _this = this
+				this.UnitType.updatename=this.$store.state.updateUserInfo.username
 				this.axios.put("http://localhost:8089/threeproject/UnitTypeUpdate",this.UnitType,{
 					headers: {
 						'content-type': 'application/json',
@@ -109,7 +108,7 @@
 						var unittype=response.data
 						var row =_this.tableData.filter(t=>t.unittypeId==unittype.unittypeId)[0]
 							row.unittypeName=unittype.unittypeName
-							row.updatename=unittype.updatename
+							row.updatename=this.$store.state.updateUserInfo.username
 						_this.dialogFormVisible2=false
 						console.log(response)
 					}).catch(function(error) {
@@ -124,7 +123,7 @@
 			},
 			UnitTypeDelete(row){
 				const _this = this
-				this.$confirm('是否删除？', '删除', {
+				this.$confirm('是否完全删除？', '删除', {
 				  distinguishCancelAndClose: true,
 				  confirmButtonText: '是',
 				  cancelButtonText: '否',
@@ -150,8 +149,8 @@
 				  });
 			},
 			updateTimeLiness(row){
-				row.deletename="扎讷"
 				const _this = this
+				row.deletename=this.$store.state.updateUserInfo.username
 				this.$confirm('是否删除？', '删除', {
 				  distinguishCancelAndClose: true,
 				  confirmButtonText: '是',
@@ -173,7 +172,7 @@
 								_this.axios.put("http://localhost:8089/threeproject/updateTimeLiness",row,{
 									headers: {
 										'content-type': 'application/json',
-										'jwtAuth': this.$store.getters.token
+										'jwtAuth': _this.$store.getters.token
 									}
 								})
 								.then(function(response){

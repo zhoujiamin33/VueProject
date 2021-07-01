@@ -4,7 +4,7 @@
 		<el-container>
 			<el-main style="padding: 0px;">
 				<el-container style="border: #409EFF 1px solid;">
-					<el-header>
+					<!-- <el-header>
 						<span style="font-size: 14px;">快速检索</span>
 						<el-select style="margin-left: 10px;" v-model="AnnSelect" placeholder="请输选择内容">
 							<el-option label="1" value="1"></el-option>
@@ -12,7 +12,7 @@
 						<el-input style="width: 200px;margin-left: 10px;" v-model="AnnSearch" placeholder="请输入内容">
 						</el-input>
 						<el-button icon="el-icon-search" style="border: #FFF solid 1px;"></el-button>
-					</el-header>
+					</el-header> -->
 					<el-main>
 
 						<div class="edit">
@@ -44,6 +44,7 @@
 									</el-form-item>
 									<el-form-item>
 										<el-input v-model="Unit.mailcode" placeholder="邮政编码"></el-input>
+										<el-input v-model="Unit.email" placeholder="邮箱"></el-input>
 									</el-form-item>
 									<el-form-item>
 										<el-input v-model="Unit.profile" type="textarea" rows="12" placeholder="简介">
@@ -56,7 +57,7 @@
 								</el-form>
 								<template #footer>
 									<span class="dialog-footer">
-										<el-button @click="">取 消</el-button>
+										<el-button @click="qxxx">取 消</el-button>
 										<el-button type="primary" @click="UnitAdd">确 定</el-button>
 									</span>
 								</template>
@@ -118,7 +119,7 @@
 							</el-form>
 							<template #footer>
 								<span class="dialog-footer">
-									<el-button @click="">取 消</el-button>
+									<el-button @click="qxxx">取 消</el-button>
 									<el-button type="primary" @click="UpdateUnit">确 定</el-button>
 								</span>
 							</template>
@@ -243,7 +244,9 @@
 				this.AddIdName.multipleSelection = [];
 				for (var i = 0; i < val.length; i++) {
 					this.AddIdName.multipleSelection.push(val[i].unitId);
+					
 				}
+				console.log(this.AddIdName.multipleSelection)
 				console.log(val)
 			},
 			cutoff() {
@@ -260,18 +263,23 @@
 							type: "warning"
 						})
 						.then(() => {
-							_this.axios.put("http://localhost:8089/threeproject/delUnit" + this.AddIdName.multipleSelection,{
+							_this.axios.delete("http://localhost:8089/threeproject/delUnit" ,{
+								params:{
+									multipleSelection:qs.stringify(_this.AddIdName.multipleSelection),
+									nu:_this.$store.state.updateUserInfo.username
+								},
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': this.$store.getters.token
 								}
 							})
 								.then(function(response) {
+									console.log(response)
 									var row = response
 									_this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
 										headers: {
 											'content-type': 'application/json',
-											'jwtAuth': this.$store.getters.token
+											'jwtAuth': _this.$store.getters.token
 										},
 											params: _this.pageInfo
 										})
@@ -315,7 +323,13 @@
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)
-					})
+					}),
+					this.Unit=[]
+			},
+			qxxx(){
+				this.dialogFormVisible2 = false
+				this.dialogFormVisible = false
+				this.Unit=[]
 			},
 			UpdateUnit() {
 				const _this = this
@@ -353,8 +367,9 @@
 				var _this = this
 				this.pageInfo.pagesize = pagesize
 				var ps = qs.stringify(this.pageInfo);
+				console.log("ps是啥")
 				console.log(ps)
-				findPageUnit()
+				this.findPageUnit()
 				// this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
 				// 	headers: {
 				// 		'content-type': 'application/json',
@@ -374,7 +389,7 @@
 				var _this = this
 				this.pageInfo.currentPage = currentPage
 				var ps = qs.stringify(this.pageInfo)
-				findPageUnit()
+				this.findPageUnit()
 				// this.axios.get("http://localhost:8089/threeproject/findPageUnit", {
 				// 	headers: {
 				// 		'content-type': 'application/json',
@@ -402,7 +417,8 @@
 				.then(function(response) {
 					_this.Units = response.data.list
 					_this.pageInfo.total = response.data.total
-					console.log(_this.UnitType)
+					console.log(_this.Units)
+					console.log(response)
 				}).catch(function(error) {
 					console.log(error)
 				})
@@ -410,7 +426,7 @@
 		},
 		created() {
 			const _this = this
-			findPageUnit()
+			this.findPageUnit()
 			this.axios.get("http://localhost:8089/threeproject/selectUnitTypeAll",{
 				headers: {
 					'content-type': 'application/json',
@@ -419,6 +435,7 @@
 			})
 				.then(function(response) {
 					_this.UnitType = response.data
+					console.log(response)
 					console.log(_this.UnitType)
 				}).catch(function(error) {
 					console.log(error)

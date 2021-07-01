@@ -37,7 +37,7 @@
 									<el-form-item>
 										<i class="el-icon-search" @click="dialogFormVisible3 = true" style="cursor: pointer;background: #409EFF;margin-right: 10px;">选择可查看人</i>
 										<el-dialog title="选择可查看人" v-model="dialogFormVisible3" :close-on-click-modal="false" append-to-body>
-											<el-transfer v-model="yesemps.yesemp" :props="{key: 'empId',label: 'empName'}" :titles="['未关联', '已关联']" :data="noemp"></el-transfer>
+											<el-transfer v-model="yesemp" :props="{key: 'empId',label: 'empName'}" :titles="['未关联', '已关联']" :data="noemp"></el-transfer>
 
 											<div slot="footer" class="dialog-footer" style="text-align: right;margin-top: 10px;">
 												<el-button @click="dialogFormVisible3 = false">取 消</el-button>
@@ -63,8 +63,8 @@
 							<el-table-column label="公告主题" width="180">
 								<template #default="scope"><a href="#" @click="showEdit1(scope.row)">{{ scope.row.announcementTheme }}</a></template>
 							</el-table-column>
-							<el-table-column prop="user" label="允许查看用户" width="120">
-							</el-table-column>
+							<!-- <el-table-column prop="user" label="允许查看用户" width="120">
+							</el-table-column> -->
 							<el-table-column prop="startTime" label="开始时间" show-overflow-tooltip>
 							</el-table-column>
 							<el-table-column prop="endTime" label="结束时间" show-overflow-tooltip>
@@ -132,11 +132,7 @@
 		data() {
 			return {
 				noemp: [],
-				yesemps:{
-					yesemp: [],
-					id:''
-				}
-				,
+				yesemp: [],
 				isCollapse: false,
 				auto: '200px',
 				tableData: [],
@@ -211,7 +207,7 @@
 			CancelSys() {
 				this.dialogFormVisible = false
 				this.form1 = []
-				this.yesemps.yesemp = []
+				this.yesemp = []
 			},
 			handleOpen(key, keyPath) {
 				console.log(key, keyPath);
@@ -264,21 +260,24 @@
 								item.deletename = _this.$store.state.updateUserInfo.username
 								console.log("删除人"+_this.$store.state.updateUserInfo.username)
 								this.cuts(item)
+								_this.tableData = _this.tableData.filter(t => t.announcementId != item.announcementId)
+								
 							});
-							_this.axios.get("http://localhost:8089/threeproject/findAnns", {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									},
-									params: this.pageInfo
-								})
-								.then(function(response) {
-									_this.tableData = response.data.list
-									_this.pageInfo.total = response.data.total
-									console.log(response)
-								}).catch(function(error) {
-									console.log(error)
-								})
+							// _this.axios.get("http://localhost:8089/threeproject/findAnns", {
+							// 		headers: {
+							// 			'content-type': 'application/json',
+							// 			'jwtAuth': _this.$store.getters.token
+							// 		},
+							// 		params: this.pageInfo
+							// 	})
+							// 	.then(function(response) {
+							// 		_this.tableData = response.data.list
+							// 		_this.pageInfo.total = response.data.total
+							// 		console.log("==============")
+							// 		console.log(response)
+							// 	}).catch(function(error) {
+							// 		console.log(error)
+							// 	})
 						}).catch(action => {
 							console.log("2")
 						});
@@ -429,7 +428,7 @@
 				if (this.form1.announcementtypeId != '') {
 					if (this.form1.announcementTheme != '') {
 						if (this.form1.startTime < this.form1.endTime && this.form1.startTime != '' && this.form1.endTime != '') {
-							if (this.yesemps.yesemp.length != 0) {
+							if (this.yesemp.length != 0) {
 								console.log("13423")
 								this.form1.addname=this.$store.state.updateUserInfo.username
 								this.axios.post("http://localhost:8089/threeproject/AnnAdd", this.form1,{
@@ -439,24 +438,27 @@
 									}
 								})
 									.then(function(response) {
-										_this.yesemps.id=response.data.announcementId 
+										// _this.id=response.data.announcementId 
 										var Anns = response.data
 										console.log("AnnAdd?????")
 										console.log(response)
 										_this.tableData.push(Anns)
 										_this.dialogFormVisible = false
-										_this.axios.post("http://localhost:8089/threeproject/AddAnnSelect" ,{
-												headers: {
-													'content-type': 'application/json',
-													'jwtAuth': _this.$store.getters.token
-												},
-												params:_this.yesemps
-											})
-											.then(function(response) {
-												console.log(response)
-											}).catch(function(error) {
-												console.log(error)
-											})
+										_this.axios.delete("http://localhost:8089/threeproject/AddAnnSelect",{
+											params:{
+												id:response.data.announcementId,
+												yesemp:qs.stringify(_this.yesemp)
+											},
+											headers: {
+												'content-type': 'application/json',
+												'jwtAuth': _this.$store.getters.token
+											}
+										})
+										.then(function(response) {
+											console.log(response)
+										}).catch(function(error) {
+											console.log(error)
+										})
 									}).catch(function(error) {
 										console.log(error)
 									})
@@ -501,6 +503,7 @@
 		},
 		created() {
 			const this_ = this
+			this.AnnQuery(),
 			this.axios.get("http://localhost:8089/threeproject/findAnnType",{
 				headers: {
 					'content-type': 'application/json',
