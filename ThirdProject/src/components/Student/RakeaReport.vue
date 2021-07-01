@@ -189,6 +189,18 @@ import qs from 'qs'
 					supplementaryId: ''
 
 				},
+				supplementaryform: {
+					supplementaryId: '',
+					supplementaryName: '',
+					payment: '', //缴费方式
+					addname: '', //录入人
+					courseId: '', //课程编号
+					courseName: '', //课程名称
+					courseMoney: '', //应收费用
+					detailsupplementaryName: '',
+					classhours: '',
+					studentId: ''
+				},
 				dialogFormVisible7: false,
 				// 被复选框选中的值
 				chektable: [],
@@ -284,6 +296,7 @@ import qs from 'qs'
 				}
 				})
 					.then(function(response) {
+						_this.insertReportEntry(supplementaryId)
 						_this.findsupplementary()
 						console.log(response)
 					}).catch(function(error) {
@@ -365,6 +378,27 @@ import qs from 'qs'
 						_this.tableData = response.data.list
 						_this.pageInfo.total = response.data.total
 						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			//财务新增补报
+			insertReportEntry(supplementaryId) {
+				const _this = this
+				this.supplementaryform.addname = this.$store.state.updateUserInfo.username
+				this.supplementaryform.supplementaryId=supplementaryId
+				this.axios.post("http://localhost:8089/threeproject/insertEntry", this.supplementaryform, {
+					params:{
+						'supplementaryId':this.supplementaryform.supplementaryId
+					},
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.supplementaryform = {}
 					}).catch(function(error) {
 						console.log(error)
 					})

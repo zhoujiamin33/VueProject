@@ -9,10 +9,11 @@
 			</div>
 			<el-table :data="Restrictionsyi" border @selection-change="handleSelectionChange"
 				:header-cell-style="{background:'#eef1f6',color:'#606266'}">
-				<el-table-column prop="empId" label="Id">
-				</el-table-column>
 				<el-table-column type="selection">
 				</el-table-column>
+				<el-table-column prop="empId" label="Id">
+				</el-table-column>
+			
 				<el-table-column prop="jobnumber" label="编码">
 				</el-table-column>
 				<el-table-column prop="empName" label="姓名">
@@ -137,7 +138,7 @@
 			},
 			xz(ids) {
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updateyxz" ,
+				this.axios.delete("http://localhost:8089/threeproject/updateyxz" ,
 				{
 					params:{
 						'empId':ids
@@ -158,7 +159,7 @@
 			qx(ids) {
 
 				const _this = this
-				this.axios.put("http://localhost:8089/threeproject/updatewxz" ,
+				this.axios.delete("http://localhost:8089/threeproject/updatewxz" ,
 				{
 					params:{
 						'empId':ids

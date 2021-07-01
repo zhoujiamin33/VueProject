@@ -5,13 +5,13 @@
 		<el-header>
 			<div style="height:50px;width:200px;">
 				<el-avatar style="margin-top: 10px;margin-left:10px;" src="../public/logo.381d6a3e.png"></el-avatar>
-				<h3 style="color:#ffffff ;width: 200px;margin-top: -70px;margin-left:65px;">卓越培训系统</h3>
+				<h3 @click="homePage" style="color:#ffffff ;width: 200px;margin-top: -70px;margin-left:65px;">卓越培训系统</h3>
 			</div>
 			<div style="width: 100%; height:50px;box-shadow: 0 2px 3px -1px  #ffffff;">
 				<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;"></el-radio-group>
 				<div class="photo" style="width:150px;text-align: center;margin-left:30px;">
-					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-					<div style="margin-top: -70px;width: 270px;">
+					<div style="margin-right: 50px;"><el-avatar src="../public/avatar.jpeg"></el-avatar></div>
+					<div style="margin-top: -70px;width: 210px;margin-left:30px">
 							<span class="el-dropdown-link" style="color: #FFFFFF;">{{this.$store.state.updateUserInfo.username}}</span>
 							<el-button type="text" @click.native="logout">注销退出</el-button>
 					</div>
@@ -23,6 +23,7 @@
 		<el-container>
 			<!-- 侧边栏 -->
 			<el-aside :width="isCollapse?'65px':'200px'">
+				
 				<!-- <el-aside width="auto"> -->
 				<!-- <el-scrollbar style="height: 100%;"> -->
 				<el-scrollbar>
@@ -54,6 +55,9 @@
 					</el-menu>
 				</el-scrollbar>
 			</el-aside>
+			<!-- <div style="width: 100%; height:30px;margin-top:-20px;">
+				<i class="el-icon-s-home" style="margin-left:-1220px;" @herf="{ path: '/' }">首页</i>
+			</div> -->
 			<!-- 主体部 -->
 			<el-main>
 				<router-view></router-view>
@@ -87,15 +91,26 @@
 			}
 		},
 		methods: {
-			handleOpen(key, keyPath) {
-				console.log(key, keyPath);
+			homePage(){
+				this.$router.push('subjectView')
 			},
-			handleClose(key, keyPath) {
-				console.log(key, keyPath);
-			},
-			Switch() {
-				this.isCollapse = !this.isCollapse
-			},
+			// screen() {
+			// // 如果不允许进入全屏，发出不允许提示
+			// if (!screenfull.enabled) {
+			// this.$message("您的浏览器不能全屏");
+			// return false;
+			// }
+			// screenfull.toggle();
+			// this.$message.success("全屏啦");
+			// },
+			// 	getMenuList() {
+			// 		this.$http.get('menus').then(res => {
+			// 		console.log(res);
+			// 		if (res.data.meta.status != 200) this.$message.error('请求导航栏失败');
+			// 		this.menuList = res.data.data;
+
+			// 		})
+			// 	},
 			// 展开收起按钮
 			openCloseNav() {
 				this.isCollapse = !this.isCollapse;
@@ -221,7 +236,7 @@
 	}
 
 	.el-aside {
-		background-color: #eaeaea;
+		background-color: #ffffff;
 		display: block;
 		overflow-y: scroll;
 		height: 650px;

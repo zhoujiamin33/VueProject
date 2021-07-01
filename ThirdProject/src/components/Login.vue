@@ -189,6 +189,7 @@
 							.then(function(res) {
 								console.log(res)
 								_this.$store.commit("updateUserInfo", res.data.data)
+								// _this.addopjournal(_this.LogFrom)
 								// sessionStorage.setItem("menulist",res.data.data.menus)
 								for (var i = 0; i < _this.$store.state.updateUserInfo.menus.length; i++) {
 									let chm =_this.$store.state.updateUserInfo.menus[i].asideChildren
@@ -226,6 +227,23 @@
 						dangerouslyUseHTMLString: true,
 					});
 				}
+			},
+			addopjournal(){
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/addopjournal",
+				{
+					
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+				}
+				})
+					.then(function(response) {
+						
+						console.log(response)
+					}).catch(function(error) {
+						console.log(error)
+					})
 			}
 		}
 	}

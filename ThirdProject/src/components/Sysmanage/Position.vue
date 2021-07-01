@@ -42,21 +42,32 @@
 				</div>
 			</div>
 			<!-- 新增学员 -->
-			<el-dialog title="新增职位" v-model="dialogFormVisible">
-				<el-form :model="addForm" :inline="true" :rules="rules" ref="addForm">
-					<el-form-item label="职位名称:" prop="positionName" label-width="90px" required>
-						<el-input v-model="addForm.positionName"></el-input>
-					</el-form-item>
-					<el-form-item label="职位描述:" prop="jobdescription" label-width="90px">
-						<el-input v-model="addForm.jobdescription"></el-input>
-					</el-form-item>
-					<el-form-item label="职位职责:" prop="duty" label-width="100px" style="display: flex;margin-left: 10px;">
-						<el-input  v-model="addForm.duty" type="textarea"></el-input>
-					</el-form-item>
-					<el-form-item  label="录入人:" prop="addname" label-width="100px" style="display: flex;margin-left: 10px;">
-						<el-input  v-model="addForm.addname" type="textarea"></el-input>
-					</el-form-item>
-				</el-form>
+			<el-dialog v-model="dialogFormVisible">
+				<el-descriptions :model="addForm" class="margin-top" title="部门新增" :column="1" :size="size" border>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-mobile-phone"></i>
+							职位名称:
+						</template>
+						  <el-input v-model="addForm.positionName"></el-input>
+					</el-descriptions-item>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-location-outline"></i>
+							职位描述:
+						</template>
+					<el-input v-model="addForm.jobdescription"></el-input>
+					</el-descriptions-item>
+					<el-descriptions-item>
+						<template #label>
+							<i class="el-icon-location-outline"></i>
+							职位职责:
+						</template>
+					<el-input  v-model="addForm.duty" type="textarea"></el-input>
+					</el-descriptions-item>
+				
+				</el-descriptions>
+			
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -66,21 +77,31 @@
 			</el-dialog>
 			
 			<!-- 修改 -->
-			<el-dialog title="修改职位" v-model="dialogFormVisible2">
-				<el-form :model="addForm" :inline="true" :rules="rules" ref="addForm">
-					<el-form-item label="职位名称:" prop="positionName" label-width="90px" required>
-						<el-input v-model="addForm.positionName"></el-input>
-					</el-form-item>
-					<el-form-item label="职位描述:" prop="jobdescription" label-width="90px">
-						<el-input v-model="addForm.jobdescription"></el-input>
-					</el-form-item>
-					<el-form-item label="职位职责:" prop="duty" label-width="100px" style="display: flex;margin-left: 10px;">
-						<el-input  v-model="addForm.duty" type="textarea"></el-input>
-					</el-form-item>
-					<el-form-item  label="录入人:" prop="addname" label-width="100px" style="display: flex;margin-left: 10px;">
-						<el-input  v-model="addForm.addname" type="textarea"></el-input>
-					</el-form-item>
-				</el-form>
+		<el-dialog v-model="dialogFormVisible2">
+			<el-descriptions :model="addForm" class="margin-top" title="部门新增" :column="1" :size="size" border>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-mobile-phone"></i>
+						职位名称:
+					</template>
+					  <el-input v-model="addForm.positionName"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						职位描述:
+					</template>
+				<el-input v-model="addForm.jobdescription"></el-input>
+				</el-descriptions-item>
+				<el-descriptions-item>
+					<template #label>
+						<i class="el-icon-location-outline"></i>
+						职位职责:
+					</template>
+				<el-input  v-model="addForm.duty" type="textarea"></el-input>
+				</el-descriptions-item>
+			
+			</el-descriptions>
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -112,7 +133,9 @@
 							jobdescription:'',
 							duty:'',
 							addname:'',
-							positionId:''
+							positionId:'',
+							deletename:'',
+							updatename:''
 						},
 						 dialogFormVisible: false,
 						 dialogFormVisible2:false,
@@ -133,11 +156,9 @@
 					}
 				},
 				methods: {
-					getstudentList() {
-		
-					},
 					 Addstudent(){
 						 const _this = this;
+						 this.addForm.addname=this.$store.state.updateUserInfo.username
 						this.axios.post("http://localhost:8089/threeproject/addposition", this.addForm,
 						{
 							headers: {
@@ -166,6 +187,7 @@
 					 },
 					 updateposition(){
 						 const _this = this
+						 this.addForm.updatename=this.$store.state.updateUserInfo.username
 						 this.axios.put("http://localhost:8089/threeproject/updateposition", this.addForm,
 						 {
 						 	headers: {
@@ -191,7 +213,8 @@
 						 this.axios.put("http://localhost:8089/threeproject/delTimeLiness",
 						 {
 						 	params: {
-						 		'positionId':row.positionId
+						 		'positionId':row.positionId,
+								'deletename':this.$store.state.updateUserInfo.username
 						 	},
 						 	headers: {
 						 		'content-type': 'application/json',

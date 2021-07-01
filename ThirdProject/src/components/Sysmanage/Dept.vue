@@ -38,17 +38,6 @@ margin-bottom: 10px;">
 						</template>
 					<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
 					</el-descriptions-item>
-					<!-- <el-descriptions-item>
-						<template #label>
-							<i class="el-icon-tickets"></i>
-							上级部门:
-						</template>
-					<el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
-						<el-option label="总经理" value="1"></el-option>
-						<el-option label="销售部门" value="2"></el-option>
-						<el-option label="常规部门" value="3"></el-option>
-					</el-select>
-					</el-descriptions-item> -->
 					<el-descriptions-item>
 						<el-button @click="AddDept">确定</el-button>
 						<el-button @click="dialogFormVisible=false">返回</el-button>
@@ -79,17 +68,6 @@ margin-bottom: 10px;">
 							</template>
 						<el-input v-model="form.deptName" style="width: 220px;" ></el-input>
 						</el-descriptions-item>
-						<!-- <el-descriptions-item>
-							<template #label>
-								<i class="el-icon-tickets"></i>
-								上级部门:
-							</template>
-						<el-select v-model="form.superiorsDeptId" placeholder="请选择" style="width: 220px;">
-							<el-option label="总经理" value="1"></el-option>
-							<el-option label="销售部门" value="2"></el-option>
-							<el-option label="常规部门" value="3"></el-option>
-						</el-select>
-						</el-descriptions-item> -->
 						<el-descriptions-item>
 							<el-button @click="updatedept">确定</el-button>
 							<el-button @click="dialogFormVisible2=false">返回</el-button>

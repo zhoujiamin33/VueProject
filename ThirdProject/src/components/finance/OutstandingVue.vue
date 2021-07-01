@@ -3,24 +3,18 @@
 	   <el-tab-pane label="欠费补缴">
 	 	 <div style="margin-top:10px;">
 	 	   	<!-- 搜索框、输入框 、按钮-->
-	 	   	<div style="margin-left:10px;line-height: 40px;">
+	 	<!--   	<div style="margin-left:10px;line-height: 40px;">
 	 	   		<el-row style="text-align: center;">
 	 	   			<div style="margin-top: 15px">
-	 	   			  <el-input placeholder="请输入内容" v-model="input" class="input-with-select" >
-	 	   			    <template #prepend>
-	 	   			      <el-select v-model="select" placeholder="请选择" style="width:110px;">
-	 	   			        <el-option label="学员姓名" value="1">学员姓名</el-option>
+	 	   			      <el-select v-model="pageInfo2.select" placeholder="请选择" style="width:150px;">
+							<el-option label="全部" value="1">全部</el-option>
 	 	   			        <el-option label="未缴清" value="2">未缴清</el-option>
-							<el-option label="已缴清" value="2">已缴清</el-option>
+							<el-option label="已缴清" value="3">已缴清</el-option>
 	 	   			      </el-select>
-	 	   			    </template>
-	 	   			    <template #append>
-	 	   			      <el-button icon="el-icon-search"></el-button>
-	 	   			    </template>
-	 	   			  </el-input>
+	 	   			      <el-button @click="selectbyContion()">查询</el-button>
 	 	   			</div>
 	 	   		</el-row>
-	 	   	</div>
+	 	   	</div> -->
 	 	</div>	
 	 	<!-- 表格 -->
 	 	<div style="position: relative;margin-top: 50px;"  >
@@ -41,7 +35,7 @@
 	 			</el-table-column>
 	 		</el-table>
 	 	</div>
-		<div style="display: flex; justify-content: space-between  ;text-align: center;" >
+		<div style="display: flex; justify-content: space-between  ;margin-left:400px;" >
 			<!-- 底部金额总结 -->
 			<el-pagination
 			@size-change="handleSizeChange2"
@@ -122,16 +116,16 @@
 	   	 	 <div style="margin-top:10px;">
 	   	 	   	<!-- 搜索框、输入框 、按钮-->
 	   	 	   	<div style="margin-left:10px;line-height: 40px;">
-	   	 	   		<el-row style="text-align: center;">
+	   	 	   		<!-- <el-row style="text-align: center;">
 	   	 	   			是否审核：
 	   	 	   			<el-select  v-model="pageInfo2.Approval"  placeholder="请选择">
 	   	 	   				<el-option value="0" label="已审核">已审核</el-option><el-option value="1" label="已审核">未审核</el-option>
 	   	 	   			</el-select>
 	   	 	   			补缴日期：
-	   	 	   			<el-date-picker v-model="pageInfo2.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
-						<el-date-picker v-model="pageInfo2.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
+	   	 	   			<el-date-picker v-model="pageInfo2.startTime" type="date"  placeholder="选择开始日期"> </el-date-picker>
+						<el-date-picker v-model="pageInfo2.endTime" type="date"  placeholder="选择结束日期"> </el-date-picker>
 	   	 	   			<el-button style="margin-left: 20px;" @click="selectByContionout">查询</el-button>
-	   	 	   		</el-row>
+	   	 	   		</el-row> -->
 	   	 	   	</div>
 	   	 	</div>	
 	   	 	<!-- 表格 -->
@@ -187,20 +181,17 @@
 			return{
 				pageInfo:{
 					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
-					total:0
+					pagesize:4,//每页多少条数据
+					total:0,
+					startTime:"",
+					endTime:"",
+					Approval:""
 				},
 				pageInfo2:{
 					currentPage: 1,//标识当前页码
-					pagesize:2,//每页多少条数据
+					pagesize:4,//每页多少条数据
 					total:0,
-					value1:"",
-					value2:"",
-					Approval:"",
-				},
-				selectkey:{
-					select:"",
-					input:""
+					select:""
 				},
 				tableData:[],
 				tableData2:[],
@@ -244,7 +235,29 @@
 					updatename:"",
 					approvalname:"",
 					revokeappname:""
-				}
+				},
+				//日期
+				disabledDate(time) {
+				    return time.getTime() > Date.now()
+				},
+				shortcuts: [{
+				    text: 'Today',
+				    value: new Date(),
+				}, {
+				    text: 'Yesterday',
+				    value: (() => {
+				    const date = new Date()
+				    date.setTime(date.getTime() - 3600 * 1000 * 24)
+				        return date
+				      })(),
+				    }, {
+				      text: 'A week ago',
+				      value: (() => {
+				      const date = new Date()
+				      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+				      return date
+				    })(),
+				}]
 			}
 		},
 		methods:{
@@ -347,31 +360,30 @@
 				})
 			},
 			// 欠费补缴多条件查询
-			selectbyContion(select,input){
+			selectbyContion(){
 				const _this=this
-				feeId=this.entryfeeId
-				this.axios.get("http://localhost:8089/threeproject/selectBycontion",this.selectkey,{
+				this.axios.get("http://localhost:8089/threeproject/selectBycontion",this.pageInfo2,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
 					}
 				})
 				.then(function(response){
-					_this.qianfeidata=response.data.list
-					_this.pageInfo.total=response.data.total
+					_this.tableData=response.data.list
+					_this.pageInfo2.total=response.data.total
 				}).catch(function(error){
 					console.log(error)
 				})
 			},
 			//补缴管理的多条件查询
 			selectByContionout(){
-				this.pageInfo2.value1=moment(this.pageInfo2.value1).format("YYYY-MM-DD")
-				this.pageInfo2.value2=moment(this.pageInfo2.value2).format("YYYY-MM-DD")
-				console.log(this.pageInfo2.value1+"value1")
-				console.log(this.pageInfo2.value2+"value2")
-				console.log(this.pageInfo2.Approval+"Approval")
+				this.pageInfo.value1=moment(this.pageInfo.value1).format("YYYY-MM-DD")
+				this.pageInfo.value2=moment(this.pageInfo.value2).format("YYYY-MM-DD")
+				console.log(this.pageInfo.value1+"value1")
+				console.log(this.pageInfo.value2+"value2")
+				console.log(this.pageInfo.Approval+"Approval")
 				const _this=this
-				this.axios.get("http://localhost:8089/threeproject/selectByContionout",this.pageInfo2,{
+				this.axios.get("http://localhost:8089/threeproject/selectByContionout",this.pageInfo,{
 					headers: {
 						'content-type': 'application/json',
 						'jwtAuth': _this.$store.getters.token
@@ -379,7 +391,8 @@
 				})
 				.then(function(response){
 					console.log(response)
-					_this.tableData2=response.data
+					_this.tableData2=response.data.list
+					_this.pageInfo.total=response.data.total
 				}).catch(function(error){
 					console.log(error)
 				})
