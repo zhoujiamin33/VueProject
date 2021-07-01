@@ -151,6 +151,7 @@
 			//增加
 			addBookstorage() {
 				const _this = this
+				this.form.empId=this.$store.state.updateUserInfo.id
 				this.axios.post("http://localhost:8089/threeproject/addBookstorage", this.form, {
 						headers: {
 							'content-type': 'application/json',
