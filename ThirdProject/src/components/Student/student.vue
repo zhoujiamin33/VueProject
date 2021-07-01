@@ -341,12 +341,12 @@
 					</template>
 					<el-input v-model="addForm.entrance"></el-input>
 				</el-descriptions-item>
-				<el-descriptions-item>
+				<!-- <el-descriptions-item>
 					<el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card"
 						:on-preview="handlePictureCardPreview" :on-remove="handleRemove">
 						<i class="el-icon-plus"></i>
 					</el-upload>
-				</el-descriptions-item>
+				</el-descriptions-item> -->
 
 			</el-descriptions>
 			<p>学员报班记录</p>
@@ -828,6 +828,29 @@
 					})
 				this.dialogFormVisible8 = false
 			},
+			//财务新增复课退费
+			// insertBackRefund(backId){
+			// 	const _this = this
+			// 	this.Backform2.backId=backId
+			// 	console.log(this.Backform2.backId+"qwqw")
+			// 	this.Backform2.studentId = this.Backform.studentId
+			// 	this.Backform2.classesId = this.Backform.classesId
+			// 	this.Backform2.detailcourseId = this.Backform.detailcourseId
+			// 	this.Backform2.suspendeId = this.Backform.suspendeId
+			// 	this.Backform2.courseId = this.Backform.courseId
+			// 	this.Backform2.addname=this.$store.state.updateUserInfo.username
+			// 	this.axios.post("http://localhost:8089/threeproject/insertRefund", this.Backform2,{
+			// 		headers: {
+			// 			'content-type': 'application/json',
+			// 			'jwtAuth': _this.$store.getters.token
+			// 		}
+			// 	})
+			// 		.then(function(response) {
+			// 			console.log(response)
+			// 		}).catch(function(error) {
+			// 			console.log(error)
+			// 		})
+			// },
 			// 获取课类的编号
 			findclasstypeId(classtypeId) {
 				console.log("kkk" + classtypeId)
@@ -1282,6 +1305,7 @@
 			// 停课新增
 			showsupend(row) {
 				this.addForm.classesId = row.classesId
+				this.addForm.status=row.status
 				const _this = this
 				this.$confirm('您确定要对该学员进行停/复课操作吗?', '提示', {
 					confirmButtonText: '确定',
@@ -1386,12 +1410,6 @@
 							message: '请选择班级!',
 							type: 'error'
 						});
-					} else if (row.status == 3) {
-						_this.$message({
-							showClose: true,
-							message: '该学生已停课!',
-							type: 'error'
-						});
 					} else if (row.status == 2) {
 						_this.$message({
 							showClose: true,
@@ -1436,9 +1454,7 @@
 							}
 						})
 					.then(function(response) {
-						console.log("45678345678开始退学")
 						_this.findclassstuId(_this.Droportform.studentId)
-						_this.Refund(response.data.dropId)
 						console.log(response)
 					}).catch(function(error) {
 						console.log(error)

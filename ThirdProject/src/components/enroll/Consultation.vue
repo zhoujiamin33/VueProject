@@ -1,24 +1,21 @@
 <template>
 	<div>
 		<div class="mianboby">
-			<div class="mianwbk">
+			<div class="mianwbk" style="margin-bottom: 20px;">
 				<b>快速索引：</b>
-				<el-select v-model="value" filterable placeholder="请选择">
-					<el-option v-for="item in kssy" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
-				</el-select>&nbsp;
-				<el-input style="width: 120px;" placeholder="请输入内容" v-model="input" clearable>
+				<el-select filterable v-model="pageInfo.value" placeholder="请选择">
+					<el-option label="咨询人" value="咨询人"></el-option>
+					<el-option label="电话号码" value="电话号码"></el-option>
+					<el-option label="接待人" value="接待人"></el-option>
+				</el-select>
+				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
-				<!-- <span class=""> -->&nbsp;&nbsp;&nbsp;<b>咨询时间:</b>&nbsp;
-				<!-- </span> -->
-				<el-date-picker v-model="value1" type="daterange" range-separator="至" start-placeholder="开始日期"
-					end-placeholder="结束日期">
-				</el-date-picker>
+				
 
 			</div>
 
 			<div style="">
-				<el-button>查询</el-button>
+				<el-button @click="selectRegisterlivery()">查询</el-button>
 
 				<el-button @click="dialogFormVisible = true">新增</el-button>
 				<el-button @click="shengpi">审批</el-button>
@@ -134,8 +131,6 @@
 				</el-table-column>
 				<el-table-column prop="source.sourceName" label="生源渠道" show-overflow-tooltip width="110px">
 				</el-table-column>
-				<el-table-column prop="" label="回访次数" show-overflow-tooltip>
-				</el-table-column>
 				<el-table-column prop="paystate" label="缴费状态" show-overflow-tooltip>
 					<template v-slot="scope1">
 						<p v-if="scope1.row.paystate==0">未缴费</p>
@@ -166,8 +161,8 @@
 				<el-dialog v-model="dialogFormVisible2" title="修改咨询登记信息" :before-close="cls">
 					<el-form :inline="true" :model="form" ref="ruleForm" class="demo-ruleForm">
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="接待人 :" prop="name">
-								<el-input v-model="form.addname" style="width:150px"></el-input>
+							<el-form-item label="咨询人 :" prop="zxr">
+								<el-input v-model="form.consultant" style="width:150px"></el-input>
 							</el-form-item>
 							<el-form-item label="咨询方式 :" prop="zxfs">
 								<el-select v-model="form.consultationmode" placeholder="请选择咨询方式">
@@ -178,8 +173,9 @@
 							</el-form-item>
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="咨询人 :" prop="zxr">
-								<el-input v-model="form.consultant" style="width:150px"></el-input>
+							
+							<el-form-item label="联系电话 :" prop="lxdh">
+								<el-input v-model="form.phone" style="width:150px"></el-input>
 							</el-form-item>
 							<el-form-item label="信息渠道 :" prop="xxqd">
 								<el-select v-model="form.sourceId" placeholder="请选择信息渠道">
@@ -206,10 +202,10 @@
 
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="联系电话 :" prop="lxdh">
-								<el-input v-model="form.phone" style="width:150px"></el-input>
+							
+							<el-form-item label="咨询内容 :" prop="zxnr">
+								<el-input type="textarea" v-model="form.consultcontent"></el-input>
 							</el-form-item>
-
 							<el-form-item label="咨询课程 :" prop="zxkc">
 								<el-select v-model="form.courseId" placeholder="请选择课程">
 									<el-option v-for="item in CourseDate" :key="item.courseId" :label="item.courseName"
@@ -220,25 +216,7 @@
 
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="咨询内容 :" prop="zxnr">
-								<el-input type="textarea" v-model="form.consultcontent"></el-input>
-							</el-form-item>
-							<el-form-item label="时效性 :">
-								<el-select v-model="form.timeliness" placeholder="请选择意向">
-									<el-option label="未过期" :value="0"></el-option>
-									<el-option label="已过期" :value="1"></el-option>
-								</el-select>
-							</el-form-item>
-						</div>
-						<div style="display: flex; justify-content: space-between;">
-
-							<el-form-item label="缴费状态 :">
-								<el-select v-model="form.paystate" placeholder="请选择缴费状态">
-									<el-option v-for="item in options" :key="item.value" :label="item.label"
-										:value="item.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
+							
 						</div>
 					</el-form>
 					<template #footer>
@@ -294,15 +272,13 @@
 						</el-form-item>
 					</div>
 					<div style="display: flex; justify-content: space-between;">
-						<el-form-item label="回访次数 :" prop="receptionist">
-							<el-input disabled v-model="" style="width:220px"></el-input>
-						</el-form-item>
+						
 						<el-form-item label="咨询内容 :" prop="handovertime">
 							<el-input disabled v-model="form.consultcontent" style="width:220px"></el-input>
 						</el-form-item>
 					</div>
 
-					<div style="text-align: center;"><b style="font-size: 17px;">上下班回复列表</b></div>
+					<div style="text-align: center;"><b style="font-size: 17px;">回访列表</b></div>
 					<el-button @click="delReturnvisit" style="margin-left: 600px;">删除</el-button>
 					<div>
 
@@ -350,12 +326,18 @@
 				</template>
 			</el-dialog>
 		</div>
-
+		<div>
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+				:current-page="pageInfo.currentPage" :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize"
+				layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
+			</el-pagination>
+		</div>
 	</div>
 
 </template>
 
 <script>
+	import qs from "qs"
 	import {
 		defineComponent,
 		ref
@@ -370,7 +352,15 @@
 			}
 		},
 		data() {
+			
 			return {
+				pageInfo: {
+					value:"",
+					input:"",
+					currentPage: 1, //标识当前页码
+					pagesize: 2, //每页多少条数据
+					total: 0
+				},
 				options: [{
 					value: 0,
 					label: '未缴费'
@@ -378,48 +368,7 @@
 					value: 2,
 					label: '已缴费'
 				}],
-				kssy: [{
-					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '双皮奶'
-				}, {
-					value: '选项3',
-					label: '蚵仔煎'
-				}, {
-					value: '选项4',
-					label: '龙须面'
-				}, {
-					value: '选项5',
-					label: '北京烤鸭'
-				}],
 				value: '',
-				shortcuts: [{
-					text: '最近一周',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近一个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-						return [start, end]
-					})(),
-				}, {
-					text: '最近三个月',
-					value: (() => {
-						const end = new Date()
-						const start = new Date()
-						start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-						return [start, end]
-					})(),
-				}],
 				value1: '',
 				value2: '',
 				CourseDate: [],
@@ -432,7 +381,6 @@
 				dialogFormVisible: false,
 				form: {
 					course: {
-
 					},
 					courseName: '',
 					registerId: '',
@@ -450,10 +398,11 @@
 					timeliness: '',
 					planreturnvisit: '',
 					paystate: '',
-					empId: ''
+					empId: '',
+					lastupdatename:'',
+					deletename:''
 				},
 				retform: {
-
 					returnvisitId: '',
 					registerId: '',
 					comments: '',
@@ -513,7 +462,6 @@
 						message: '请选择课程',
 						trigger: 'change'
 					}],
-
 					zxnr: [{
 						required: true,
 						message: '请输入咨询内容',
@@ -531,6 +479,9 @@
 			}
 		},
 		methods: {
+			handleClick(row) {
+				console.log(row);
+			},
 			handleSelectionChange(val) {
 				this.multipleSelection = [];
 				this.multipleSelection = val;
@@ -539,20 +490,16 @@
 			handleSelectionChange2(val) {
 				this.multipleSelection2 = [];
 				this.multipleSelection2 = val;
-
 			},
 			cls() {
-
 				this.dialogFormVisible = false
 				this.dialogFormVisible2 = false
 				this.dialogFormVisible3 = false
-				for (var key in this.retform) {
-					delete this.retform[key];
+				for (var key in this.form) {
+					delete this.form[key];
 					console.log("111")
-
 				}
 			},
-
 			showEdit(row) {
 				console.log(row);
 				this.form.planreturnvisit = row.planreturnvisit;
@@ -590,14 +537,70 @@
 				this.form.paystate = row.paystate
 				this.dialogFormVisible3 = true
 				//回访显示
-
 				this.huifan(this.form.registerId)
+			},
+			
+			//多条件查询
+			selectRegisterlivery() {
+				const _this = this
+				this.axios.get("http://localhost:8089/threeproject/selectRegisterlivery", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+						params: this.pageInfo
+						
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.ConsultationDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleCurrentChange(currentPage) {
+				var _this = this
+				this.pageInfo.currentPage = currentPage
+				var ps = qs.stringify(this.pageInfo)
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.ConsultationDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+			handleSizeChange(pagesize) {
+				var _this = this
+				this.pageInfo.pagesize = pagesize
+				var ps = qs.stringify(this.pageInfo)
+				console.log(ps)
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response.data)
+						_this.ConsultationDate = response.data.list
+					}).catch(function(error) {
+						console.log(error)
+					})
 			},
 			huifan(registerId) {
 				registerId = this.form.registerId
 				console.log(registerId)
 				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + registerId, {
+				this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit?registerId="+registerId, {
 						headers: {
 							'content-type': 'application/json',
 							'jwtAuth': _this.$store.getters.token
@@ -613,28 +616,9 @@
 						console.log(error)
 					})
 			},
-			//回访次数
-			// filterChange(filters) {
-			// 	for (const key in filters) {
-			// 		if (filters[key].length > 0) {
-			// 			// 配合data中定义的数据枚举数组type，确定操作的是那一列
-			// 			if (filters[key][0].substr(0, 1) === 'p') {
-			// 				let queryParams = null
-			// 				// 获取选中的枚举值
-			// 				queryParams = filters[key][0].substr(1, 2)
-			// 				// 1、用的是静态数据，根据枚举值确定tableData
-			// 				// 2、如果用的是http请求的话，将queryParams作为参数去获取结果集，赋值给tableData即可
-			// 				if (queryParams === '') {
-			// 					this.tableData = this.tableTempData
-			// 				} else {
-			// 					this.tableData = this.tableTempData.filter((item) => item.status === queryParams)
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// },
 			addConsultation() {
 				const _this = this
+				this.form.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/AddRegister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -689,9 +673,9 @@
 						console.log(error)
 					})
 			},
-
 			updateRegister() {
 				const _this = this
+				console.log("-=-===-=-=-=-=------===-==-")
 				this.axios.put("http://localhost:8089/threeproject/updateRegister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -699,14 +683,16 @@
 						}
 					})
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+						_this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
-								}
+								},
+								params: _this.pageInfo
 							})
 							.then(function(response) {
-								_this.ConsultationDate = response.data
+								_this.ConsultationDate = response.data.list
+								_this.pageInfo.total = response.data.total
 								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
@@ -716,13 +702,16 @@
 						console.log(error)
 					})
 			},
-
 			delRegister() {
 				const _this = this
+				this.form.deletename=this.$store.state.updateUserInfo.username
 				_this.multipleSelection.forEach(item => {
 					console.log(item)
-					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelReg?registerId=" + item.registerId, {
+
+					this.axios.delete("http://localhost:8089/threeproject/DelReg", {
+							params:{
+								"registerId": item.registerId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -759,7 +748,7 @@
 				}).then(() => {
 					var registerId = _this.multipleSelection.map(item => item.registerId).join()
 					console.log(registerId + "-------")
-					this.axios.get("http://localhost:8089/threeproject/findRegisterId/" + registerId, {
+					this.axios.get("http://localhost:8089/threeproject/findRegisterId?registerId=" + registerId, {
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -779,20 +768,22 @@
 					});
 				});
 			},
-
 			delReturnvisit() {
 				const _this = this
 				_this.multipleSelection2.forEach(item => {
 					console.log(item)
 					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelRet/" + item.returnvisitId, {
+					this.axios.delete("http://localhost:8089/threeproject/DelRet",{
+							params:{
+								"returnvisitId": item.returnvisitId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
 							}
 						})
 						.then(function(response) {
-							_this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit/" + item
+							_this.axios.get("http://localhost:8089/threeproject/findAllReturnvisit?registerId=" + item
 									.registerId, {
 										headers: {
 											'content-type': 'application/json',
@@ -815,25 +806,23 @@
 						})
 				})
 			}
-
-
 		},
-
 		created() {
 			const _this = this
-			this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
-					headers: {
-						'content-type': 'application/json',
-						'jwtAuth': _this.$store.getters.token
-					}
-				})
-				.then(function(response) {
-					_this.ConsultationDate = response.data
-					console.log(response)
-				}).catch(function(error) {
-					console.log(error)
-				}),
-
+				this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						},
+						params: this.pageInfo
+					})
+					.then(function(response) {
+						console.log(response)
+						_this.ConsultationDate = response.data.list
+						_this.pageInfo.total = response.data.total
+					}).catch(function(error) {
+						console.log(error)
+					}),
 
 				this.axios.get("http://localhost:8089/threeproject/findCourse", {
 					headers: {
@@ -871,18 +860,14 @@
 				}).catch(function(error) {
 					console.log(error)
 				})
-
-
 		},
-
 	};
 </script>
 
 <style>
-	/* 	.mianboby {
-		/* 	display: flex;
+	.mianboby {
+		display: flex;
 		justify-content: space-between;
-		align-content: center; */
-	/* margin-left: "600px"
-	} */
+		align-content: center;
+	}
 </style>

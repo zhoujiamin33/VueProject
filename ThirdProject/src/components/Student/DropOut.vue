@@ -175,12 +175,12 @@
 							})
 					},
 					// 审核
-					updatedropoutstate(dropId){
+					updatedropoutstate(dropoutId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/updatedropoutstate",
+						this.axios.delete("http://localhost:8089/threeproject/updatedropoutstate",
 						{
 							params: {
-								'dropId':dropId,
+								'dropoutId':dropoutId,
 								'jwappname':this.$store.state.updateUserInfo.username
 							},
 							headers: {
@@ -189,7 +189,7 @@
 						}
 						})
 							.then(function(response) {
-								_this.Refund(_this.chektable)
+								_this.Refund(dropId)
 								_this.selectName()
 								
 								console.log(response)
@@ -198,12 +198,12 @@
 							})
 					},
 					//删除
-					deldropoutId(dropId){
+					deldropoutId(dropoutId){
 						const _this = this;
-						this.axios.put("http://localhost:8089/threeproject/deldropouttimeliness",
+						this.axios.delete("http://localhost:8089/threeproject/deldropouttimeliness",
 						{
 							params: {
-								'dropId':dropId,
+								'dropoutId':dropoutId,
 								'deletename':this.$store.state.updateUserInfo.username
 							},
 							headers: {
@@ -234,15 +234,15 @@
 						this.selectName()
 					},
 					//财务部（退学、退费）
-					Refund(row) {
+					Refund(dropId) {
 						const _this = this
 						this.addForm.addname = "admin"
-						// this.addForm.dropId = row.dropId
+						this.addForm.dropId = dropId
 						// this.addForm.studentId = row.studentId
 						// this.addForm.courseId = row.courseId
-						console.log(this.addForm.studentId + "abc12")
+						// console.log(this.addForm.studentId + "abc12")
 						console.log(this.addForm.dropId + "abc")
-						console.log(this.addForm.courseId + "abc")
+						// console.log(this.addForm.courseId + "abc")
 						this.axios.post("http://localhost:8089/threeproject/insertRefund", this.addForm,
 						{
 							

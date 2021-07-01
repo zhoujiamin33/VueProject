@@ -39,8 +39,6 @@
 					</el-form-item>
 					<el-form-item label="单号: ">
 						<el-input style="width: 260px;margin-left: -60px;" v-model="form.returnnumber" clearable></el-input>
-						<b style="font-weight: 400;margin-left: 36px;">录入人：</b>
-						<el-input style="width: 260px;" v-model="form.empName" clearable></el-input>
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -344,6 +342,7 @@
 				this.form.bookId = this.form1.book.bookId
 				this.form.backcount = this.form1.course.backcount
 				this.form.backmoney = this.bookdata.booksprice * this.form1.course.backcount
+				this.form.empId=this.$store.state.updateUserInfo.id
 				this.axios.post("http://localhost:8089/threeproject/addBookback", this.form, {
 						headers: {
 							'content-type': 'application/json',

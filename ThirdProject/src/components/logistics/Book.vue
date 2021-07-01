@@ -13,7 +13,7 @@
 			<el-table-column label="操作" width="120">
 				<template #default="scope">
 					<el-button @click="showEdit(scope.row)" type="text" size="small">编辑</el-button>
-					<el-button type="text" size="small" @click="delTrainingperiod(scope.row)">删除</el-button>
+					<el-button type="text" size="small" @click="delBook(scope.row)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -45,6 +45,38 @@
 				</span>
 			</template>
 		</el-dialog>
+
+		<!-- 修改 -->
+		<el-dialog title="修改入库" v-model="xgrk">
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button style="margin-left: -100px;" type="primary" @click="upeBook">保 存</el-button>
+					<el-button @click="xgrk=false">关 闭</el-button>
+				</span>
+			</template>
+			<el-form :model="form" label-width="80px" size="mini">
+				<el-form-item label="教材名称 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.bookname" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="库存 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.deliverycount" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="教材售价 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.booksprice" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="教材进价 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.bookjprice" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="安全库存 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.safestock" clearable></el-input>
+				</el-form-item>
+				<el-form-item label="出版社 :" style="margin-left: 170px;">
+					<el-input style="width: 300px;margin-left: -148px;" v-model="form.press" clearable></el-input>
+				</el-form-item>
+			</el-form>
+			
+		</el-dialog>
+
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageInfo.currentPage"
 		 :page-sizes="[2,3,6,10]" :page-size="pageInfo.pagesize" layout="total,sizes,prev,pager,next,jumper" :total="pageInfo.total">
 		</el-pagination>
@@ -72,10 +104,21 @@
 					bookjprice: "",
 					safestock: "",
 					press: ""
-				}
+				},
+				xgrk: false
 			}
 		},
 		methods: {
+			showEdit(row) {
+				this.form.bookId = row.bookId
+				this.form.bookname = row.bookname
+				this.form.deliverycount = row.deliverycount
+				this.form.booksprice = row.booksprice
+				this.form.bookjprice = row.bookjprice
+				this.form.safestock = row.safestock
+				this.form.press = row.press
+				this.xgrk = true
+			},
 			handleCurrentChange(currentPage) {
 				var _this = this
 				this.pageInfo.currentPage = currentPage
@@ -135,6 +178,82 @@
 								console.log(error)
 							})
 						_this.dialogFormVisible = false
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			},
+
+			//删除
+			delBook(row) {
+				const _this = this
+				var flag = true
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					_this.axios.delete("http://localhost:8089/threeproject/deleteBook?bookId=" + row.bookId, {
+							headers: {
+								'content-type': 'application/json',
+								'jwtAuth': _this.$store.getters.token,
+							}
+						})
+						.then(function(response) {
+							_this.axios.get("http://localhost:8089/threeproject/findPage3", {
+									headers: {
+										'content-type': 'application/json',
+										'jwtAuth': _this.$store.getters.token
+									},
+									params: _this.pageInfo
+								})
+								.then(function(response) {
+									_this.tableData = response.data.list
+									_this.pageInfo.total = response.data.total
+								}).catch(function(error) {
+									console.log(error)
+								})
+							var book = response.data
+							var rows = _this.tableData
+								.filter(t => t.bookId != row.bookId)
+							_this.tableData = rows
+							for (var key in _this.form) {
+								delete _this.form[key]
+							}
+						}).catch(function(error) {
+							console.log(error)
+						})
+				}).catch(() => {
+					this.$message({
+						type: 'error',
+						message: '取消删除!'
+					});
+				});
+			},
+
+
+			//修改
+			upeBook() {
+				const _this = this
+				this.axios.put("http://localhost:8089/threeproject/upeBook", this.form, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token
+						}
+					})
+					.then(function(response) {
+						var book = response.data
+						console.log(response.data)
+						var row = _this.tableData.filter(t => t.bookId == book.bookId)[0]
+						row.bookname = book.bookname
+						row.deliverycount = book.deliverycount
+						row.booksprice = book.booksprice
+						row.bookjprice = book.bookjprice
+						row.safestock = book.safestock
+						row.press = book.press
+						_this.xgrk = false
 						for (var key in _this.form) {
 							delete _this.form[key]
 						}

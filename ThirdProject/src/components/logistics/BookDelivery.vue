@@ -42,10 +42,10 @@
 						<b style="font-weight: 400;margin-left: 20px;">合计金额：</b>
 						<el-input style="width: 260px;" disabled v-model="price" clearable></el-input>
 					</el-form-item>
-					<el-form-item label="经办人: ">
-						<el-input style="width: 260px;margin-left: -60px;" v-model="form.empName" clearable></el-input>
-						<b style="font-weight: 400;margin-left: 36px;">购买者：</b>
-						<el-input style="width: 260px;" v-model="form.studentName" clearable></el-input>
+					<el-form-item label="购买者: ">
+						<el-select style="margin-left: -442px;width: 193px;" v-model="form.studentId" placeholder="请选择" autocomplete="off">
+							<el-option v-for="item in studentdata" :key="item.studentId" :label="item.studentName" :value="item.studentId" />
+						</el-select>
 					</el-form-item>
 				</el-form>
 				<template #footer>
@@ -138,18 +138,22 @@
 					pagesize: 2, //每页多少条数据
 					total: 0
 				},
-				
+
 				receipts: 0,
 				tableData: [],
 
 				xskd: false,
 
 				bookdata: [],
+				studentdata: [],
 
 				tableData1: [],
 				form1: {
 					book: {},
 					course: {}
+				},
+				form4: {
+					student: {}
 				},
 				form: {
 					bookdeliveryId: "",
@@ -174,10 +178,10 @@
 						receivablemoney: 0
 					},
 				},
-				form3:{
-					bookId:"",
-					deliverycount:"",
-					count:""
+				form3: {
+					bookId: "",
+					deliverycount: "",
+					count: ""
 				},
 
 
@@ -199,6 +203,10 @@
 				this.xskd1 = true;
 				this.selectAllBooks();
 			},
+			// b(){
+			// 	this.xskd=true;
+			// 	this.selectAllStudents();
+			// },
 			selectbooksprice() {
 				var _this = this
 				this.axios.get("http://localhost:8089/threeproject/selectbooksprice?bookId=" + this.form1.book.bookId, {
@@ -238,7 +246,9 @@
 			addDeliveryddetails() {
 				const _this = this
 				this.form.tota = this.price
-				// this.form.empName=this.$store.state.updateUserInfo.username
+				this.form.empId = this.$store.state.updateUserInfo.id
+				console.log("----------------------------------------------")
+				console.log(this.$store.state.updateUserInfo.id)
 				this.axios.post("http://localhost:8089/threeproject/addBookdelivery", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -274,12 +284,12 @@
 			add(row) {
 				const _this = this
 				this.form.bookId = this.form1.book.bookId
-				
+				this.form.empId = this.$store.state.updateUserInfo.id
 				this.form.deliverycount = this.form1.course.deliverycount
-				console.log("ddddd"+this.form.deliverycount)
+				console.log("ddddd" + this.form.deliverycount)
 				this.form.receivablemoney = this.bookdata.booksprice * this.form1.course.deliverycount
-				// this.form.empName=this.$store.state.updateUserInfo.username
 				this.form.bookdeliveryId = row
+
 				this.axios.post("http://localhost:8089/threeproject/addDeliveryddetails", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -288,7 +298,7 @@
 					})
 					.then(function(response) {
 						console.log("ID" + row)
-						_this.updateBook(response.data.bookId ,response.data.deliverycount)
+						_this.updateBook(response.data.bookId, response.data.deliverycount)
 						_this.axios.get("http://localhost:8089/threeproject/findPage4", {
 								headers: {
 									'content-type': 'application/json',
@@ -299,11 +309,11 @@
 							.then(function(response) {
 								_this.tableData = response.data.list
 								_this.pageInfo.total = response.data.total
-								
+
 							}).catch(function(error) {
 								console.log(error)
 							})
-							
+
 						for (var key in _this.form) {
 							delete _this.form[key]
 						}
@@ -311,170 +321,201 @@
 						console.log(error)
 					})
 			},
-			updateBook(bookId,deliverycount){
-				console.log("ddddd"+bookId)
-				const _this=this
-				this.form3.bookId=bookId
-				console.log(this.form3.bookId)
-				this.form3.count=deliverycount
-				this.form3.deliverycount=this.bookdata.deliverycount - this.form3.count
-				console.log(this.bookdata.deliverycount)
-				this.axios.put("http://localhost:8089/threeproject/updateBook", this.form3, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						}
-					})
-					.then(function(response) {
-						
-						
-						for (var key in _this.form) {
-							delete _this.form[key]
-						}
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			//新增教材出库收入
-			insertincome(bookdeliveryId) {
-				const _this = this
-				this.form2.addname = "admin"
-				this.form2.bookdeliveryId = bookdeliveryId
-				console.log(this.form2.bookdeliveryId + "def")
-				this.form2.refundCount = this.form.deliverycount
-				console.log(this.form2.deliverycount + "igh")
-				this.form2.bookId = this.form.bookId
-				console.log(this.form2.bookId + "abc")
-				this.axios.post("http://localhost:8089/threeproject/insertincome", this.form2, {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token,
-						}
-					})
-					.then(function(repsonse) {
-						console.log(repsonse)
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			//多条件查询
-			selectBookdelivery() {
-				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectBookdelivery", {
-						params: this.pageInfo,
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token,
-						}
-					})
-					.then(function(response) {
-						console.log(response)
-						_this.tableData = response.data.list
-						_this.pageInfo.total=response.data.total
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
 
 
-			//删除
-			deldeliveryDdetails(row) {
-				const _this = this
-				var flag = true
-				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					_this.axios.delete("http://localhost:8089/threeproject/deldeliveryDdetails?deliveryddetailsId=" + row.deliveryddetailsId, {
-							headers: {
-								'content-type': 'application/json',
-								'jwtAuth': _this.$store.getters.token,
-							}
-						})
-						.then(function(response) {
-							_this.axios.get("http://localhost:8089/threeproject/findPage4", {
-									headers: {
-										'content-type': 'application/json',
-										'jwtAuth': _this.$store.getters.token
-									},
-									params: _this.pageInfo
-								})
-								.then(function(response) {
-									_this.tableData = response.data.list
-									_this.pageInfo.total = response.data.total
-								}).catch(function(error) {
-									console.log(error)
-								})
-							var deliveryDdetails = response.data
-							var rows = _this.tableData
-								.filter(t => t.deliveryddetailsId != row.deliveryddetailsId)
-							_this.tableData = rows
-							for (var key in _this.form) {
-								delete _this.form[key]
-							}
-						}).catch(function(error) {
-							console.log(error)
-						})
-				}).catch(() => {
-					this.$message({
-						type: 'error',
-						message: '取消删除!'
-					});
-				});
-			},
+	// 		//批量新增课程详细
+	// 		add(row) {
+	// 			const _this = this
+	// 			this.form.empId = this.$store.state.updateUserInfo.id
+	// 			_this.axios.post("http://localhost:8089/threeproject/addDeliveryddetails", _this.tableData1, {
+	// 					headers: {
+	// 						'content-type': 'application/json',
+	// 						'jwtAuth': _this.$store.getters.token
+	// 					}
+	// 				})
+	// 				.then(function(response) {
+	// 					_this.updateBook(response.data.bookId, response.data.deliverycount)
+	// 					_this.axios.get("http://localhost:8089/threeproject/findPage4", {
+	// 							params: _this.pageInfo,
+	// 							headers: {
+	// 								'content-type': 'application/json',
+	// 								'jwtAuth': _this.$store.getters.token
+	// 							}
+	// 						})
+	// 						.then(function(response) {
+	// 							_this.tableData = response.data.list
+	// 							_this.pageInfo.total = response.data.total
+	// 						}).catch(function(error) {
+	// 							console.log(error)
+	// 						})
+	// 		})
+	// },
 
-			handleCurrentChange(currentPage) {
-				var _this = this
-				this.pageInfo.currentPage = currentPage
-				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findPage4", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.tableData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			handleSizeChange(pagesize) {
-				var _this = this
-				this.pageInfo.pagesize = pagesize
-				var ps = qs.stringify(this.pageInfo)
-				this.axios.get("http://localhost:8089/threeproject/findPage4", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token
-						},
-						params: this.pageInfo
-					})
-					.then(function(response) {
-						_this.tableData = response.data.list
-					}).catch(function(error) {
-						console.log(error)
-					})
-			},
-			selectAllBooks() {
-				const _this = this
-				this.axios.get("http://localhost:8089/threeproject/selectAllBook", {
-						headers: {
-							'content-type': 'application/json',
-							'jwtAuth': _this.$store.getters.token,
-						}
-					})
-					.then(function(response) {
-						console.log(response)
-						_this.bookdata = response.data
-					}).catch(function(error) {
-						console.log(error)
-					})
-			}
+
+	updateBook(bookId, deliverycount) {
+			console.log("ddddd" + bookId)
+			const _this = this
+			this.form3.bookId = bookId
+			console.log(this.form3.bookId)
+			this.form3.count = deliverycount
+			this.form3.deliverycount = this.bookdata.deliverycount - this.form3.count
+			console.log(this.bookdata.deliverycount)
+			this.axios.put("http://localhost:8089/threeproject/updateBook", this.form3, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					}
+				})
+				.then(function(response) {
+
+
+					for (var key in _this.form) {
+						delete _this.form[key]
+					}
+				}).catch(function(error) {
+					console.log(error)
+				})
 		},
-		computed: {
+		//新增教材出库收入
+		insertincome(bookdeliveryId) {
+			const _this = this
+			this.form2.addname = "admin"
+			this.form2.bookdeliveryId = bookdeliveryId
+			console.log(this.form2.bookdeliveryId + "def")
+			this.form2.refundCount = this.form.deliverycount
+			console.log(this.form2.deliverycount + "igh")
+			this.form2.bookId = this.form.bookId
+			console.log(this.form2.bookId + "abc")
+			this.axios.post("http://localhost:8089/threeproject/insertincome", this.form2, {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token,
+					}
+				})
+				.then(function(repsonse) {
+					console.log(repsonse)
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		//多条件查询
+		selectBookdelivery() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/selectBookdelivery", {
+					params: this.pageInfo,
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token,
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.tableData = response.data.list
+					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+
+
+		//删除
+		deldeliveryDdetails(row) {
+			const _this = this
+			var flag = true
+			this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(() => {
+				_this.axios.delete("http://localhost:8089/threeproject/deldeliveryDdetails?deliveryddetailsId=" + row.deliveryddetailsId, {
+						headers: {
+							'content-type': 'application/json',
+							'jwtAuth': _this.$store.getters.token,
+						}
+					})
+					.then(function(response) {
+						_this.axios.get("http://localhost:8089/threeproject/findPage4", {
+								headers: {
+									'content-type': 'application/json',
+									'jwtAuth': _this.$store.getters.token
+								},
+								params: _this.pageInfo
+							})
+							.then(function(response) {
+								_this.tableData = response.data.list
+								_this.pageInfo.total = response.data.total
+							}).catch(function(error) {
+								console.log(error)
+							})
+						var deliveryDdetails = response.data
+						var rows = _this.tableData
+							.filter(t => t.deliveryddetailsId != row.deliveryddetailsId)
+						_this.tableData = rows
+						for (var key in _this.form) {
+							delete _this.form[key]
+						}
+					}).catch(function(error) {
+						console.log(error)
+					})
+			}).catch(() => {
+				this.$message({
+					type: 'error',
+					message: '取消删除!'
+				});
+			});
+		},
+
+		handleCurrentChange(currentPage) {
+			var _this = this
+			this.pageInfo.currentPage = currentPage
+			var ps = qs.stringify(this.pageInfo)
+			this.axios.get("http://localhost:8089/threeproject/findPage4", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData = response.data.list
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		handleSizeChange(pagesize) {
+			var _this = this
+			this.pageInfo.pagesize = pagesize
+			var ps = qs.stringify(this.pageInfo)
+			this.axios.get("http://localhost:8089/threeproject/findPage4", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token
+					},
+					params: this.pageInfo
+				})
+				.then(function(response) {
+					_this.tableData = response.data.list
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+		selectAllBooks() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/selectAllBook", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token,
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.bookdata = response.data
+				}).catch(function(error) {
+					console.log(error)
+				})
+		},
+	},
+	computed: {
 			// 计算属性的 getter
 			price: { // eslint-disable-line no-unused-vars
 				get: function() {
@@ -502,6 +543,20 @@
 				.then(function(response) {
 					_this.tableData = response.data.list
 					_this.pageInfo.total = response.data.total
+				}).catch(function(error) {
+					console.log(error)
+				})
+
+			this.axios.get("http://localhost:8089/threeproject/selectAllStudent", {
+					headers: {
+						'content-type': 'application/json',
+						'jwtAuth': _this.$store.getters.token,
+					}
+				})
+				.then(function(response) {
+					console.log(response)
+					_this.studentdata = response.data
+					console.log(response.data)
 				}).catch(function(error) {
 					console.log(error)
 				})

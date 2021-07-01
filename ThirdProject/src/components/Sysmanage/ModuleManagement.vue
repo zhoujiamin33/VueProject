@@ -1,7 +1,12 @@
 <template>
 	<div style="float: left;width: 25%;height: 100%;">
 		<span>部门</span>
-		<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+		 <el-tree :data="MenuDate" ref="Menutree" show-checkbox
+  node-key="id"
+  :default-expand-all="true"
+  :default-checked-keys="roleMenu"
+  :props="defaultProps"
+  @check="changeMenu"></el-tree>
 	</div>
 	<div style="float:right;width: 74%;height: 100%;">
 		<div style="margin-bottom: 30px;">
@@ -53,6 +58,9 @@ padding-right: 50px;">
 				  </el-form-item> -->
 				  </el-form>
 				  </div>
+				 
+				  
+				
 </template>
 
 <script>
@@ -67,45 +75,47 @@ padding-right: 50px;">
 					status:''
 					
 				},
-				data: [{
-				          label: '一级 1',
-				          children: [{
-				            label: '二级 1-1',
-				            children: [{
-				              label: '三级 1-1-1'
-				            }]
-				          }]
-				        }, {
-				          label: '一级 2',
-				          children: [{
-				            label: '二级 2-1',
-				            children: [{
-				              label: '三级 2-1-1'
-				            }]
-				          }, {
-				            label: '二级 2-2',
-				            children: [{
-				              label: '三级 2-2-1'
-				            }]
-				          }]
-				        }, {
-				          label: '一级 3',
-				          children: [{
-				            label: '二级 3-1',
-				            children: [{
-				              label: '三级 3-1-1'
-				            }]
-				          }, {
-				            label: '二级 3-2',
-				            children: [{
-				              label: '三级 3-2-1'
-				            }] ,
-							}]
-        }],
+				// MenuDate: [{
+				//           label: '1',
+				//           children: [{
+				//             label: '二级 1-1',
+				//             children: [{
+				//               label: '三级 1-1-1'
+				//             }]
+				//           }]
+				//         }, {
+				//           label: '一级 2',
+				//           children: [{
+				//             label: '二级 2-1',
+				//             children: [{
+				//               label: '三级 2-1-1'
+				//             }]
+				//           }, {
+				//             label: '二级 2-2',
+				//             children: [{
+				//               label: '三级 2-2-1'
+				//             }]
+				//           }]
+				//         }, {
+				//           label: '一级 3',
+				//           children: [{
+				//             label: '二级 3-1',
+				//             children: [{
+				//               label: '三级 3-1-1'
+				//             }]
+				//           }, {
+				//             label: '二级 3-2',
+				//             children: [{
+				//               label: '三级 3-2-1'
+				//             }] ,
+				// 			}]
+    //     }],
         defaultProps: {
           children: 'children',
           label: 'label'
-        }
+        },
+		 MenuDate: [],
+		       
 			}
 		},
 		 methods: {
@@ -113,8 +123,51 @@ padding-right: 50px;">
 		        console.log(data);
 		      },
 			  
-		    }
-		
+			  
+					       
+		    },
+			
+		created() {
+			const _this = this
+			this.axios.get("http://localhost:8089/threeproject/findsysmenu",
+			{
+				
+				headers: {
+					'content-type': 'application/json',
+					'jwtAuth': _this.$store.getters.token
+			}
+			})
+				.then(function(response) {
+					_this.MenuDate = response.data
+					// 循环遍历整个树
+					 const newRoleMenu = [] // 处理数据后的菜单数组
+					 this.MenuDate.forEach(item => {
+					    if (this.roleMenu.includes(item.id)) {
+					      if (item.hasChildren) { // 是否有子菜单
+					      	// 默认一级菜单 下的子菜单，都选中时保留该id, 否则去掉
+					        let isAllChecked = true 
+					        item.children.forEach(subItem => {
+					          if (isAllChecked && !this.roleMenu.includes(subItem.id)) {
+					            isAllChecked = false
+					          }
+					          if (this.roleMenu.includes(subItem.id)) {
+					            newRoleMenu.push(subItem.id)
+					          }
+					        })
+					        if (isAllChecked) {
+					          newRoleMenu.push(item.id)
+					        }
+					      } else {
+					        newRoleMenu.push(item.id)
+					      }
+					    }
+					  })
+					console.log(response)
+				}).catch(function(error) {
+					console.log(error)
+				})
+			
+		}
 	}
 </script>
 

@@ -20,7 +20,7 @@
 		</div>
 		<!-- 新增班级 -->
 		<el-dialog title="新增班级" v-model="dialogFormVisible" width="55%">
-			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
+			 <el-descriptions class="margin-top"  :column="2" :size="size" border>
 				<el-descriptions-item>
 				  <template #label>
 					<i class="el-icon-location-outline"></i>年届管理
@@ -77,7 +77,7 @@
 		
 		<!-- 修改班级 -->
 		<el-dialog title="修改班级" v-model="dialogFormEdit" width="75%">
-			 <el-descriptions class="margin-top" title="带边框列表" :column="2" :size="size" border>
+			 <el-descriptions class="margin-top" :column="2" :size="size" border>
 				<el-descriptions-item>
 				  <template #label>
 					<i class="el-icon-office-building"></i>选择教室
@@ -186,7 +186,7 @@
 				  <template #label>
 					<i class="el-icon-office-building"></i>计划结束日期
 				  </template>
-				 <el-date-picker 
+				 <el-date-picker
 					 v-model="form.enddate" align="center" type="date" placeholder="选择日期" 
 					 :disabled-date="disabledDate" :shortcuts="shortcuts">
 				 </el-date-picker>
@@ -232,22 +232,31 @@
 			<el-table-column  prop="classesName" label="班级名称" width="200" align="center"></el-table-column>
 		    <el-table-column prop="starteddate" label="培训期限"  width="200" align="center"></el-table-column>
 		    <el-table-column prop="emp.empName"  label="任课老师"  width="150" align="center"> </el-table-column>
-		    <el-table-column prop="zip" label="班级人数" width="120" align="center"> </el-table-column>
 			<el-table-column prop="zip" label="开班状态" width="200" align="center">
 				<template v-slot="scope">
 					<p v-if="scope.row.classesOpen==0">
 						<el-button type="warning" icon="el-icon-more-outline" circle size="mini" @click="updateClassesOpen1(scope.row)"></el-button>
 					</p>
 					<p v-if="scope.row.classesOpen==1">
-						<el-button type="success" icon="el-icon-check" circle size="mini" @click="updateClassesOpen0(scope.row)"></el-button>
+						<el-button type="success" icon="el-icon-more-outline" circle size="mini" @click="updateClassesOpen0(scope.row)"></el-button>
 					</p>
+				</template>
+			</el-table-column>
+			<el-table-column prop="zip" label="点击上课" width="120" align="center">
+				<template v-slot="scope">
+					<!-- <p v-if="scope.row.whendetails==scope.row.course.classhours"> -->
+						<!-- <el-button type="success" icon="el-icon-more-outline" circle size="mini" @click="updateClassesOpen0(scope.row)"></el-button> -->
+						
+					<!-- </p> -->
+					<!-- <p v-if="scope.row.whendetails==scope.row.course.classhours"> -->
+						<el-button type="warning" icon="el-icon-more-outline" circle size="small" @click="classbegin(scope.row)"></el-button>
+					<!-- </p> -->
 				</template>
 			</el-table-column>
 		    <el-table-column fixed="right" label="操作" width="150" align="center">
 		      <template #default="scope">
 				<el-button @click="show(scope.row)" type="text" size="small">查看</el-button>
 				<el-button @click="showEdit(scope.row)" type="text" size="small">修改</el-button>
-				<el-button @click="selectById(scope.row)" type="text" size="small">派课</el-button>
 		      </template>
 		    </el-table-column>
 		</el-table>
@@ -272,6 +281,7 @@
 <script>
 	import qs from 'qs'
 	import { defineComponent, ref } from 'vue'
+	import { ElMessage } from 'element-plus'
 	export default  {
 	    name:"ClassesVue",
 		data (){
@@ -332,7 +342,10 @@
 				},
 				//根据课程id查询课程详细表序列号为100的数据
 				detailsdata:[],
-				selectStudent:[]
+				selectStudent:[],
+				form4:{
+					updatename:"",classesId:""
+				}
 			}
 		},
 		 setup() {
@@ -341,6 +354,37 @@
 		    }
 		  },
 		  methods:{
+			 classbegin(row){
+				 const _this=this
+				 this.form4.updatename=this.$store.state.updateUserInfo.username
+				 this.form4.classesId=row.classesId
+				 this.axios.put("http://localhost:8089/threeproject/classbegin",this.form4,{
+					 headers: {
+					 	'content-type': 'application/json',
+					 	'jwtAuth': _this.$store.getters.token
+					 }
+				 }).then(function(response){
+					 console.log(response)
+					 _this.axios.get("http://localhost:8089/threeproject/selectById?classesId="+row.classesId,{
+					 	headers: {
+					 		'content-type': 'application/json',
+					 		'jwtAuth': _this.$store.getters.token
+					 	}
+					 })
+					  .then(function(response){
+					 	console.log(response)
+					 	_this.selectById=response.data
+					  }).catch(function(error){
+					 	 console.log(error)
+					  })
+					 ElMessage.success({
+					    message: '成功上完一节课',
+					    type: 'success'
+					 })
+				 }).catch(function(error){
+					 console.log(error)
+				 })
+			 },
 			  // 根据课类名查询课程
 			 selectCourse(classtypeId){
 				const _this=this

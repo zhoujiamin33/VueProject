@@ -8,7 +8,6 @@
 				</el-select>
 				<el-input style="width: 120px;" placeholder="请输入内容" v-model="pageInfo.input" clearable>
 				</el-input>
-
 			</div>
 			<div>
 				<el-button @click="selectFaqFuzzyquery()">查询</el-button>
@@ -17,7 +16,6 @@
 					<el-form :inline="true" :model="form" class="demo-ruleForm">
 						<div style="margin-left: 500px;">
 							<el-button type="" @click="dialogFormVisible2 = true">新增</el-button>
-
 							<el-button @click="delFaqQuestions">删除</el-button>
 						</div>
 						<div>
@@ -36,17 +34,11 @@
 										<template #default="scope">
 											<el-button type="text" @click="showEdit(scope.row)">修改</el-button>
 										</template>
-
 									</el-table-column>
 								</el-table>
 							</el-form>
-
 						</div>
-
-
-
 					</el-form>
-
 					<template #footer>
 						<span class="dialog-footer">
 							<el-button type="primary" @click="addReturnvisit">保存</el-button>
@@ -54,9 +46,7 @@
 						</span>
 					</template>
 				</el-dialog>
-
-
-				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible2">
+				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible2" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item label="FAQ问题:" :label-width="formLabelWidth">
 							<el-input v-model="form.problem" autocomplete="off"></el-input>
@@ -76,8 +66,7 @@
 						</span>
 					</template>
 				</el-dialog>
-
-				<el-dialog title="修改FAQ信息" v-model="dialogFormVisible3">
+				<el-dialog title="修改FAQ信息" v-model="dialogFormVisible3" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item label="FAQ问题:">
 							<el-input v-model="form.problem" autocomplete="off"></el-input>
@@ -96,14 +85,6 @@
 						</span>
 					</template>
 				</el-dialog>
-
-				<!-- 
-				<el-popconfirm title="这是一段内容确定删除吗？">
-					<template #reference>
-						<el-button style="margin-left: 10px;">删除</el-button>
-					</template>
-				</el-popconfirm> -->
-
 			</div>
 		</div>
 		<div>
@@ -113,7 +94,6 @@
 					<div class="answertext">{{item.answer}}</div>
 				</el-collapse-item>
 			</el-collapse>
-
 		</div>
 		<div>
 			<div>
@@ -125,7 +105,6 @@
 		</div>
 	</div>
 </template>
-
 <script>
 	import qs from 'qs'
 	import {
@@ -142,8 +121,8 @@
 		data() {
 			return {
 				pageInfo: {
-					value:"",
-					input:"",
+					value: "",
+					input: "",
 					currentPage: 1, //标识当前页码
 					pagesize: 2, //每页多少条数据
 					total: 0
@@ -215,28 +194,17 @@
 				this.multipleSelection = val;
 				console.log(val + "--------------")
 			},
+			cls() {
+				const _this = this
+				for (var key in _this.form) {
+					delete _this.form[key];
+					console.log("111")
+					_this.dialogFormVisible3 = false
+				}
+			},
 			handleClick(row) {
 				console.log(row);
 			},
-			// showEdit(row) {
-			// 	console.log(row);
-			// 	this.form.planreturnvisit = row.planreturnvisit;
-			// 	this.form.courseName = row.courseName;
-			// 	this.form.registerId = row.registerId;
-			// 	this.form.courseId = row.courseId;
-			// 	this.form.consultant = row.consultant;
-			// 	this.form.sex = row.sex;
-			// 	this.form.sourceId = row.sourceId;
-			// 	this.form.attentstate = row.attentstate;
-			// 	this.form.consultationmode = row.consultationmode
-			// 	this.form.timeliness = row.timeliness
-			// 	this.form.addname = row.addname
-			// 	this.form.consultcontent = row.consultcontent
-			// 	this.form.phone = row.phone
-			// 	this.form.paystate = row.paystate
-
-			// 	this.dialogFormVisible2 = true
-			// },
 			showEdit(row) {
 				this.form.faqId = row.faqId
 				this.form.problem = row.problem
@@ -244,7 +212,7 @@
 				this.form.updatename = row.updatename
 				this.dialogFormVisible3 = true
 			},
-			
+
 			//多条件查询
 			selectFaqFuzzyquery() {
 				const _this = this
@@ -296,14 +264,6 @@
 						}
 					})
 					.then(function(response) {
-
-						// var faqQuestions = response.data
-						// var row = _this.FaqQuestionsDate.filter(f => f.faqId == faqQuestions.faqId)[0]
-						// console.log("----22")
-						// row.problem = faqQuestions.problem
-						// 	console.log("-----------3")
-						// row.answer = faqQuestions.answer
-						// row.updatename = faqQuestions.updatename
 						_this.axios.get("http://localhost:8089/threeproject/findFaqQuestions", {
 								headers: {
 									'content-type': 'application/json',
@@ -327,7 +287,10 @@
 					console.log(item)
 					console.log(item.faqId + "=======")
 					item.deletename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelFaq/" + item.faqId, {
+					this.axios.delete("http://localhost:8089/threeproject/DelFaq", {
+							params:{
+								"faqId": item.faqId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -412,12 +375,9 @@
 </script>
 
 <style>
-	/* 	.mianboby {
+	.mianboby {
 		display: flex;
 		justify-content: space-between;
+		align-content: center;
 	}
-
-	.answertext {
-		text-align: left;
-	} */
 </style>

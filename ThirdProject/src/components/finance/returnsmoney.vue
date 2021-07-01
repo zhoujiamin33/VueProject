@@ -3,15 +3,11 @@
 	  	<!-- 搜索框、输入框 、按钮-->
 	  	<div style="margin-left:10px;line-height: 40px;">
 	  		<el-row style="text-align: center;">
-	  			是否审核：
-	  			<el-select  v-model="pageInfo.Approval"  placeholder="请选择">
-	  				<el-option value="1" label="已审核"></el-option><el-option value="0" label="未审核"></el-option>
-	  			</el-select>
 	  			补缴日期：
-	  			<el-date-picker v-model="pageInfo.value1" type="date"  placeholder="选择开始日期"> </el-date-picker>
-	  			<el-date-picker v-model="pageInfo.value2" type="date"  placeholder="选择结束日期"> </el-date-picker>
-				经办人：
-				<el-input  v-model="pageInfo.input" style="width: 150px;"></el-input>
+	  			<el-date-picker v-model="pageInfo.startTime" type="date"  placeholder="选择开始日期" 
+					:disabled-date="disabledDate" :shortcuts="shortcuts"> </el-date-picker>至
+	  			<el-date-picker v-model="pageInfo.endTime" type="date"  placeholder="选择结束日期"
+					:disabled-date="disabledDate" :shortcuts="shortcuts"> </el-date-picker>
 	  			<el-button style="margin-left: 20px;" @click="selectByContionrefund">查询</el-button>
 	  			
 	  		</el-row>
@@ -42,7 +38,7 @@
 			</el-table>
 		</div>
 		<!-- 底部金额总结 -->
-		<div style="display: flex; justify-content: space-between; margin-top: 20px;">
+		<div style="display: flex; justify-content: space-between; margin-top: 20px;margin-left: 400px;">
 			<el-pagination
 			@size-change="handleSizeChange"
 			@current-change="handleCurrentChange"
@@ -70,11 +66,31 @@
 					currentPage: 1,//标识当前页码
 					pagesize:4,//每页多少条数据
 					total:0,
-					Approval:"",
-					value1:"",
-					value2:"",
-					input:"",
-				}
+					startTime:"",
+					endTime:"",
+				},
+				//日期
+				disabledDate(time) {
+				    return time.getTime() > Date.now()
+				},
+				shortcuts: [{
+				    text: 'Today',
+				    value: new Date(),
+				}, {
+				    text: 'Yesterday',
+				    value: (() => {
+				    const date = new Date()
+				    date.setTime(date.getTime() - 3600 * 1000 * 24)
+				        return date
+				      })(),
+				    }, {
+				      text: 'A week ago',
+				      value: (() => {
+				      const date = new Date()
+				      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+				      return date
+				    })(),
+				}]
 			}
 		},
 		methods:{
