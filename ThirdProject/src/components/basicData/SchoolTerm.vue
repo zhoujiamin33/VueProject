@@ -150,15 +150,18 @@
 				})
 					.then(function(response) {
 						// this.axios.get("http://localhost:8089/threeproject/findPage", {
+						// 	headers: {
+						// 		'content-type': 'application/json',
+						// 		'jwtAuth': _this.$store.getters.token
+						// 	},
 						// 		params: this.pageInfo
 						// 	})
-						// 	.then(function(response) {
-						// 		console.log(response.data)
-						// 		_this.SemesterDate = response.data.list
-						// 	}).catch(function(error) {
-						// 		console.log(error)
-						// 	})
-
+							// .then(function(response) {
+							// 	console.log(response.data)
+							// 	_this.SemesterDate = response.data.list
+							// }).catch(function(error) {
+							// 	console.log(error)
+							// })
 						var semester = response.data
 						console.log("semester:%o", semester)
 						var row = _this.SemesterDate.filter(d => d.semesterId == semester.semesterId)[0]

@@ -46,7 +46,7 @@
 						</span>
 					</template>
 				</el-dialog>
-				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible2">
+				<el-dialog title="新增FAQ信息" v-model="dialogFormVisible2" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item label="FAQ问题:" :label-width="formLabelWidth">
 							<el-input v-model="form.problem" autocomplete="off"></el-input>
@@ -66,7 +66,7 @@
 						</span>
 					</template>
 				</el-dialog>
-				<el-dialog title="修改FAQ信息" v-model="dialogFormVisible3">
+				<el-dialog title="修改FAQ信息" v-model="dialogFormVisible3" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item label="FAQ问题:">
 							<el-input v-model="form.problem" autocomplete="off"></el-input>
@@ -194,6 +194,14 @@
 				this.multipleSelection = val;
 				console.log(val + "--------------")
 			},
+			cls() {
+				const _this = this
+				for (var key in _this.form) {
+					delete _this.form[key];
+					console.log("111")
+					_this.dialogFormVisible3 = false
+				}
+			},
 			handleClick(row) {
 				console.log(row);
 			},
@@ -279,7 +287,10 @@
 					console.log(item)
 					console.log(item.faqId + "=======")
 					item.deletename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelFaq/" + item.faqId, {
+					this.axios.delete("http://localhost:8089/threeproject/DelFaq", {
+							params:{
+								"faqId": item.faqId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token

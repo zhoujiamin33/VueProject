@@ -12,7 +12,7 @@
 			<div style="">
 				<el-button @click="selectSourceFuzzyquery()">查询</el-button>
 				<el-button @click="dialogFormVisible = true">新增</el-button>
-				<el-dialog title="新增生源信息" v-model="dialogFormVisible">
+				<el-dialog title="新增生源信息" v-model="dialogFormVisible" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item prop="theoryCenterId" :required="true" label="生源渠道:"
 							:label-width="formLabelWidth">
@@ -29,7 +29,7 @@
 						</span>
 					</template>
 				</el-dialog>
-				<el-dialog title="修改渠道信息" v-model="dialogFormVisible2">
+				<el-dialog title="修改渠道信息" v-model="dialogFormVisible2" :before-close="cls">
 					<el-form :model="form">
 						<el-form-item label="id" :label-width="formLabelWidth">
 							<el-input v-model="form.sourceId" autocomplete="off" disabled></el-input>
@@ -121,6 +121,16 @@
 		methods: {
 			handleClick(row) {
 				console.log(row);
+			},
+			cls() {
+				
+				this.dialogFormVisible2 = false
+				this.dialogFormVisible = false
+				for (var key in this.form) {
+					delete this.form[key];
+					console.log("111")
+					
+				}
 			},
 			addSource() {
 				const _this = this

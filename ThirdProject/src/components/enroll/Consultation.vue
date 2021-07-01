@@ -161,8 +161,8 @@
 				<el-dialog v-model="dialogFormVisible2" title="修改咨询登记信息" :before-close="cls">
 					<el-form :inline="true" :model="form" ref="ruleForm" class="demo-ruleForm">
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="接待人 :" prop="name">
-								<el-input v-model="form.addname" style="width:150px"></el-input>
+							<el-form-item label="咨询人 :" prop="zxr">
+								<el-input v-model="form.consultant" style="width:150px"></el-input>
 							</el-form-item>
 							<el-form-item label="咨询方式 :" prop="zxfs">
 								<el-select v-model="form.consultationmode" placeholder="请选择咨询方式">
@@ -173,8 +173,9 @@
 							</el-form-item>
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="咨询人 :" prop="zxr">
-								<el-input v-model="form.consultant" style="width:150px"></el-input>
+							
+							<el-form-item label="联系电话 :" prop="lxdh">
+								<el-input v-model="form.phone" style="width:150px"></el-input>
 							</el-form-item>
 							<el-form-item label="信息渠道 :" prop="xxqd">
 								<el-select v-model="form.sourceId" placeholder="请选择信息渠道">
@@ -201,10 +202,10 @@
 
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="联系电话 :" prop="lxdh">
-								<el-input v-model="form.phone" style="width:150px"></el-input>
+							
+							<el-form-item label="咨询内容 :" prop="zxnr">
+								<el-input type="textarea" v-model="form.consultcontent"></el-input>
 							</el-form-item>
-
 							<el-form-item label="咨询课程 :" prop="zxkc">
 								<el-select v-model="form.courseId" placeholder="请选择课程">
 									<el-option v-for="item in CourseDate" :key="item.courseId" :label="item.courseName"
@@ -215,25 +216,7 @@
 
 						</div>
 						<div style="display: flex; justify-content: space-between;">
-							<el-form-item label="咨询内容 :" prop="zxnr">
-								<el-input type="textarea" v-model="form.consultcontent"></el-input>
-							</el-form-item>
-							<el-form-item label="时效性 :">
-								<el-select v-model="form.timeliness" placeholder="请选择意向">
-									<el-option label="未过期" :value="0"></el-option>
-									<el-option label="已过期" :value="1"></el-option>
-								</el-select>
-							</el-form-item>
-						</div>
-						<div style="display: flex; justify-content: space-between;">
-
-							<el-form-item label="缴费状态 :">
-								<el-select v-model="form.paystate" placeholder="请选择缴费状态">
-									<el-option v-for="item in options" :key="item.value" :label="item.label"
-										:value="item.value">
-									</el-option>
-								</el-select>
-							</el-form-item>
+							
 						</div>
 					</el-form>
 					<template #footer>
@@ -415,7 +398,9 @@
 					timeliness: '',
 					planreturnvisit: '',
 					paystate: '',
-					empId: ''
+					empId: '',
+					lastupdatename:'',
+					deletename:''
 				},
 				retform: {
 					returnvisitId: '',
@@ -510,8 +495,8 @@
 				this.dialogFormVisible = false
 				this.dialogFormVisible2 = false
 				this.dialogFormVisible3 = false
-				for (var key in this.retform) {
-					delete this.retform[key];
+				for (var key in this.form) {
+					delete this.form[key];
 					console.log("111")
 				}
 			},
@@ -633,7 +618,7 @@
 			},
 			addConsultation() {
 				const _this = this
-				// this.form.addname=this.$store.state.updateUserInfo.username
+				this.form.addname=this.$store.state.updateUserInfo.username
 				this.axios.post("http://localhost:8089/threeproject/AddRegister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -690,6 +675,7 @@
 			},
 			updateRegister() {
 				const _this = this
+				console.log("-=-===-=-=-=-=------===-==-")
 				this.axios.put("http://localhost:8089/threeproject/updateRegister", this.form, {
 						headers: {
 							'content-type': 'application/json',
@@ -697,14 +683,16 @@
 						}
 					})
 					.then(function(response) {
-						_this.axios.get("http://localhost:8089/threeproject/findAllRegister", {
+						_this.axios.get("http://localhost:8089/threeproject/findPageRegister", {
 								headers: {
 									'content-type': 'application/json',
 									'jwtAuth': _this.$store.getters.token
-								}
+								},
+								params: _this.pageInfo
 							})
 							.then(function(response) {
-								_this.ConsultationDate = response.data
+								_this.ConsultationDate = response.data.list
+								_this.pageInfo.total = response.data.total
 								console.log(response)
 							}).catch(function(error) {
 								console.log(error)
@@ -716,10 +704,14 @@
 			},
 			delRegister() {
 				const _this = this
+				this.form.deletename=this.$store.state.updateUserInfo.username
 				_this.multipleSelection.forEach(item => {
 					console.log(item)
-					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelReg?registerId=" + item.registerId, {
+
+					this.axios.delete("http://localhost:8089/threeproject/DelReg", {
+							params:{
+								"registerId": item.registerId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token
@@ -781,7 +773,10 @@
 				_this.multipleSelection2.forEach(item => {
 					console.log(item)
 					item.lastupdatename = "启用人"
-					this.axios.put("http://localhost:8089/threeproject/DelRet?returnvisitId=" + item.returnvisitId, {
+					this.axios.delete("http://localhost:8089/threeproject/DelRet",{
+							params:{
+								"returnvisitId": item.returnvisitId
+							},
 							headers: {
 								'content-type': 'application/json',
 								'jwtAuth': _this.$store.getters.token

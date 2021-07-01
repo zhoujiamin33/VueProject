@@ -2,7 +2,7 @@
 	<div>
 		<div class="mianboby">
 			<div>
-				<el-button type="" @click="dialogFormVisible = true">新增</el-button>
+				<el-button type="" @click="dialogFormVisible = true" :before-close="cls">新增</el-button>
 				<el-dialog title="新增年届信息" v-model="dialogFormVisible">
 					<el-form :model="form">
 						<el-form-item label="年届名称:" :label-width="formLabelWidth">
@@ -21,7 +21,7 @@
 				</el-dialog>
 
 			</div>
-			<el-dialog title="修改年届信息" v-model="dialogFormVisible2">
+			<el-dialog title="修改年届信息" v-model="dialogFormVisible2" :before-close="cls">
 				<el-form :model="form">
 					<el-form-item label="id" :label-width="formLabelWidth">
 						<el-input v-model="form.sessionId" autocomplete="off" disabled></el-input>
@@ -94,6 +94,14 @@
 		methods: {
 			handleClick(row) {
 				console.log(row);
+			},
+			cls() {
+				const _this = this
+				for (var key in _this.form) {
+					delete _this.form[key];
+					console.log("111")
+					_this.dialogFormVisible2 = false
+				}
 			},
 			addSession() {
 				const _this = this
