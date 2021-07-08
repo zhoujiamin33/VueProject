@@ -189,7 +189,6 @@
 							.then(function(res) {
 								console.log(res)
 								_this.$store.commit("updateUserInfo", res.data.data)
-								// _this.addopjournal(_this.LogFrom)
 								// sessionStorage.setItem("menulist",res.data.data.menus)
 								for (var i = 0; i < _this.$store.state.updateUserInfo.menus.length; i++) {
 									let chm =_this.$store.state.updateUserInfo.menus[i].asideChildren
