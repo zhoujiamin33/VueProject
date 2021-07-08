@@ -348,11 +348,11 @@
 				}
 			}
 		},
-		 setup() {
-		    return {
-		      input: ref('')
-		    }
-		  },
+		 // setup() {
+		 //    return {
+		 //      input: ref('')
+		 //    }
+		 //  },
 		  methods:{
 			 classbegin(row){
 				 const _this=this
