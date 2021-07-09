@@ -112,13 +112,13 @@ export default{
 	},
 	 methods: {
 		//循环保存被选中的id
-		// handleSelectionChange(val) {
-		// 	this.multipleSelection = [];
-		// 	for (var i=0;i<val.length;i++) {
-		// 		this.multipleSelection.push(val[i].classtypeId);
-		// 	}
-		// 	console.log(val)
-		// }, 
+		handleSelectionChange(val) {
+			this.multipleSelection = [];
+			for (var i=0;i<val.length;i++) {
+				this.multipleSelection.push(val[i].classtypeId);
+			}
+			console.log(val)
+		}, 
 		
 		//批量删除
 		// cutoff() {
